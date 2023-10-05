@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 268ea185a9855d647be0c7af6b9c4bef
+timeCreated: 1460715187
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/SecurityRoom/SecurityRoomSecurityGate.mat
+  uploadId: 552658

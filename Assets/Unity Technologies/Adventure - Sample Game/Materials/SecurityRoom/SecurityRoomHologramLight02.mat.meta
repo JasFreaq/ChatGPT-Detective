@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 237e59587b8f1c641a0b736a82a2f342
+timeCreated: 1470131292
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/SecurityRoom/SecurityRoomHologramLight02.mat
+  uploadId: 552658

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1200044f35df5ec43a9f8b62a56e91fa
+timeCreated: 1473335262
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Animations/Environment/SecurityRoomInfoBoard.anim
+  uploadId: 552658

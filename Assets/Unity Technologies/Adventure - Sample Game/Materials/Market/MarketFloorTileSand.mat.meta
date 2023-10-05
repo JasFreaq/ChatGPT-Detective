@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3a48947a76978074795eb630980e7e56
+timeCreated: 1460125725
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Market/MarketFloorTileSand.mat
+  uploadId: 552658

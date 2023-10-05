@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 34e46584c3c7af24f9a03d0449abfddb
+timeCreated: 1473417723
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Animations/Environment/SecurityRoomCompanyLogo.anim
+  uploadId: 552658

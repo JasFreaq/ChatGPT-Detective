@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 71e4cc976fb954d489e47c27ba9c6950
+timeCreated: 1460125726
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Market/MarketSigns.mat
+  uploadId: 552658

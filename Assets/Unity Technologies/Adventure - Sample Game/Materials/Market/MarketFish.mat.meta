@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 329c7db3030cc1d418a9f416eaed765f
+timeCreated: 1460125726
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Market/MarketFish.mat
+  uploadId: 552658

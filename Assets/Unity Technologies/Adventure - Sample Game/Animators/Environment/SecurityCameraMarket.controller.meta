@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3f033d1d677ec21438f98252d9f13d73
+timeCreated: 1461684042
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Animators/Environment/SecurityCameraMarket.controller
+  uploadId: 552658

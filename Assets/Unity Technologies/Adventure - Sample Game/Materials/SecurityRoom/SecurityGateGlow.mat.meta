@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 122e9cd5ec976eb42bc7f99a4512d40f
+timeCreated: 1460732996
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/SecurityRoom/SecurityGateGlow.mat
+  uploadId: 552658

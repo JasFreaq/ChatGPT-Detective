@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9d897843149660d4a8439ee2bf24eb1e
+timeCreated: 1460126829
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/CoffeeCup.mat
+  uploadId: 552658

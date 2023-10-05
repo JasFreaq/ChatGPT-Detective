@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 937a26c581812c44988068bba4f17c7a
+timeCreated: 1461772443
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Animators/Environment/FishSignNeon.controller
+  uploadId: 552658

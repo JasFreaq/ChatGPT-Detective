@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d788c05ebea28de4db00723fccb2e638
+timeCreated: 1461157433
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Characters/SharkmanMaterial.mat
+  uploadId: 552658

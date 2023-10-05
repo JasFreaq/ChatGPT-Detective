@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e601b63d46663824d853a55aa1d71001
+timeCreated: 1460127435
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Market/MarketVendingMachine.mat
+  uploadId: 552658

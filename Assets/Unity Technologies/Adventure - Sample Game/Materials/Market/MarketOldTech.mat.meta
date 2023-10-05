@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0388f2d5fd84c014dbb18d851a95c1bf
+timeCreated: 1462441599
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Market/MarketOldTech.mat
+  uploadId: 552658

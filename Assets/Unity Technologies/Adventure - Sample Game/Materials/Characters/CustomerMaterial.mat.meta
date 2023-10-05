@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1a6730224b4502343a9966008f0b1668
+timeCreated: 1461760846
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Characters/CustomerMaterial.mat
+  uploadId: 552658

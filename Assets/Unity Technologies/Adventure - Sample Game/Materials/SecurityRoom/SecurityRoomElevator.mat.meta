@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 46e414f0c99a5a84ba321fc49d6fb413
+timeCreated: 1469798020
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/SecurityRoom/SecurityRoomElevator.mat
+  uploadId: 552658

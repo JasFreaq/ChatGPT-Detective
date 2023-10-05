@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bb7fa01900e018b4cba3b01cc242f400
+timeCreated: 1462465212
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Animations/NPC/CoffeebotMakeCoffeeWithCup.anim
+  uploadId: 552658

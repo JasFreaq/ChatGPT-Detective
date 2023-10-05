@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fa8464330437a6c439e767c377bbee1d
+timeCreated: 1456933223
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Scenes/SecurityRoom.unity
+  uploadId: 552658

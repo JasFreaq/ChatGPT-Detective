@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bf2b4aaaf633ea1449a183726b6fa2f3
+timeCreated: 1461760854
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Characters/FruitVendor.mat
+  uploadId: 552658

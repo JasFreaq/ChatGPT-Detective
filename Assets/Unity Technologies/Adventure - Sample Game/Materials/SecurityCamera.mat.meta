@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3f386ec83100d844b94a7a5b79ffb81d
+timeCreated: 1461671516
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/SecurityCamera.mat
+  uploadId: 552658

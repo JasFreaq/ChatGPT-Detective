@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1a154997a08254f4ab6fb216e582bc17
+timeCreated: 1462359115
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/SleepyZ.mat
+  uploadId: 552658

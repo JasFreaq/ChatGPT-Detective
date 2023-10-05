@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: dfffd446e9b3ccf409dab89543c45918
+timeCreated: 1473430589
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Animations/Environment/SecurityRoomDNA.anim
+  uploadId: 552658

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 65eb6d8bd532ff24790e8810799fd82f
+timeCreated: 1460458593
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Characters/CoffeeBotGlass.mat
+  uploadId: 552658

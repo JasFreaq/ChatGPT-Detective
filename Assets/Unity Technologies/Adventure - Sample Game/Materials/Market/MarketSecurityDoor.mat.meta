@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 21f4fccb919166745b81be58b6c766a0
+timeCreated: 1460125726
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Market/MarketSecurityDoor.mat
+  uploadId: 552658

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 542062432d660d64f87455adddbf8343
+timeCreated: 1461166987
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Market/MarketProsthetics.mat
+  uploadId: 552658

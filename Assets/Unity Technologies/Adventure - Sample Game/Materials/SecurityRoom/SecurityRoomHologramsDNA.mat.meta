@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1bc37cd6e59f7d043b4f6da0dbd4ab28
+timeCreated: 1473261834
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/SecurityRoom/SecurityRoomHologramsDNA.mat
+  uploadId: 552658

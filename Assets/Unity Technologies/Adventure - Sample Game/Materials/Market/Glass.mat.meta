@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: cb7d12c46517df84eb12587362b496a8
+timeCreated: 1460127640
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Market/Glass.mat
+  uploadId: 552658

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5aae30acb47cb134cb98d589f6e6160e
+timeCreated: 1461157433
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Characters/SecondHandSalesmanMaterial.mat
+  uploadId: 552658

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 05230aa6fed8282418e8584cd0ab0906
+timeCreated: 1469798019
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/SecurityRoom/SecurityRoomFloorLight.mat
+  uploadId: 552658

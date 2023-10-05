@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4ec2d68a2ff08f94e982603197685a68
+timeCreated: 1460125726
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 76216
+  packageName: Adventure - Sample Game
+  packageVersion: 2.1.0
+  assetPath: Assets/Unity Technologies/Adventure - Sample Game/Materials/Market/MarketSpiceBags.mat
+  uploadId: 552658

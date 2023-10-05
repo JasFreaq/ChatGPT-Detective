@@ -13,23 +13,13 @@
       "hash": "76f76584a113b240a4ec11f324b17302bde9a53a"
     },
     "com.readyplayerme.core": {
-      "version": "https://github.com/readyplayerme/rpm-unity-sdk-core.git",
+      "version": "https://github.com/readyplayerme/rpm-unity-sdk-core.git#v3.3.0",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "3.0.2"
       },
-      "hash": "987878b605b7b71bb5ef50d90b40956ebdfd51b4"
-    },
-    "com.readyplayerme.webview": {
-      "version": "https://github.com/readyplayerme/rpm-unity-sdk-webview.git#v1.2.1",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.ugui": "1.0.0",
-        "com.unity.nuget.newtonsoft-json": "3.0.2"
-      },
-      "hash": "e58ef3690d9f4e13c4be58cd73a52c71f1bce5d9"
+      "hash": "ae826a85a11f40e6997390deb8db310543e5851b"
     },
     "com.srcnalt.openai-unity": {
       "version": "https://github.com/srcnalt/OpenAI-Unity.git",

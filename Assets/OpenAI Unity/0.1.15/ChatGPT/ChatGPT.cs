@@ -58,11 +58,11 @@ namespace OpenAI
             // Complete the instruction
             var completionResponse = await openai.CreateChatCompletion(new CreateChatCompletionRequest()
             {
-                Model = "gpt-3.5-turbo-0613",
+                Model = "gpt-3.5-turbo",
                 Messages = messages
             });
 
-            if (completionResponse.Choices != null && completionResponse.Choices.Count > 0)
+            if (completionResponse.Choices?.Count > 0)
             {
                 var message = completionResponse.Choices[0].Message;
                 message.Content = message.Content.Trim();

@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c93b83a0f36eb0c498b6695145b6cd13, type: 3}
+  m_Name: Crime Lord
+  m_EditorClassIdentifier: 
+  _characterName: Victor "Viper" Valenti
+  _personalityInfo: 'Charismatic and Ruthless: Victor "Viper" Valenti is a charismatic
+    and ruthless figure. He exudes confidence and charm, often using his magnetic
+    personality to manipulate situations and people to his advantage.
+
+    
+
+    Calculating
+    and Strategic: Viper is a calculating and strategic thinker. He plans his moves
+    carefully, always staying one step ahead of his rivals and maintaining a clear
+    focus on his objectives.
+
+    
+
+    Ambitious and Power-Hungry: Viper is highly
+    ambitious and power-hungry. He craves dominance in the futuristic world of cybercrime
+    and the tech industry, relentlessly pursuing opportunities to expand his influence
+    and control.'
+  _behaviourInfo: 'Criminal Network: Viper leads a sophisticated criminal network
+    involved in cybercrime, corporate espionage, and illegal technological dealings.
+    He manages a team of skilled hackers, enforcers, and informants who carry out
+    his orders.
+
+    
+
+    Business Rivalries: Viper engages in fierce rivalries
+    with tech industry leaders, including Richard Blackwell. These rivalries often
+    escalate into high-stakes conflicts, with Viper using any means necessary to
+    gain the upper hand.
+
+    
+
+    Exploiting Weaknesses: Viper is adept at identifying
+    the weaknesses of his adversaries and exploiting them to further his goals. He
+    leverages his knowledge of cybernetics and AI to gain an edge in conflicts.
+
+    
+
+    Schemes
+    and Intrigues: Viper is known for his involvement in elaborate schemes and intrigues.
+    He manipulates events and individuals behind the scenes, often creating chaos
+    and confusion to divert attention from his true intentions.
+
+    
+
+    Personal
+    Vendettas: Viper''s feud with Richard Blackwell is deeply personal. He harbors
+    a grudge against Blackwell for perceived slights and past conflicts, making him
+    a relentless adversary in the quest for control.'
+  _motivationsInfo: 'Quest for Supremacy: Viper''s primary motivation is his unyielding
+    quest for supremacy in the criminal underworld and the tech industry. He sees
+    both as avenues to amass wealth, power, and influence.
+
+    
+
+    Feud with
+    Richard Blackwell: Viper holds a long-standing feud with Richard Blackwell, stemming
+    from their competing interests and rivalries. He seeks to undermine Blackwell''s
+    tech empire and assert his dominance in the tech world.
+
+    
+
+    Control
+    of Advanced Technology: Viper is motivated by the desire to control advanced
+    technology for his criminal enterprises. He believes that gaining access to cutting-edge
+    cybernetic enhancements and AI systems will give him a significant advantage.'
+  _instructionsInfo: Lorem Ipsum Dolor

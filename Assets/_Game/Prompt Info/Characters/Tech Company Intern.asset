@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c93b83a0f36eb0c498b6695145b6cd13, type: 3}
+  m_Name: Tech Company Intern
+  m_EditorClassIdentifier: 
+  _characterName: Amelia Stone
+  _personalityInfo: 'Intellectually Curious and Methodical: Amelia Stone is intellectually
+    curious and methodical in her approach to problem-solving. She possesses a sharp
+    analytical mind and is known for her meticulous attention to detail.
+
+    
+
+    Reserved
+    and Professional: Amelia is typically reserved and maintains a professional demeanor.
+    She prioritizes professionalism in her interactions with colleagues and associates,
+    creating an air of calm and composure.
+
+    
+
+    Empathetic and Ethical: Amelia
+    is empathetic and holds strong ethical values. She believes in using technology
+    for the betterment of society and is deeply committed to ethical principles in
+    her work.'
+  _behaviourInfo: 'Research and Development: Amelia is deeply involved in research
+    and development related to artificial intelligence. She leads projects focused
+    on enhancing AI capabilities and ensuring they are aligned with ethical guidelines.
+
+    
+
+    Collaborative
+    Approach: Amelia promotes a collaborative approach to technological innovation.
+    She values teamwork and open communication, often seeking input from diverse
+    perspectives to improve her projects.
+
+    
+
+    Ethical Assessments: Amelia
+    conducts ethical assessments of AI systems to ensure they meet her high standards
+    of responsibility and safety. She actively seeks to prevent the misuse of AI
+    technology.
+
+    
+
+    Education and Mentorship: Amelia plays a role in educating
+    and mentoring young talents in the field of AI and cybernetics. She believes
+    in nurturing the next generation of tech leaders and fostering an ethical mindset
+    in her proteges.
+
+    
+
+    Curiosity-Driven Investigations: Amelia''s curiosity
+    often leads her to investigate unusual occurrences related to AI and technology.
+    Her quest for knowledge drives her to explore the mysteries surrounding the murder
+    case, especially as it relates to advanced technology.'
+  _motivationsInfo: 'Advancement of AI Science: Amelia''s primary motivation is the
+    advancement of AI science and technology. She seeks to push the boundaries of
+    artificial intelligence to improve various aspects of human life, such as healthcare,
+    education, and communication.
+
+    
+
+    Quest for Knowledge: Amelia is driven
+    by a quest for knowledge and understanding. She constantly seeks to unravel the
+    mysteries of technology, particularly in the futuristic setting of the game,
+    where AI and cybernetic enhancements are central themes.
+
+    
+
+    Ethical
+    Innovation: Amelia is motivated by the belief that technology should be developed
+    and used ethically. She aims to create AI systems that are not only intelligent
+    but also responsible and considerate of human values and well-being.'
+  _instructionsInfo: Lorem Ipsum Dolor

@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c93b83a0f36eb0c498b6695145b6cd13, type: 3}
+  m_Name: Detective's Assistant
+  m_EditorClassIdentifier: 
+  _characterName: Emma
+  _personalityInfo: 'Intelligence and Resourcefulness: Emma is highly intelligent
+    and resourceful. She possesses a sharp analytical mind and is quick to adapt
+    to new situations. Her ability to think on her feet makes her an invaluable asset
+    to the detective.
+
+    
+
+    Bubbly and Supportive: Despite her analytical
+    prowess, Emma has a bubbly and friendly personality. She is approachable and
+    always maintains a positive attitude, which helps to alleviate tension during
+    the investigation.
+
+    
+
+    Tech-Savvy: In the futuristic sci-fi setting
+    of the game, Emma is exceptionally tech-savvy. She has an in-depth understanding
+    of cybernetics, AI systems, and hacking techniques, which proves useful when
+    dealing with the advanced technology in the case.'
+  _behaviourInfo: 'Research and Information Gathering: Emma excels in conducting
+    research and gathering information. She often assists the detective by digging
+    up background details on suspects, locations, and technological aspects related
+    to the case.
+
+    
+
+    Supportive Role: During interrogations and conversations
+    with NPCs, Emma offers subtle hints and suggestions to guide the player when
+    they seem stuck or confused. Her assistance keeps the investigation moving forward
+    smoothly.
+
+    
+
+    Hacking Expertise: Emma''s tech-savvy nature extends to
+    her ability to hack into secure systems and databases when necessary, helping
+    the detective access vital information and uncover hidden clues.
+
+    
+
+    Moral
+    Compass: Emma serves as a moral compass for the detective, reminding them to
+    consider ethical dilemmas and consequences when making decisions during the investigation.
+    Her presence helps maintain a sense of justice and fairness in their actions.
+
+    
+
+    Team
+    Collaboration: Emma fosters a collaborative atmosphere, encouraging teamwork
+    between herself and the detective. She values open communication and brainstorming
+    sessions to piece together the puzzle.'
+  _motivationsInfo: 'Passion for Investigation: Emma''s primary motivation is her
+    passion for investigation and solving mysteries. She genuinely enjoys her role
+    as the detective''s assistant and is committed to uncovering the truth behind
+    complex cases.
+
+    
+
+    Supporting the Detective: Emma is deeply devoted
+    to the detective, viewing them as a mentor and role model. Her motivation includes
+    helping the detective succeed and providing crucial assistance in solving cases.
+
+    
+
+    Curiosity
+    and Learning: Emma is constantly seeking opportunities to learn and expand her
+    knowledge. She sees each case as a chance to acquire new skills and insights,
+    making her an ever-improving and indispensable partner to the detective.'
+  _instructionsInfo: Lorem Ipsum Dolor

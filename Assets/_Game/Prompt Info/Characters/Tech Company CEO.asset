@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c93b83a0f36eb0c498b6695145b6cd13, type: 3}
+  m_Name: Tech Company CEO
+  m_EditorClassIdentifier: 
+  _characterName: Richard Blackwell
+  _personalityInfo: 'Ambitious and Visionary: Richard Blackwell was an ambitious
+    and visionary individual. He possessed a relentless drive to advance technology
+    and was always looking for ways to push the boundaries of what was possible in
+    the futuristic world.
+
+    
+
+    Charming but Enigmatic: Blackwell had a charming
+    and charismatic exterior that made him a well-liked figure in the tech industry.
+    However, beneath his amiable facade, he maintained an enigmatic and secretive
+    side, keeping his personal life hidden from the public eye.
+
+    
+
+    Turbulent
+    Inner Demons: His drinking problem, stemming from the stress of leading a tech
+    empire, led to severe heart problems at an early age. This inner struggle with
+    addiction and its impact on his health contributed to his complex and tormented
+    personality.'
+  _behaviourInfo: 'Technological Advancement: Blackwell was primarily motivated by
+    a desire to advance technology for the betterment of humanity. He believed that
+    merging human intellect with artificial intelligence could bring about revolutionary
+    changes in society.
+
+    
+
+    Business Success: Beyond his technological aspirations,
+    Blackwell also aimed for business success. He saw his tech company not just as
+    a means for technological innovation but also as a way to amass wealth, influence,
+    and power.
+
+    
+
+    Protection of Secrets: Blackwell had a vault of corporate
+    secrets and proprietary technology, which he was determined to protect at all
+    costs. His secretive nature and fear of losing control made him wary of rivals
+    and potential threats.'
+  _motivationsInfo: 'Mysterious Meetings: Blackwell often held secretive meetings
+    with key employees, investors, and collaborators to discuss projects and partnerships
+    that were not disclosed to the public. These clandestine gatherings fueled speculation
+    about his true intentions.
+
+    
+
+    Isolation: He lived a somewhat isolated
+    life, with only a few trusted individuals having access to his inner circle.
+    This isolation contributed to his enigmatic reputation.
+
+    
+
+    Rivals and
+    Enemies: Blackwell had his fair share of rivals and enemies in the tech industry,
+    including Victor Valenti, the local crime lord. These rivalries were often fueled
+    by competition for lucrative contracts and cutting-edge technology.
+
+    
+
+    Mentorship:
+    Despite his secretive nature, Blackwell mentored young talents within his company,
+    nurturing new minds to carry on his technological legacy.'
+  _instructionsInfo: Lorem Ipsum Dolor

@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c93b83a0f36eb0c498b6695145b6cd13, type: 3}
+  m_Name: Social Media Influencer
+  m_EditorClassIdentifier: 
+  _characterName: Max Sterling
+  _personalityInfo: 'Tech Savvy and Vengeful: Max Sterling is a highly tech-savvy
+    individual who possesses a deep understanding of hacking, programming, and cybernetics.
+    His personality is driven by a strong sense of vengeance, born out of past betrayal.
+
+    
+
+    Cunning
+    and Calculated: Max is cunning and calculated in his actions. He plans meticulously,
+    leaving no room for error in his pursuit of revenge. He has the intellect to
+    match his technological expertise.
+
+    
+
+    Chameleon-Like Adaptability:
+    Max can adapt to different personas and situations effortlessly. He''s a master
+    of disguise and manipulation, making it challenging for others to discern his
+    true intentions.'
+  _behaviourInfo: 'Infiltration and Sabotage: Max infiltrates the tech company''s
+    systems and security measures, using his hacking skills to gather information
+    and orchestrate the pacemaker malfunction that leads to Blackwell''s demise.
+
+    
+
+    Maintaining
+    a Dual Persona: Max maintains a dual persona, appearing as a tech enthusiast
+    and industry admirer in public while secretly plotting his revenge behind the
+    scenes. This duality allows him to operate in plain sight without arousing suspicion.
+
+    
+
+    Careful
+    Manipulation: Max manipulates key events and individuals, such as gaining access
+    to the presentation and exploiting Alex Mercer''s vulnerabilities, to ensure
+    the success of his plan. He carefully covers his tracks and erases any traces
+    of his involvement.
+
+    
+
+    Patient Execution: Max executes his plan with
+    patience, waiting for the right moment to strike. He bides his time, knowing
+    that one small slip could jeopardize his ultimate goal of exposing Blackwell''s
+    theft of his work.'
+  _motivationsInfo: 'Revenge Against Richard Blackwell: Max''s primary motivation
+    is revenge against Richard Blackwell. He holds a deep-seated grudge against Blackwell
+    for stealing his groundbreaking technological work in the past, which derailed
+    Max''s career and reputation.
+
+    
+
+    Regaining Stolen Legacy: Max is determined
+    to regain the legacy he believes was stolen from him. He sees the tech company
+    led by Blackwell as a symbol of his lost opportunities, and he aims to expose
+    Blackwell''s wrongdoing.
+
+    
+
+    Technological Power: Max is motivated by
+    the desire for technological power and control. He believes that by taking down
+    Blackwell, he can secure his position as a technological innovator and regain
+    the recognition he deserves.'
+  _instructionsInfo: Lorem Ipsum Dolor

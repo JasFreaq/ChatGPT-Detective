@@ -11,6 +11,13 @@ namespace ChatGPT_Detective
 {
     public class GPTIntegrationHandler : MonoBehaviour
     {
+        private static GPTIntegrationHandler _instance;
+
+        public static GPTIntegrationHandler Instance
+        {
+            get { return _instance; } 
+        }
+
         #region Member Variables
 
         [SerializeField] private WorldContextInfo _worldContext;
@@ -23,21 +30,36 @@ namespace ChatGPT_Detective
 
         #endregion
 
+        private void Awake()
+        {
+            GPTIntegrationHandler[] handlers = FindObjectsByType<GPTIntegrationHandler>(FindObjectsInactive.Include,
+                    FindObjectsSortMode.None);
+
+            if (handlers.Length > 1)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                _instance = this;
+            }
+        }
+
         #region OpenAI Functions
         
-        private async void SendPromptMessage(string npcInstructions, List<ChatMessage> messages)
+        public async void SendPromptMessage(string npcInstructions, List<ChatMessage> history)
         {
             ChatMessage tempMessage = new ChatMessage()
             {
                 Role = "system",
                 Content = _mainPromptInstructions + $"\n\n{npcInstructions}"
             };
-            messages[0] = tempMessage;
+            history[0] = tempMessage;
 
             CreateChatCompletionResponse completionResponse = await _openAi.CreateChatCompletion(new CreateChatCompletionRequest()
             {
                 Model = "gpt-3.5-turbo",
-                Messages = messages
+                Messages = history
             });
 
             if (completionResponse.Choices?.Count > 0)

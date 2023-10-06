@@ -24,9 +24,10 @@ namespace ChatGPT_Detective
 
         #region Functions
 
-        public string GeCharacterInfo()
+        public string GetCharacterInfo()
         {
-            return $"Name: {_characterName}\n\n" +
+            return "Character Details:-\n\n" +
+                   $"Name: {_characterName}\n\n" +
                    $"Personality:\n{_personalityInfo}\n\n" +
                    $"Behaviour:\n{_behaviourInfo}\n\n" +
                    $"Motivations:\n{_motivationsInfo}\n\n" +

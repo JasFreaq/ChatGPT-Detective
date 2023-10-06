@@ -23,6 +23,12 @@ namespace ChatGPT_Detective
             _messageVectors = vectors;
         }
 
+        public int HistoryIndex => _historyIndex;
+        
+        public ChatMessage Prompt => _prompt;
+
+        public ChatMessage Response => _response;
+
         public float[] GetVector()
         {
             return _messageVectors ?? throw new Exception("Message Vectors not set");

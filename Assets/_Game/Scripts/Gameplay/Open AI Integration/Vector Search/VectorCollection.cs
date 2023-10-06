@@ -31,7 +31,7 @@ namespace ChatGPT_Detective
             return _objects[index];
         }
 
-        public T FindNearest(float[] query)
+        private T FindNearest(float[] query)
         {
             float maxDotProduct = 0;
             int bestIndex = 0;
@@ -48,6 +48,18 @@ namespace ChatGPT_Detective
             }
 
             return _objects[bestIndex];
+        }
+        
+        public List<T> FindNearest(float[] query, int resultCount)
+        {
+            List<T> results = new List<T>();
+
+            for (int i = 0; i < resultCount; i++)
+            {
+                results.Add(FindNearest(query));
+            }
+
+            return results;
         }
     }
 }

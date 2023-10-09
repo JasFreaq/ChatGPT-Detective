@@ -15,7 +15,13 @@ namespace ChatGPT_Detective
 
         public static GPTIntegrationHandler Instance
         {
-            get { return _instance; } 
+            get
+            {
+                if (!_instance)
+                    _instance = FindObjectOfType<GPTIntegrationHandler>();
+
+                return _instance;
+            }
         }
 
         #region Member Variables
@@ -24,12 +30,14 @@ namespace ChatGPT_Detective
 
         [SerializeField] [TextArea(5, 15)] private string _mainPromptInstructions = "";
 
+        [SerializeField] [Range(0f, 2f)] private float _temperature = 1f;
+
         private OpenAIApi _openAi = new OpenAIApi();
 
         private Action<ChatMessage> _onResponseReceived;
 
         #endregion
-
+        
         private void Awake()
         {
             GPTIntegrationHandler[] handlers = FindObjectsByType<GPTIntegrationHandler>(FindObjectsInactive.Include,
@@ -47,19 +55,20 @@ namespace ChatGPT_Detective
 
         #region OpenAI Functions
         
-        public async void SendPromptMessage(string npcInstructions, List<ChatMessage> history)
+        public async void SendPromptMessage(string npcInfo, List<ChatMessage> history)
         {
             ChatMessage tempMessage = new ChatMessage()
             {
                 Role = "system",
-                Content = _mainPromptInstructions + $"\n\n{npcInstructions}"
+                Content = _mainPromptInstructions + $"\n\n###\n\n{_worldContext.GetWorldInfo()}\n\n{npcInfo}"
             };
             history[0] = tempMessage;
 
             CreateChatCompletionResponse completionResponse = await _openAi.CreateChatCompletion(new CreateChatCompletionRequest()
             {
                 Model = "gpt-3.5-turbo",
-                Messages = history
+                Messages = history,
+                Temperature = _temperature
             });
 
             if (completionResponse.Choices?.Count > 0)

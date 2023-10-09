@@ -13,7 +13,7 @@
       "hash": "76f76584a113b240a4ec11f324b17302bde9a53a"
     },
     "com.readyplayerme.core": {
-      "version": "https://github.com/readyplayerme/rpm-unity-sdk-core.git#v3.3.0",
+      "version": "https://github.com/readyplayerme/rpm-unity-sdk-core.git",
       "depth": 0,
       "source": "git",
       "dependencies": {

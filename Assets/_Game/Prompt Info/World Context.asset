@@ -12,5 +12,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d47ac1f8050f634f92db39bdc30876f, type: 3}
   m_Name: World Context
   m_EditorClassIdentifier: 
-  _plotContext: 
-  _settingContext: 
+  _plotInfo: "In the futuristic sci-fi world of the game the player assumes the role
+    of a seasoned detective with a knack for uncovering the truth in a world filled
+    with cybernetic enhancements, super-smart AI, holograms, and advanced technology.
+    The game begins with the murder of Richard Blackwell, the charismatic CEO of
+    a renowned tech company, during a high-profile presentation in the lobby of his
+    office.\r\n\r\nInitially, the prime suspect is Victor \"Viper\" Valenti, a charismatic
+    but ruthless crime lord known for his involvement in cybercrime and rivalries
+    with tech industry leaders. Viper's known feud with Blackwell and his criminal
+    connections make him the top target of suspicion.\r\n\r\nHowever, doubts soon
+    arise as to Viper's direct involvement in the murder. The focus shifts to the
+    tech company's intern, Amelia Stone, a brilliant but introverted individual with
+    a deep understanding of technology. As the detective investigates, it becomes
+    clear that Amelia had a motive, given her intellectual nature and a past disagreement
+    with Blackwell.\r\n\r\nSimultaneously, the enforcer of Viper's criminal empire,
+    Steel, lurks in the shadows, serving as a loyal and formidable figure who may
+    hold key information about the murder.\r\n\r\nAs the player progresses through
+    the game, they will engage in conversations with various characters, uncovering
+    their motives, alibis, and connections to the victim and potential suspects.
+    The detective's assistant, Emma, provides subtle hints and guidance when needed.\r\n\r\nUnexpectedly,
+    the least suspicious character, a social media influencer named Max Sterling,
+    gradually becomes more suspicious as the game unfolds. Max's expertise in hacking
+    and past grievances with Blackwell reveal a hidden agenda that points toward
+    their involvement in the murder.\r\n\r\nThe player must navigate a web of secrets,
+    rivalries, and technological intrigue to unravel the truth behind Richard Blackwell's
+    demise, all while facing ethical dilemmas and making choices that shape the outcome
+    of the investigation.\r"
+  _settingInfo: 'The game takes place in a sprawling futuristic city filled with
+    towering skyscrapers, neon lights, and advanced technology. The primary locations
+    are:
+
+    
+
+    Tech Company''s Office: The murder occurs in the lobby of the
+    tech company''s office, a sleek and modern building with holographic displays
+    and state-of-the-art security systems. This serves as the initial crime scene.
+
+    
+
+    Marketplace:
+    The marketplace is a bustling hub where futuristic goods, cybernetic enhancements,
+    and digital entertainment are bought and sold. It''s also the primary location
+    for Viper''s criminal activities, adding an element of danger and intrigue.'

@@ -9,6 +9,11 @@ namespace ChatGPT_Detective
         private readonly int _dimensions;
         private List<T> _objects = new List<T>();
 
+        public int Count
+        {
+            get { return _objects.Count; }
+        }
+
         public VectorCollection(int dimensions)
         {
             _dimensions = dimensions;

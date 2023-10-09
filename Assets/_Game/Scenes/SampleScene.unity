@@ -135,7 +135,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &131806930
 Transform:
   m_ObjectHideFlags: 0
@@ -149,6 +149,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1762853253}
+  - {fileID: 1258391934}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -362,6 +363,58 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1258391933
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1258391934}
+  - component: {fileID: 1258391935}
+  m_Layer: 0
+  m_Name: Test NPC
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1258391934
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1258391933}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 131806930}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1258391935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1258391933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb83f3c4738b3a41b3653f33ba5bd07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterInfo: {fileID: 11400000, guid: 0dd3102a7b60e3744a5d05f2ebeed262, type: 2}
+  _contextWindowSize: 5
+  _resultSampleCount: 3
+  inputField: {fileID: 3322089653805843697}
+  button: {fileID: 6464471768204269327}
+  scroll: {fileID: 999770027387898405}
+  sent: {fileID: 8660877164928630359, guid: 53cd26a6eefa5a74086203cd118a04d3, type: 3}
+  received: {fileID: 961534450149497043, guid: adc0146c2853ed1418133faaf4379eb1, type: 3}
 --- !u!1 &1762853252
 GameObject:
   m_ObjectHideFlags: 0
@@ -407,7 +460,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _worldContext: {fileID: 11400000, guid: f3a9f03f6210f5d46995c8ff90a011dd, type: 2}
-  _mainPromptInstructions: 
+  _mainPromptInstructions: You are assuming the role of an NPC in a detective game.
+    Your task is to maintain your character persona and respond to the detective
+    (player) whenever they initiate contact with you. It's crucial to consider the
+    game's plot and setting elements that will be supplied below and provide responses
+    that align with your character. Each distinct section will be enclosed within
+    XML tags for clarity.
+  _temperature: 1
 --- !u!1 &1904803325
 GameObject:
   m_ObjectHideFlags: 0
@@ -1206,7 +1265,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5371180754961351304
 RectTransform:
   m_ObjectHideFlags: 0

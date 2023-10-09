@@ -5,8 +5,7 @@ using UnityEngine;
 namespace ChatGPT_Detective
 {
     [CreateAssetMenu(fileName = "New World Context Info", menuName = "Prompt Info/World Context Info", order = 0)]
-    public class WorldContextInfo :
-        ScriptableObject
+    public class WorldContextInfo : ScriptableObject
     {
         #region Member Variables
 
@@ -20,8 +19,8 @@ namespace ChatGPT_Detective
 
         public string GetWorldInfo()
         {
-            return $"Plot: {_plotInfo}\n\n" +
-                   $"Setting: {_settingInfo}\n\n";
+            return $"<plot>\n{_plotInfo}\n</plot>\n\n###\n\n" +
+                   $"<setting>\n{_settingInfo}\n</setting>\n\n###";
         }
 
         #endregion

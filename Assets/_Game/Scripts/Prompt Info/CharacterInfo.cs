@@ -5,20 +5,15 @@ using UnityEngine;
 namespace ChatGPT_Detective
 {
     [CreateAssetMenu(fileName = "New Character Info", menuName = "Prompt Info/Character Info", order = 1)]
-    public class CharacterInfo :
-        ScriptableObject
+    public class CharacterInfo : ScriptableObject
     {
         #region Member Variables
 
         [SerializeField] private string _characterName;
 
-        [SerializeField] [TextArea(5, 15)] private string _personalityInfo;
+        [SerializeField] [TextArea(5, 15)] private string _characterInfo;
 
-        [SerializeField] [TextArea(5, 15)] private string _behaviourInfo;
-
-        [SerializeField] [TextArea(5, 15)] private string _motivationsInfo;
-
-        [SerializeField] [TextArea(5, 15)] private string _instructionsInfo;
+        [SerializeField] [TextArea(5, 15)] private string _characterInstructions;
 
         #endregion
 
@@ -26,12 +21,12 @@ namespace ChatGPT_Detective
 
         public string GetCharacterInfo()
         {
-            return "Character Details:-\n\n" +
-                   $"Name: {_characterName}\n\n" +
-                   $"Personality:\n{_personalityInfo}\n\n" +
-                   $"Behaviour:\n{_behaviourInfo}\n\n" +
-                   $"Motivations:\n{_motivationsInfo}\n\n" +
-                   $"Character Instructions: {_instructionsInfo}\n\n";
+            return $"<character>\n{_characterInfo}\n</character>";
+        }
+
+        public string GetCharacterInstructions()
+        {
+            return $"{_characterInstructions}\n\n###\n\n";
         }
 
         #endregion

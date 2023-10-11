@@ -98,7 +98,7 @@ namespace ChatGPT_Detective
                     Content = $"{_characterInfo.GetCharacterInstructions()}\n\n###\n\n{newPrompt}"
                 });
 
-                GPTIntegrationHandler.Instance.SendPromptMessage(_characterInfo.GetCharacterInfo(), validHistory);
+                GPTIntegrationHandler.Instance.SendPromptMessage(_characterInfo.GetCharacterInfo(), "", validHistory);
             }
             else
             {

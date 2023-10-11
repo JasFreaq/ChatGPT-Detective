@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.DebugUI;
+using System.Data;
 
 namespace ChatGPT_Detective
 {
@@ -28,7 +29,9 @@ namespace ChatGPT_Detective
 
         [SerializeField] private WorldContextInfo _worldContext;
 
-        [SerializeField] [TextArea(5, 15)] private string _mainPromptInstructions = "";
+        [SerializeField] [TextArea(5, 15)] private string _baseSystemInstructions = "";
+        
+        [SerializeField] [TextArea(5, 15)] private string _goalSystemInstructions = "";
 
         [SerializeField] [Range(0f, 2f)] private float _temperature = 1f;
 
@@ -55,18 +58,13 @@ namespace ChatGPT_Detective
 
         #region OpenAI Functions
         
-        public async void SendPromptMessage(string npcInfo, List<ChatMessage> history)
+        public async void SendPromptMessage(string npcInfo, string npcCurrentGoal, List<ChatMessage> history)
         {
-            ChatMessage tempMessage = new ChatMessage()
-            {
-                Role = "system",
-                Content = _mainPromptInstructions + $"\n\n###\n\n{_worldContext.GetWorldInfo()}\n\n{npcInfo}"
-            };
-            history[0] = tempMessage;
+            FormatHistory(npcInfo, npcCurrentGoal, history);
 
             CreateChatCompletionResponse completionResponse = await _openAi.CreateChatCompletion(new CreateChatCompletionRequest()
             {
-                Model = "gpt-3.5-turbo",
+                Model = "gpt-4",
                 Messages = history,
                 Temperature = _temperature
             });
@@ -82,6 +80,25 @@ namespace ChatGPT_Detective
             {
                 Debug.LogWarning("No text was generated from this prompt.");
             }
+        }
+
+        private void FormatHistory(string npcInfo, string npcCurrentGoal, List<ChatMessage> history)
+        {
+            ChatMessage baseSystemMessage = new ChatMessage()
+            {
+                Role = "system",
+                Content = $"{_baseSystemInstructions}\n\n###\n\n{_worldContext.GetWorldInfo()}\n\n{npcInfo}"
+            };
+
+            history[0] = baseSystemMessage;
+
+            ChatMessage goalSystemMessage = new ChatMessage()
+            {
+                Role = "system",
+                Content = $"{_goalSystemInstructions}\n\n###\n\nGoal: {npcCurrentGoal}"
+            };
+
+            history.Insert(history.Count - 1, goalSystemMessage);
         }
 
         #endregion

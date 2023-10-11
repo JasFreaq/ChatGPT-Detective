@@ -15,6 +15,8 @@ namespace ChatGPT_Detective
 
         [SerializeField] [TextArea(5, 15)] private string _characterInstructions;
 
+        [SerializeField] [TextArea(3, 10)] private List<string> _characterGoals = new List<string>();
+        
         #endregion
 
         #region Functions

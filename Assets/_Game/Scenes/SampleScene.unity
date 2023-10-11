@@ -407,7 +407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb83f3c4738b3a41b3653f33ba5bd07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _characterInfo: {fileID: 11400000, guid: 0dd3102a7b60e3744a5d05f2ebeed262, type: 2}
+  _characterInfo: {fileID: 11400000, guid: 8b725074755ac674ea005defb6bebd89, type: 2}
   _contextWindowSize: 5
   _resultSampleCount: 3
   inputField: {fileID: 3322089653805843697}
@@ -460,13 +460,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _worldContext: {fileID: 11400000, guid: f3a9f03f6210f5d46995c8ff90a011dd, type: 2}
-  _mainPromptInstructions: You are assuming the role of an NPC in a detective game.
+  _baseSystemInstructions: You are assuming the role of an NPC in a detective game.
     Your task is to maintain your character persona and respond to the detective
     (player) whenever they initiate contact with you. It's crucial to consider the
     game's plot and setting elements that will be supplied below and provide responses
     that align with your character. Each distinct section will be enclosed within
     XML tags for clarity.
-  _temperature: 1
+  _goalSystemInstructions: Engage the detective in a conversation while keeping the
+    goal outlined in XML tags below in mind. Respond solely as the character you're
+    portraying, using information from the ongoing conversation and avoiding any
+    assumptions about knowledge from the plot. Respond in a single paragraph.
+  _temperature: 0
 --- !u!1 &1904803325
 GameObject:
   m_ObjectHideFlags: 0

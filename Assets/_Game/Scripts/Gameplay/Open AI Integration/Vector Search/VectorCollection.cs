@@ -36,14 +36,14 @@ namespace ChatGPT_Detective
             return _objects[index];
         }
 
-        private T FindNearest(float[] query)
+        private T FindNearest(double[] query)
         {
-            float maxDotProduct = 0;
+            double maxDotProduct = 0;
             int bestIndex = 0;
 
             for (int i = 0; i < _objects.Count; i++)
             {
-                float dotProd = VectorMath.DotProduct(_objects[i].GetVector(), query);
+                double dotProd = VectorMath.DotProduct(_objects[i].GetVector(), query);
 
                 if (dotProd > maxDotProduct)
                 {
@@ -55,7 +55,7 @@ namespace ChatGPT_Detective
             return _objects[bestIndex];
         }
         
-        public List<T> FindNearest(float[] query, int resultCount)
+        public List<T> FindNearest(double[] query, int resultCount)
         {
             List<T> results = new List<T>();
 

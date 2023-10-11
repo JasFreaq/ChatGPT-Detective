@@ -6,6 +6,6 @@ namespace ChatGPT_Detective
 {
     public interface IVectorObject
     {
-        public float[] GetVector();
+        public double[] GetVector();
     }
 }

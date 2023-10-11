@@ -7,16 +7,16 @@ namespace ChatGPT_Detective
 {
     public static class VectorMath 
     {
-        public static float[] NormalizeVector(float[] vector)
+        public static double[] NormalizeVector(double[] vector)
         {
-            float sum = 0;
+            double sum = 0;
 
-            foreach (float v in vector)
+            foreach (double v in vector)
             {
                 sum += v * v;
             }
             
-            float length = Mathf.Sqrt(sum);
+            double length = Math.Sqrt(sum);
 
             for (int i = 0, l = vector.Length; i < l; i++)
             {
@@ -26,9 +26,9 @@ namespace ChatGPT_Detective
             return vector;
         }
 
-        public static float DotProduct(float[] a, float[] b)
+        public static double DotProduct(double[] a, double[] b)
         {
-            float sum = 0;
+            double sum = 0;
 
             for (int i = 0, l = a.Length; i < l; i++)
             {

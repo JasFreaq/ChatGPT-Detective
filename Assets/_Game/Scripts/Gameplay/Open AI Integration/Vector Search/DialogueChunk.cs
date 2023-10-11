@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using OpenAI;
+using OpenAI.Chat;
 using UnityEngine;
 
 namespace ChatGPT_Detective
@@ -10,12 +11,12 @@ namespace ChatGPT_Detective
     {
         private int _historyIndex;
 
-        public float[]? _messageVectors;
+        public double[]? _messageVectors;
 
-        private ChatMessage _prompt;
-        private ChatMessage _response;
+        private Message _prompt;
+        private Message _response;
 
-        public DialogueChunk(int index, ChatMessage promptMsg, ChatMessage responseMsg, float[] vectors)
+        public DialogueChunk(int index, Message promptMsg, Message responseMsg, double[] vectors)
         {
             _historyIndex = index;
             _prompt = promptMsg;
@@ -25,11 +26,11 @@ namespace ChatGPT_Detective
 
         public int HistoryIndex => _historyIndex;
         
-        public ChatMessage Prompt => _prompt;
+        public Message Prompt => _prompt;
 
-        public ChatMessage Response => _response;
+        public Message Response => _response;
 
-        public float[] GetVector()
+        public double[] GetVector()
         {
             return _messageVectors ?? throw new Exception("Message Vectors not set");
         }

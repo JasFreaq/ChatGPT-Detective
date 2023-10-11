@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.DebugUI;
 using System.Data;
+using OpenAI.Chat;
+using OpenAI.Models;
 
 namespace ChatGPT_Detective
 {
@@ -35,9 +37,9 @@ namespace ChatGPT_Detective
 
         [SerializeField] [Range(0f, 2f)] private float _temperature = 1f;
 
-        private OpenAIApi _openAi = new OpenAIApi();
+        private OpenAIClient _openAi;
 
-        private Action<ChatMessage> _onResponseReceived;
+        private Action<Message> _onResponseReceived;
 
         #endregion
         
@@ -54,27 +56,24 @@ namespace ChatGPT_Detective
             {
                 _instance = this;
             }
+
+            _openAi = new OpenAIClient();
         }
 
         #region OpenAI Functions
         
-        public async void SendPromptMessage(string npcInfo, string npcCurrentGoal, List<ChatMessage> history)
+        public async void SendPromptMessage(string npcInfo, string npcCurrentGoal, List<Message> history)
         {
             FormatHistory(npcInfo, npcCurrentGoal, history);
+            
+            ChatRequest chatRequest = new ChatRequest(history, Model.GPT4, _temperature);
+            ChatResponse response = await _openAi.ChatEndpoint.GetCompletionAsync(chatRequest);
 
-            CreateChatCompletionResponse completionResponse = await _openAi.CreateChatCompletion(new CreateChatCompletionRequest()
+            if (response.Choices?.Count > 0)
             {
-                Model = "gpt-4",
-                Messages = history,
-                Temperature = _temperature
-            });
+                Message reply = response.Choices[0].Message;
 
-            if (completionResponse.Choices?.Count > 0)
-            {
-                ChatMessage response = completionResponse.Choices[0].Message;
-                response.Content = response.Content.Trim();
-
-                _onResponseReceived?.Invoke(response);
+                _onResponseReceived?.Invoke(reply);
             }
             else
             {
@@ -82,22 +81,16 @@ namespace ChatGPT_Detective
             }
         }
 
-        private void FormatHistory(string npcInfo, string npcCurrentGoal, List<ChatMessage> history)
+        private void FormatHistory(string npcInfo, string npcCurrentGoal, List<Message> history)
         {
-            ChatMessage baseSystemMessage = new ChatMessage()
-            {
-                Role = "system",
-                Content = $"{_baseSystemInstructions}\n\n###\n\n{_worldContext.GetWorldInfo()}\n\n{npcInfo}"
-            };
-
+            Message baseSystemMessage = new Message(Role.System,
+                $"{_baseSystemInstructions}\n\n###\n\n{_worldContext.GetWorldInfo()}\n\n{npcInfo}");
+            
             history[0] = baseSystemMessage;
 
-            ChatMessage goalSystemMessage = new ChatMessage()
-            {
-                Role = "system",
-                Content = $"{_goalSystemInstructions}\n\n###\n\nGoal: {npcCurrentGoal}"
-            };
-
+            Message goalSystemMessage =
+                new Message(Role.System, $"{_goalSystemInstructions}\n\n###\n\nGoal: {npcCurrentGoal}");
+            
             history.Insert(history.Count - 1, goalSystemMessage);
         }
 
@@ -105,12 +98,12 @@ namespace ChatGPT_Detective
 
         #region Delegate Functions
 
-        public void RegisterOnResponseReceived(Action<ChatMessage> action)
+        public void RegisterOnResponseReceived(Action<Message> action)
         {
             _onResponseReceived += action;
         }
         
-        public void DeregisterOnResponseReceived(Action<ChatMessage> action)
+        public void DeregisterOnResponseReceived(Action<Message> action)
         {
             _onResponseReceived -= action;
         }

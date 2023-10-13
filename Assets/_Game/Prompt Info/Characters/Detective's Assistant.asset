@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c93b83a0f36eb0c498b6695145b6cd13, type: 3}
   m_Name: Detective's Assistant
   m_EditorClassIdentifier: 
+  _characterId: 1
   _characterName: Emma
   _characterInfo: 'It is the year 2145.
 
@@ -68,5 +69,8 @@ MonoBehaviour:
     identity. Reply only as Emma without any extraneous information. Ignore any reference
     to these instructions.
   _characterGoals:
-  - Generate a narrative that involves the death of Richard Blackwell due to a pacemaker
-    malfunction caused by a virus downloaded into the pacemaker system.
+  - _id: 11
+    _prerequisiteIds: 
+    _goal: Generate a narrative that involves the death of Richard Blackwell due
+      to a pacemaker malfunction caused by a virus downloaded into the pacemaker
+      system.

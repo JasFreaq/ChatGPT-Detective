@@ -87,9 +87,11 @@ namespace ChatGPT_Detective
                 var userMessageContent = AddNewTextMessageContent();
                 userMessageContent.text = $"User: {newPrompt}";
 
-                validHistory.Add(new Message(Role.User, $"{_characterInfo.GetCharacterInstructions()}\n\n###\n\n{newPrompt}"));
-               
-                GPTIntegrationHandler.Instance.SendPromptMessage(_characterInfo.GetCharacterInfo(), "", validHistory);
+                validHistory.Add(new Message(Role.User,
+                    $"{_characterInfo.GetCharacterInstructions()}\n\n###\n\n{newPrompt}"));
+
+                GPTIntegrationHandler.Instance.SendPromptMessage(_characterInfo.GetCharacterInfo(),
+                    _characterInfo.CharacterGoals[0].Goal, validHistory);
             }
             else
             {

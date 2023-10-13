@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,15 +10,19 @@ namespace ChatGPT_Detective
     {
         #region Member Variables
 
+        [SerializeField] private int _characterId;
+        
         [SerializeField] private string _characterName;
 
         [SerializeField] [TextArea(5, 15)] private string _characterInfo;
 
         [SerializeField] [TextArea(5, 15)] private string _characterInstructions;
 
-        [SerializeField] [TextArea(3, 10)] private List<string> _characterGoals = new List<string>();
+        [SerializeField] private List<GoalInfo> _characterGoals = new List<GoalInfo>();
         
         #endregion
+
+        public IReadOnlyList<GoalInfo> CharacterGoals => _characterGoals;
 
         #region Functions
 
@@ -29,6 +34,17 @@ namespace ChatGPT_Detective
         public string GetCharacterInstructions()
         {
             return $"{_characterInstructions}\n\n###\n\n";
+        }
+        
+        public void GenerateGoalIds()
+        {
+            for (int i = 0, n = _characterGoals.Count; i < n; i++)
+            {
+                GoalInfo goal = _characterGoals[i];
+                int id = Convert.ToInt32($"{_characterId}{i + 1}");
+
+                _characterGoals[i] = new GoalInfo(id, goal);
+            }
         }
 
         #endregion

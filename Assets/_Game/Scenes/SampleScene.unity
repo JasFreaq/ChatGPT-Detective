@@ -1955,9 +1955,9 @@ MonoBehaviour:
     XML tags for clarity.
   _goalSystemInstructions: Engage the detective in a conversation while keeping the
     goal outlined in XML tags below in mind. Respond solely as the character you're
-    portraying, using information from the ongoing conversation and avoiding any
-    assumptions about knowledge from the plot. Respond in a single paragraph.
-  _temperature: 0
+    portraying, using information from the ongoing conversation and avoiding knowledge
+    from the plot. Respond in a single paragraph.
+  _temperature: 0.2
 --- !u!1 &1855855818
 GameObject:
   m_ObjectHideFlags: 0

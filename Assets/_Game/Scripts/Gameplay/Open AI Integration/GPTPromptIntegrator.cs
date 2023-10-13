@@ -7,21 +7,23 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.DebugUI;
 using System.Data;
+using Newtonsoft.Json.Linq;
 using OpenAI.Chat;
 using OpenAI.Models;
+using Newtonsoft.Json;
 
 namespace ChatGPT_Detective
 {
-    public class GPTIntegrationHandler : MonoBehaviour
+    public class GPTPromptIntegrator : MonoBehaviour
     {
-        private static GPTIntegrationHandler _instance;
+        private static GPTPromptIntegrator _instance;
 
-        public static GPTIntegrationHandler Instance
+        public static GPTPromptIntegrator Instance
         {
             get
             {
                 if (!_instance)
-                    _instance = FindObjectOfType<GPTIntegrationHandler>();
+                    _instance = FindFirstObjectByType<GPTPromptIntegrator>();
 
                 return _instance;
             }
@@ -37,15 +39,17 @@ namespace ChatGPT_Detective
 
         [SerializeField] [Range(0f, 2f)] private float _temperature = 1f;
 
-        private OpenAIClient _openAi;
+        [SerializeField] private SystemGoalsManager _goalsManager;
 
+        private OpenAIClient _conversationClient;
+        
         private Action<Message> _onResponseReceived;
 
         #endregion
-        
+
         private void Awake()
         {
-            GPTIntegrationHandler[] handlers = FindObjectsByType<GPTIntegrationHandler>(FindObjectsInactive.Include,
+            GPTPromptIntegrator[] handlers = FindObjectsByType<GPTPromptIntegrator>(FindObjectsInactive.Include,
                     FindObjectsSortMode.None);
 
             if (handlers.Length > 1)
@@ -57,21 +61,23 @@ namespace ChatGPT_Detective
                 _instance = this;
             }
 
-            _openAi = new OpenAIClient();
+            _conversationClient = new OpenAIClient();
         }
 
         #region OpenAI Functions
         
-        public async void SendPromptMessage(string npcInfo, string npcCurrentGoal, List<Message> history)
+        public async void SendPromptMessage(int goalId, string npcInfo, string npcCurrentGoal, List<Message> history)
         {
             FormatHistory(npcInfo, npcCurrentGoal, history);
             
             ChatRequest chatRequest = new ChatRequest(history, Model.GPT4, _temperature);
-            ChatResponse response = await _openAi.ChatEndpoint.GetCompletionAsync(chatRequest);
+            ChatResponse response = await _conversationClient.ChatEndpoint.GetCompletionAsync(chatRequest);
 
             if (response.Choices?.Count > 0)
             {
                 Message reply = response.Choices[0].Message;
+
+                _goalsManager.CheckGoalStatus(goalId, history, reply);
 
                 _onResponseReceived?.Invoke(reply);
             }

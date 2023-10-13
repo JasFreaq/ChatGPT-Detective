@@ -19,22 +19,18 @@ namespace ChatGPT_Detective
         [SerializeField] [TextArea(5, 15)] private string _characterInstructions;
 
         [SerializeField] private List<GoalInfo> _characterGoals = new List<GoalInfo>();
-        
+
         #endregion
 
-        public IReadOnlyList<GoalInfo> CharacterGoals => _characterGoals;
+        public int CharId => _characterId;
+
+        public string CharInfo => $"<character>\n{_characterInfo}\n</character>";
+
+        public string CharInstructions => $"{_characterInstructions}\n\n###\n\n";
+
+        public IReadOnlyList<GoalInfo> CharGoals => _characterGoals;
 
         #region Functions
-
-        public string GetCharacterInfo()
-        {
-            return $"<character>\n{_characterInfo}\n</character>";
-        }
-
-        public string GetCharacterInstructions()
-        {
-            return $"{_characterInstructions}\n\n###\n\n";
-        }
         
         public void GenerateGoalIds()
         {

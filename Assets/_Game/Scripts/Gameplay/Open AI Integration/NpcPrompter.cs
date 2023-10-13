@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using OpenAI.Chat;
 using OpenAI.Embeddings;
 using OpenAI.Models;
@@ -14,69 +15,44 @@ using TMPro;
 
 namespace ChatGPT_Detective
 {
-    public class NPCPromptHandler : MonoBehaviour
+    public class NpcPrompter : MonoBehaviour
     {
-        [SerializeField] private CharacterInfo _characterInfo;
-
         [SerializeField] private int _contextWindowSize = 5;
         [SerializeField] private int _resultSampleCount = 3;
         
         private List<DialogueChunk> _npcPromptHistory = new List<DialogueChunk>();
         private VectorCollection<DialogueChunk> _dialogueVectors = new VectorCollection<DialogueChunk>(1536);
 
-        private OpenAIClient _openAi;
+        private OpenAIClient _embeddingsClient;
 
         private string _lastPrompt;
-
+        
         private void Awake()
         {
-            _openAi = new OpenAIClient();
+            _embeddingsClient = new OpenAIClient();
         }
-
-        [SerializeField] private Button submitButton;
-        [SerializeField] private TMP_InputField inputField;
-        [SerializeField] private RectTransform contentArea;
-        [SerializeField] private ScrollRect scrollView;
-        private float height;
-        private void Start()
-        {
-            submitButton.onClick.AddListener(SendReply);
-        }
-        private void SendReply()
-        {
-            ProcessPromptRequest(inputField.text);
-        }
-        private TextMeshProUGUI AddNewTextMessageContent()
-        {
-            var textObject = new GameObject($"Message_{contentArea.childCount + 1}");
-            textObject.transform.SetParent(contentArea, false);
-            var textMesh = textObject.AddComponent<TextMeshProUGUI>();
-            textMesh.fontSize = 24;
-            textMesh.enableWordWrapping = true;
-            return textMesh;
-        }
-
+        
         private void OnEnable()
         {
-            GPTIntegrationHandler.Instance.RegisterOnResponseReceived(UpdateHistory);
+            GPTPromptIntegrator.Instance.RegisterOnResponseReceived(UpdateHistory);
         }
 
         private void OnDisable()
         {
-            GPTIntegrationHandler.Instance.DeregisterOnResponseReceived(UpdateHistory);
+            GPTPromptIntegrator.Instance.DeregisterOnResponseReceived(UpdateHistory);
         }
 
-        public async void ProcessPromptRequest(string newPrompt)
+        public async Task<List<Message>> FormatPromptRequest(string charInstructions, string newPrompt)
         {
+            List<Message> validHistory = new List<Message> { new Message(Role.User, "temp") };
+
             EmbeddingsResponse embeddings =
-                await _openAi.EmbeddingsEndpoint.CreateEmbeddingAsync(newPrompt, Model.Embedding_Ada_002);
+                await _embeddingsClient.EmbeddingsEndpoint.CreateEmbeddingAsync(newPrompt, Model.Embedding_Ada_002);
             
             if (embeddings.Data?.Count > 0)
             {
                 IReadOnlyList<double> data = embeddings.Data[0].Embedding;
-
-                List<Message> validHistory = new List<Message> { new Message(Role.User, "temp") };
-
+                
                 if (_dialogueVectors.Count > 0) 
                 {
                     List<DialogueChunk> nearestChunks = _dialogueVectors.FindNearest(data.ToArray(), _resultSampleCount);
@@ -84,14 +60,7 @@ namespace ChatGPT_Detective
                     validHistory.AddRange(GetValidHistory(nearestChunks));
                 }
 
-                var userMessageContent = AddNewTextMessageContent();
-                userMessageContent.text = $"User: {newPrompt}";
-
-                validHistory.Add(new Message(Role.User,
-                    $"{_characterInfo.GetCharacterInstructions()}\n\n###\n\n{newPrompt}"));
-
-                GPTIntegrationHandler.Instance.SendPromptMessage(_characterInfo.GetCharacterInfo(),
-                    _characterInfo.CharacterGoals[0].Goal, validHistory);
+                validHistory.Add(new Message(Role.User, $"{charInstructions}\n\n###\n\n{newPrompt}"));
             }
             else
             {
@@ -99,6 +68,7 @@ namespace ChatGPT_Detective
             }
 
             _lastPrompt = newPrompt;
+            return validHistory;
         }
 
         private List<Message> GetValidHistory(List<DialogueChunk> nearestChunks)
@@ -143,7 +113,7 @@ namespace ChatGPT_Detective
         private async void UpdateHistoryAsync(Message response)
         {
             EmbeddingsResponse embeddings =
-                await _openAi.EmbeddingsEndpoint.CreateEmbeddingAsync($"{_lastPrompt}\n{response.Content}",
+                await _embeddingsClient.EmbeddingsEndpoint.CreateEmbeddingAsync($"{_lastPrompt}\n{response.Content}",
                     Model.Embedding_Ada_002);
             
             if (embeddings.Data?.Count > 0)
@@ -153,17 +123,9 @@ namespace ChatGPT_Detective
                 DialogueChunk newChunk = new DialogueChunk(_npcPromptHistory.Count,
                     lastMessage, response,
                     embeddings.Data[0].Embedding.ToArray());
-                var assistantMessageContent = AddNewTextMessageContent();
-                assistantMessageContent.text = $"Assistant: {response.Content}";
+                
                 _npcPromptHistory.Add(newChunk);
                 _dialogueVectors.Add(newChunk);
-
-                string chu = "";
-                foreach (DialogueChunk chunk in _npcPromptHistory)
-                {
-                    chu += $"Player: {chunk.Prompt.Content}\nNPC: {chunk.Response.Content}\n";
-                }
-                Debug.Log(chu);
             }
             else
             {

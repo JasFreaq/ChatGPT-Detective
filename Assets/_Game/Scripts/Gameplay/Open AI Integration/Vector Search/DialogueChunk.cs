@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace ChatGPT_Detective
 {
-    public class DialogueChunk : MonoBehaviour, IVectorObject
+    public class DialogueChunk : IVectorObject
     {
         private int _historyIndex;
 

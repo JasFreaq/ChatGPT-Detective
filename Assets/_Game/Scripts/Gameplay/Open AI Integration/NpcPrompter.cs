@@ -20,8 +20,7 @@ namespace ChatGPT_Detective
     {
         [SerializeField] private CharacterInfo _charInfo;
 
-        private List<DialogueChunk> _npcPromptHistory = new List<DialogueChunk>();
-        private VectorCollection<DialogueChunk> _dialogueVectors = new VectorCollection<DialogueChunk>(1536);
+        private HistoryData _historyData = new HistoryData();
 
         private OpenAIClient _embeddingsClient;
         
@@ -65,8 +64,7 @@ namespace ChatGPT_Detective
 
         public void ProcessPromptRequest(string newPrompt)
         {
-            GPTPromptIntegrator.Instance.SendPromptMessage(_charInfo, newPrompt, _npcPromptHistory, _dialogueVectors,
-                _goalsHandler.CurrentGoal);
+            GPTPromptIntegrator.Instance.SendPromptMessage(_charInfo, newPrompt, _historyData, _goalsHandler.CurrentGoal);
 
             _lastPrompt = newPrompt;
         }
@@ -86,12 +84,18 @@ namespace ChatGPT_Detective
             {
                 Message lastMessage = new Message(Role.User, _lastPrompt);
 
-                DialogueChunk newChunk = new DialogueChunk(_npcPromptHistory.Count,
+                DialogueChunk newChunk = new DialogueChunk(_historyData.PromptHistory.Count,
                     lastMessage, response,
                     embeddings.Data[0].Embedding.ToArray());
                 
-                _npcPromptHistory.Add(newChunk);
-                _dialogueVectors.Add(newChunk);
+                _historyData.Add(newChunk);
+
+                string hist = "";
+                foreach (DialogueChunk chunk in _historyData.PromptHistory)
+                {
+                    hist += $"User: {chunk.Prompt.Content}\nAssistant: {chunk.Response.Content}\n";
+                }
+                Debug.Log(hist);
             }
             else
             {

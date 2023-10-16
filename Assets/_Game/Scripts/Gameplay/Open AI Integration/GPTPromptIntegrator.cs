@@ -13,6 +13,7 @@ using OpenAI.Models;
 using Newtonsoft.Json;
 using OpenAI.Embeddings;
 using System.Linq;
+using UnityEngine.PlayerLoop;
 
 namespace ChatGPT_Detective
 {
@@ -31,7 +32,31 @@ namespace ChatGPT_Detective
             }
         }
 
-        private const float TokenToWordRatio = 0.75f;
+        private const float WordToTokenRatio = 0.75f;
+
+        static int CountWords(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return 0;
+            }
+            
+            string[] words = input.Split(new char[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+
+            return words.Length;
+        }
+
+        static int GetHistoryLength(List<Message> history)
+        {
+            int length = 0;
+
+            foreach (Message message in history)
+            {
+                length += CountWords(message.Content);
+            }
+
+            return length;
+        }
 
         #region Member Variables
 
@@ -49,12 +74,17 @@ namespace ChatGPT_Detective
 
         [SerializeField] private int _embeddingsWindowSize = 5;
 
-        [SerializeField] private int _embeddingsSampleCount = 3;
+        [SerializeField] private int _embeddingsSampleCount = 10;
 
         private OpenAIClient _conversationClient;
+
         private OpenAIClient _embeddingsClient;
 
         private Action<Message> _onResponseReceived;
+
+        private float _tokenPerSecondRate;
+        
+        private float _lastMessageTime;
 
         #endregion
 
@@ -73,15 +103,22 @@ namespace ChatGPT_Detective
             }
 
             _conversationClient = new OpenAIClient();
+
             _embeddingsClient = new OpenAIClient();
+        }
+
+        private void Start()
+        {
+            _tokenPerSecondRate = 1 / (_modelTPM / 60f);
+
+            _lastMessageTime = 0;
         }
 
         #region OpenAI Functions
 
-        public async void SendPromptMessage(CharacterInfo charInfo, string newPrompt, List<DialogueChunk> npcPromptHistory, VectorCollection<DialogueChunk> dialogueVectors, GoalInfo npcCurrentGoal)
+        public async void SendPromptMessage(CharacterInfo charInfo, string newPrompt, HistoryData historyData, GoalInfo npcCurrentGoal)
         {
-            List<Message> history = await FormatPromptRequest(charInfo.CharInstructions, newPrompt, npcPromptHistory,
-                dialogueVectors);
+            List<Message> history = await FormatPromptRequest(charInfo.CharInstructions, newPrompt, historyData);
 
             FormatHistory(charInfo.CharInfo, npcCurrentGoal.Goal, history);
 
@@ -102,31 +139,44 @@ namespace ChatGPT_Detective
             }
         }
 
-        public async Task<List<Message>> FormatPromptRequest(string charInstructions, string newPrompt, List<DialogueChunk> npcPromptHistory, VectorCollection<DialogueChunk> dialogueVectors)
+        public async Task<List<Message>> FormatPromptRequest(string charInstructions, string newPrompt, HistoryData historyData)
         {
-            List<Message> validHistory = new List<Message> { new Message(Role.User, "temp") };
+            List<Message> validHistory = new List<Message> { new Message(Role.User, "") };
 
-            EmbeddingsResponse embeddings =
-                await _embeddingsClient.EmbeddingsEndpoint.CreateEmbeddingAsync(newPrompt, Model.Embedding_Ada_002);
+            int historyLength = GetHistoryLength(historyData.HistoryList) + CountWords(newPrompt);
 
-            if (embeddings.Data?.Count > 0)
+            float passedTime = Time.time - _lastMessageTime;
+
+            if (historyLength > _tokenPerSecondRate * passedTime) 
             {
-                IReadOnlyList<double> data = embeddings.Data[0].Embedding;
+                EmbeddingsResponse embeddings =
+                    await _embeddingsClient.EmbeddingsEndpoint.CreateEmbeddingAsync(newPrompt, Model.Embedding_Ada_002);
 
-                if (dialogueVectors.Count > 0)
+                if (embeddings.Data?.Count > 0)
                 {
-                    List<DialogueChunk> nearestChunks = dialogueVectors.FindNearest(data.ToArray(), _embeddingsSampleCount);
+                    IReadOnlyList<double> data = embeddings.Data[0].Embedding;
 
-                    validHistory.AddRange(GetValidHistory(npcPromptHistory, nearestChunks));
+                    if (historyData.DialogueVectors.Count > 0)
+                    {
+                        List<DialogueChunk> nearestChunks = historyData.DialogueVectors.FindNearest(data.ToArray(), _embeddingsSampleCount);
+
+                        validHistory.AddRange(GetValidHistory(historyData.PromptHistory, nearestChunks));
+                    }
+
+                    validHistory.Add(new Message(Role.User, $"{charInstructions}\n\n###\n\n{newPrompt}"));
                 }
-
-                validHistory.Add(new Message(Role.User, $"{charInstructions}\n\n###\n\n{newPrompt}"));
+                else
+                {
+                    Debug.LogWarning("No embeddings were generated from this prompt.");
+                }
             }
             else
             {
-                Debug.LogWarning("No embeddings were generated from this prompt.");
+
             }
-            
+
+            _lastMessageTime = Time.time;
+
             return validHistory;
         }
 
@@ -143,10 +193,18 @@ namespace ChatGPT_Detective
         {
             bool[] addedDialogues = new bool[npcPromptHistory.Count];
 
+            float passedTime = Time.time - _lastMessageTime;
+
+            int availableLength = (int)(_tokenPerSecondRate * passedTime);
+
             foreach (DialogueChunk chunk in nearestChunks)
             {
+                int chunkHistLength = 0;
+
+                List<Message> viableHistory = new List<Message>();
+
                 Vector2Int window = new Vector2Int(chunk.HistoryIndex - _embeddingsWindowSize,
-                    chunk.HistoryIndex + _embeddingsWindowSize + 1);
+                        chunk.HistoryIndex + _embeddingsWindowSize + 1);
 
                 if (window.x < 0)
                     window.x = 0;
@@ -158,9 +216,20 @@ namespace ChatGPT_Detective
                 {
                     if (!addedDialogues[i])
                     {
-                        validHistory.Add(npcPromptHistory[i].Prompt);
-                        validHistory.Add(npcPromptHistory[i].Response);
+                        DialogueChunk viableChunk = npcPromptHistory[i];
+
+                        viableHistory.Add(viableChunk.Prompt);
+                        viableHistory.Add(viableChunk.Response);
+
+                        chunkHistLength += CountWords($"{viableChunk.Prompt} {viableChunk.Response}");
                     }
+                }
+
+                if (availableLength > chunkHistLength)
+                {
+                    validHistory.AddRange(viableHistory);
+
+                    availableLength -= chunkHistLength;
                 }
             }
         }

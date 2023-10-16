@@ -1970,7 +1970,7 @@ MonoBehaviour:
   _goalsManager: {fileID: 1762853255}
   _modelTPM: 10000
   _embeddingsWindowSize: 5
-  _embeddingsSampleCount: 3
+  _embeddingsSampleCount: 10
 --- !u!114 &1762853255
 MonoBehaviour:
   m_ObjectHideFlags: 0

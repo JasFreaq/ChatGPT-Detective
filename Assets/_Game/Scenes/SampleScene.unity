@@ -1696,7 +1696,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1258391934}
-  - component: {fileID: 1258391937}
   - component: {fileID: 1258391935}
   - component: {fileID: 1258391936}
   m_Layer: 0
@@ -1733,8 +1732,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb83f3c4738b3a41b3653f33ba5bd07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _contextWindowSize: 5
-  _resultSampleCount: 3
+  _charInfo: {fileID: 11400000, guid: 8b725074755ac674ea005defb6bebd89, type: 2}
 --- !u!114 &1258391936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1747,23 +1745,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e95f8c5bb2faedf4d9462693ded6f614, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1258391937
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1258391933}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26aaf16f9ed366f48a123e244bc23a64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _charInfo: {fileID: 11400000, guid: 8b725074755ac674ea005defb6bebd89, type: 2}
-  submitButton: {fileID: 1108237666}
-  inputField: {fileID: 556457514}
-  contentArea: {fileID: 1991868950}
-  scrollView: {fileID: 999290159}
 --- !u!1 &1296724765
 GameObject:
   m_ObjectHideFlags: 0
@@ -1987,6 +1968,9 @@ MonoBehaviour:
     you think the goal has been completed.
   _temperature: 0.2
   _goalsManager: {fileID: 1762853255}
+  _modelTPM: 10000
+  _embeddingsWindowSize: 5
+  _embeddingsSampleCount: 3
 --- !u!114 &1762853255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2118,6 +2102,7 @@ GameObject:
   - component: {fileID: 1914027335}
   - component: {fileID: 1914027334}
   - component: {fileID: 1914027333}
+  - component: {fileID: 1914027337}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2209,6 +2194,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1914027337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1914027331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fba1ba46251df824eaac8cc5de78d60d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  submitButton: {fileID: 1108237666}
+  inputField: {fileID: 556457514}
+  contentArea: {fileID: 1991868950}
+  scrollView: {fileID: 999290159}
+  _npcPrompter: {fileID: 1258391935}
 --- !u!1 &1991868949
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using OpenAI;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,21 +18,41 @@ namespace ChatGPT_Detective
 {
     public class NpcPrompter : MonoBehaviour
     {
-        [SerializeField] private int _contextWindowSize = 5;
-        [SerializeField] private int _resultSampleCount = 3;
-        
+        [SerializeField] private CharacterInfo _charInfo;
+
         private List<DialogueChunk> _npcPromptHistory = new List<DialogueChunk>();
         private VectorCollection<DialogueChunk> _dialogueVectors = new VectorCollection<DialogueChunk>(1536);
 
         private OpenAIClient _embeddingsClient;
+        
+        private NpcGoalsHandler _goalsHandler;
 
         private string _lastPrompt;
-        
+
+        private static int CountWords(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return 0;
+            }
+            
+            string[] words = input.Split(new char[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+
+            return words.Length;
+        }
+
         private void Awake()
         {
             _embeddingsClient = new OpenAIClient();
+            
+            _goalsHandler = GetComponent<NpcGoalsHandler>();
         }
-        
+
+        private void Start()
+        {
+            _goalsHandler.SetupGoalHandling(_charInfo.CharGoals);
+        }
+
         private void OnEnable()
         {
             GPTPromptIntegrator.Instance.RegisterOnResponseReceived(UpdateHistory);
@@ -42,69 +63,14 @@ namespace ChatGPT_Detective
             GPTPromptIntegrator.Instance.DeregisterOnResponseReceived(UpdateHistory);
         }
 
-        public async Task<List<Message>> FormatPromptRequest(string charInstructions, string newPrompt)
+        public void ProcessPromptRequest(string newPrompt)
         {
-            List<Message> validHistory = new List<Message> { new Message(Role.User, "temp") };
-
-            EmbeddingsResponse embeddings =
-                await _embeddingsClient.EmbeddingsEndpoint.CreateEmbeddingAsync(newPrompt, Model.Embedding_Ada_002);
-            
-            if (embeddings.Data?.Count > 0)
-            {
-                IReadOnlyList<double> data = embeddings.Data[0].Embedding;
-                
-                if (_dialogueVectors.Count > 0) 
-                {
-                    List<DialogueChunk> nearestChunks = _dialogueVectors.FindNearest(data.ToArray(), _resultSampleCount);
-
-                    validHistory.AddRange(GetValidHistory(nearestChunks));
-                }
-
-                validHistory.Add(new Message(Role.User, $"{charInstructions}\n\n###\n\n{newPrompt}"));
-            }
-            else
-            {
-                Debug.LogWarning("No embeddings were generated from this prompt.");
-            }
+            GPTPromptIntegrator.Instance.SendPromptMessage(_charInfo, newPrompt, _npcPromptHistory, _dialogueVectors,
+                _goalsHandler.CurrentGoal);
 
             _lastPrompt = newPrompt;
-            return validHistory;
         }
-
-        private List<Message> GetValidHistory(List<DialogueChunk> nearestChunks)
-        {
-            List<Message> validHistory = new List<Message>();
-
-            AssignValidDialogues(nearestChunks, validHistory);
-            return validHistory;
-        }
-
-        private void AssignValidDialogues(List<DialogueChunk> nearestChunks, List<Message> validHistory)
-        {
-            bool[] addedDialogues = new bool[_npcPromptHistory.Count];
-
-            foreach (DialogueChunk chunk in nearestChunks)
-            {
-                Vector2Int window = new Vector2Int(chunk.HistoryIndex - _contextWindowSize,
-                    chunk.HistoryIndex + _contextWindowSize + 1);
-
-                if (window.x < 0)
-                    window.x = 0;
-
-                if (window.y > _npcPromptHistory.Count)
-                    window.y = _npcPromptHistory.Count;
-
-                for (int i = window.x; i < window.y; i++)
-                {
-                    if (!addedDialogues[i])
-                    {
-                        validHistory.Add(_npcPromptHistory[i].Prompt);
-                        validHistory.Add(_npcPromptHistory[i].Response);
-                    }
-                }
-            }
-        }
-
+        
         private void UpdateHistory(Message response)
         {
             UpdateHistoryAsync(response);

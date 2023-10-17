@@ -1,5 +1,17 @@
 {
   "dependencies": {
+    "com.atteneder.gltfast": {
+      "version": "https://github.com/atteneder/glTFast.git#v5.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.modules.jsonserialize": "1.0.0",
+        "com.unity.modules.unitywebrequest": "1.0.0",
+        "com.unity.mathematics": "1.2.6",
+        "com.unity.burst": "1.6.6"
+      },
+      "hash": "76f76584a113b240a4ec11f324b17302bde9a53a"
+    },
     "com.openai.unity": {
       "version": "5.0.11",
       "depth": 0,
@@ -9,6 +21,25 @@
         "com.utilities.encoder.wav": "1.0.6"
       },
       "url": "https://package.openupm.com"
+    },
+    "com.readyplayerme.core": {
+      "version": "https://github.com/readyplayerme/rpm-unity-sdk-core.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.0.2"
+      },
+      "hash": "ae826a85a11f40e6997390deb8db310543e5851b"
+    },
+    "com.readyplayerme.webview": {
+      "version": "https://github.com/readyplayerme/rpm-unity-sdk-webview.git#v2.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0",
+        "com.unity.nuget.newtonsoft-json": "3.0.2"
+      },
+      "hash": "253c84e09ae4c9622eca5b945ac84a8d8bb914ad"
     },
     "com.unity.burst": {
       "version": "1.8.9",
@@ -95,7 +126,7 @@
     },
     "com.unity.nuget.newtonsoft-json": {
       "version": "3.2.1",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"

@@ -168,7 +168,7 @@ namespace StarterAssets
 
         private void AssignAnimationIDs()
         {
-            _animIDSpeed = Animator.StringToHash("Speed");
+            _animIDSpeed = Animator.StringToHash("VerticalAxis");
             _animIDGrounded = Animator.StringToHash("Grounded");
             _animIDJump = Animator.StringToHash("Jump");
             _animIDFreeFall = Animator.StringToHash("FreeFall");
@@ -274,7 +274,7 @@ namespace StarterAssets
             // update animator if using character
             if (_hasAnimator)
             {
-                _animator.SetFloat(_animIDSpeed, _animationBlend);
+                _animator.SetFloat(_animIDSpeed, _input.move.y);
                 _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
             }
         }

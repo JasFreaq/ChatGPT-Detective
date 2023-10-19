@@ -10,23 +10,20 @@ public class PlayerLocomotionController : MonoBehaviour
     [SerializeField] private InputActionReference _moveInputAction;
 
     [Header("Player")] 
-    [Tooltip("Move speed of the character in m/s")] 
+    [Tooltip("ProcessLocomotion speed of the character in m/s")] 
     [SerializeField] private float _moveSpeed = 2.0f;
 
     [Tooltip("How fast the character turns to face movement direction")] 
     [Range(0.0f, 0.3f)] 
     [SerializeField] private float _rotationSmoothTime = 0.12f;
     
-    [SerializeField] private float _movementBlendTime = 0.8f;
+    [SerializeField] private float _locomotionBlendTime = 1.6f;
 
     [SerializeField] private AudioClip[] _footstepAudioClips;
 
-    [Range(0, 1)] 
-    [SerializeField] private float _footstepAudioVolume = 0.5f;
-
     [Header("Animation")]
     [SerializeField] private string _speedAnimParameter = "Speed";
-    [SerializeField] private string _horizontalAxisParameter = "HorizontalAxis";
+    [SerializeField] private string _startedWalkingParameter = "StartedWalking";
     
     // Player
     private float _targetRotation;
@@ -34,23 +31,25 @@ public class PlayerLocomotionController : MonoBehaviour
     
     // Animation Hashes
     private int _animHashSpeed;
-    private int _animHashHorizontalAxis;
+    private int _animHashStartedWalking;
     
     private Animator _animator;
     private CharacterController _controller;
     private GameObject _mainCamera;
 
-    private Vector2 _moveInput;
+    private AudioSource _footstepAudioSource;
+    
+    private Vector2 _moveInputToProcess;
     private Vector2 _lastMoveInput;
     private Vector2 _lastMoveDirection;
 
-    private bool _movementBlending;
+    private bool _isLocomotionBlending;
 
-    private float _movementBlendTimer;
-    private float _movementBlendSrc;
-    private float _movementBlendTarget;
+    private float _locomotionBlendTimer;
 
-    private float _moveTimer;
+    private float _locomotionBlendSrc;
+
+    private float _locomotionBlendTarget;
 
     private void Awake()
     {
@@ -62,6 +61,8 @@ public class PlayerLocomotionController : MonoBehaviour
 
         _animator = GetComponent<Animator>();
         _controller = GetComponent<CharacterController>();
+
+        _footstepAudioSource = GetComponentInChildren<AudioSource>();
     }
 
     private void Start()
@@ -71,6 +72,19 @@ public class PlayerLocomotionController : MonoBehaviour
 
     private void Update()
     {
+        HandleLocomotionBlending();
+
+        ProcessLocomotion();
+    }
+
+    private void AssignAnimationHashes()
+    {
+        _animHashSpeed = Animator.StringToHash(_speedAnimParameter);
+        _animHashStartedWalking = Animator.StringToHash(_startedWalkingParameter);
+    }
+
+    private void HandleLocomotionBlending()
+    {
         Vector2 currentMoveInput = _moveInputAction.action.ReadValue<Vector2>();
 
         bool beganMove = _lastMoveInput == Vector2.zero && currentMoveInput != Vector2.zero;
@@ -78,73 +92,68 @@ public class PlayerLocomotionController : MonoBehaviour
 
         if (beganMove)
         {
-            _movementBlending = true;
-            _movementBlendSrc = 0f;
-            _movementBlendTarget = 1f;
+            _animator.SetBool(_animHashStartedWalking, true);
+
+            _isLocomotionBlending = true;
+            _locomotionBlendSrc = 0f;
+            _locomotionBlendTarget = 1f;
         }
         else if (endedMove)
         {
-            _movementBlending = true;
-            _movementBlendSrc = 1f;
-            _movementBlendTarget = 0f;
+            _animator.SetBool(_animHashStartedWalking, false);
+
+            _isLocomotionBlending = true;
+            _locomotionBlendSrc = 1f;
+            _locomotionBlendTarget = 0f;
 
             _lastMoveDirection = _lastMoveInput.normalized;
         }
         else
         {
-            _moveInput = currentMoveInput;
+            _moveInputToProcess = currentMoveInput;
         }
 
-        if (_movementBlending)
+        if (_isLocomotionBlending)
         {
-            _movementBlendTimer += Time.deltaTime;
+            _locomotionBlendTimer += Time.deltaTime;
 
-            float t = _movementBlendTimer / _movementBlendTime;
+            float t = _locomotionBlendTimer / _locomotionBlendTime;
 
             if (t > 1f)
             {
-                _movementBlendTimer = 0f;
+                _locomotionBlendTimer = 0f;
 
-                _movementBlending = false;
-             
-                _moveInput = _moveInput.normalized * _movementBlendTarget;
+                _isLocomotionBlending = false;
+
+                _moveInputToProcess = _moveInputToProcess.normalized * _locomotionBlendTarget;
             }
             else
             {
-                float currentMag = Mathf.Lerp(_movementBlendSrc, _movementBlendTarget, t);
+                float currentMag = Mathf.Lerp(_locomotionBlendSrc, _locomotionBlendTarget, t);
 
-                if (currentMoveInput != Vector2.zero) 
+                if (currentMoveInput != Vector2.zero)
                 {
-                    _moveInput = currentMoveInput.normalized * currentMag;
+                    _moveInputToProcess = currentMoveInput.normalized * currentMag;
                 }
                 else
                 {
-                    _moveInput = _lastMoveDirection * currentMag;
+                    _moveInputToProcess = _lastMoveDirection * currentMag;
                 }
-                
             }
         }
 
-        _lastMoveInput = _moveInput;
-
-        Move();
-    }
-    
-    private void AssignAnimationHashes()
-    {
-        _animHashSpeed = Animator.StringToHash(_speedAnimParameter);
-        _animHashHorizontalAxis = Animator.StringToHash(_horizontalAxisParameter);
+        _lastMoveInput = currentMoveInput;
     }
 
-    private void Move()
+    private void ProcessLocomotion()
     {
-        float targetSpeed = _moveInput == Vector2.zero ? 0f : _moveSpeed;
+        float targetSpeed = _moveInputToProcess == Vector2.zero ? 0f : _moveSpeed;
 
         // a reference to the players current horizontal velocity
         float currentSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
         float speed;
-        float inputMagnitude = _moveInput.magnitude;
+        float inputMagnitude = _moveInputToProcess.magnitude;
         
         // accelerate or decelerate to target speed
         speed = _moveSpeed * inputMagnitude;
@@ -153,10 +162,10 @@ public class PlayerLocomotionController : MonoBehaviour
         
 
         // normalise input direction
-        Vector3 inputDirection = new Vector3(_moveInput.x, 0.0f, _moveInput.y).normalized;
+        Vector3 inputDirection = new Vector3(_moveInputToProcess.x, 0.0f, _moveInputToProcess.y).normalized;
         
         // if there is a move input rotate player when the player is moving
-        if (_moveInput != Vector2.zero)
+        if (_moveInputToProcess != Vector2.zero)
         {
             _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                               _mainCamera.transform.eulerAngles.y;
@@ -175,17 +184,18 @@ public class PlayerLocomotionController : MonoBehaviour
         _controller.Move(targetDirection.normalized * (speed * Time.deltaTime));
 
         _animator.SetFloat(_animHashSpeed, speed);
-        //_animator.SetFloat(_animHashHorizontalAxis, _moveInput.x);
     }
 
     private void OnFootstep(AnimationEvent animationEvent)
     {
         if (animationEvent.animatorClipInfo.weight > 0.5f)
         {
-            if (_footstepAudioClips.Length > 0)
+            if (_footstepAudioClips.Length > 0 && !_footstepAudioSource.isPlaying)
             {
-                var index = Random.Range(0, _footstepAudioClips.Length);
-                AudioSource.PlayClipAtPoint(_footstepAudioClips[index], transform.TransformPoint(_controller.center), _footstepAudioVolume);
+                int index = Random.Range(0, _footstepAudioClips.Length);
+                _footstepAudioSource.clip = _footstepAudioClips[index];
+                
+                _footstepAudioSource.Play();
             }
         }
     }

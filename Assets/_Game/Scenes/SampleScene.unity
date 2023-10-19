@@ -1834,7 +1834,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1163985732}
   m_HandleRect: {fileID: 1163985730}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1953,7 +1953,7 @@ MonoBehaviour:
   _goalSystemInstructions: Engage the detective in a conversation while keeping the
     goal outlined in XML tags below in mind. Respond solely as the character you're
     portraying, using information from the ongoing conversation and avoiding knowledge
-    from the plot. Respond within 50 words. Call the ProcessGoalStatus function if
+    from the plot. Respond within 50 words. Call the CheckGoalStatus function if
     you think the goal has been completed.
   _temperature: 0.2
   _goalsManager: {fileID: 1762853255}

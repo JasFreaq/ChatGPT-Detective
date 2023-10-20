@@ -142,6 +142,7 @@ GameObject:
   - component: {fileID: 8789862577751180745}
   - component: {fileID: 5376628469509391485}
   - component: {fileID: 1867664067059756523}
+  - component: {fileID: 4570449719716797315}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -359,8 +360,24 @@ MonoBehaviour:
   _bottomClamp: -30
   _cameraAngleOverride: 0
   _lockCameraPosition: 0
-  _cursorLocked: 0
+  _cursorLocked: 1
   _cursorInputForLook: 1
+--- !u!114 &4570449719716797315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6065826833579445828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fb684c6cf4bc5a4d8e7658a39eb1b8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _traceRange: 100
+  _traceLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &8797944791531325694
 GameObject:
   m_ObjectHideFlags: 0
@@ -442,7 +459,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5102043439305935581, guid: d9f5f3d7f705f75499579213f004a9ab, type: 3}
       propertyPath: m_Name
-      value: 651d3f79bf0d4d591516d603
+      value: Player Mesh
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8188586112091044068, guid: d9f5f3d7f705f75499579213f004a9ab, type: 3}

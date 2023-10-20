@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NPCPopupDataHolder : MonoBehaviour
+public class NpcPopupDataHolder : MonoBehaviour
 {
     [SerializeField] private Sprite _characterSprite;
 

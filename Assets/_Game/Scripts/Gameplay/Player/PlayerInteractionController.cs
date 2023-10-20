@@ -1,34 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInteractionController : MonoBehaviour
 {
-    [Header("Tracing")]
-    [SerializeField] private float _traceRange = 100f;
+    [SerializeField] private PopupUIHandler _popupUIHandler;
 
-    [SerializeField] private LayerMask _traceLayer;
+    [SerializeField] private ChatUIHandler _chatUIHandler;
 
-    private PopupUIHandler _popupUIHandler;
-
-    private void Start()
-    {
-        _popupUIHandler = FindFirstObjectByType<PopupUIHandler>();
-
-        if (_popupUIHandler == null )
-            Debug.Log("There is no Popup UI Handler present in the scene.");
-    }
+    private int _currentNpcId;
     
     private void OnTriggerEnter(Collider other)
     {
         if (other != null)
         {
-            _popupUIHandler.EnablePopup(other.GetHashCode());
+            _currentNpcId = other.gameObject.GetHashCode();
+            
+            _popupUIHandler.EnablePopup(_currentNpcId);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
         _popupUIHandler.DisablePopup();
+    }
+
+    private void OnInteract(InputValue value)
+    {
+        if (_popupUIHandler.PopupEnabled)
+            _popupUIHandler.DisablePopup();
+
+        _chatUIHandler.EnableChat(_currentNpcId);
     }
 }

@@ -4,53 +4,80 @@ using ChatGPT_Detective;
 using OpenAI.Chat;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ChatUIHandler : MonoBehaviour
 {
-    [SerializeField] private Button submitButton;
+    [SerializeField] private GameObject _playerInputPanel;
 
-    [SerializeField] private TMP_InputField inputField;
+    [SerializeField] private GameObject _npcResponsePanel;
 
-    [SerializeField] private RectTransform contentArea;
+    [SerializeField] private TMP_InputField _playerInputField;
 
-    [SerializeField] private ScrollRect scrollView;
+    [SerializeField] private TextMeshProUGUI _responseText;
 
-    [SerializeField] NpcPrompter _npcPrompter;
+    [SerializeField] private TextMeshProUGUI _npcNameText;
 
-    private void Start()
-    {
-        submitButton.onClick.AddListener(SendReply);
-    }
+    private NpcPrompter _npcPrompter;
 
     private void OnEnable()
     {
-        GPTPromptIntegrator.Instance.RegisterOnResponseReceived(UpdateChat);
+        GPTPromptIntegrator.Instance.RegisterOnResponseReceived(UpdateNpcResponse);
     }
 
     private void OnDisable()
     {
-        GPTPromptIntegrator.Instance.DeregisterOnResponseReceived(UpdateChat);
+        GPTPromptIntegrator.Instance.DeregisterOnResponseReceived(UpdateNpcResponse);
     }
 
-    private void SendReply()
+    public void EnableChat(int id)
     {
-        _npcPrompter.ProcessPromptRequest(inputField.text);
+        NpcPrompter prompter = NpcDataCache.Instance.GetPrompter(id);
+
+        if (prompter != null)
+        {
+            _npcPrompter = prompter;
+            _npcPrompter.enabled = true;
+
+            _npcNameText.text = _npcPrompter.CharInfo.CharacterName;
+            
+            _playerInputPanel.SetActive(true);
+        }
     }
 
-    private TextMeshProUGUI AddNewTextMessageContent()
+    public void DisableChat()
     {
-        var textObject = new GameObject($"Message_{contentArea.childCount + 1}");
-        textObject.transform.SetParent(contentArea, false);
-        var textMesh = textObject.AddComponent<TextMeshProUGUI>();
-        textMesh.fontSize = 24;
-        textMesh.enableWordWrapping = true;
-        return textMesh;
+        _playerInputPanel.SetActive(false);
+        _npcResponsePanel.SetActive(false);
+
+        _npcPrompter.enabled = false;
+        _npcPrompter = null;
     }
 
-    private void UpdateChat(Message response)
+    public void SendPlayerInput()
     {
-        var assistantMessageContent = AddNewTextMessageContent();
-        assistantMessageContent.text = $"Assistant: {response.Content}";
+        _npcPrompter.ProcessPromptRequest(_playerInputField.text);
+
+        _responseText.text = "...";
+
+        _playerInputPanel.SetActive(false);
+        _npcResponsePanel.SetActive(true);
+    }
+
+    public void ClearPlayerInput()
+    {
+        _playerInputField.text = "";
+    }
+
+    private void UpdateNpcResponse(Message response)
+    {
+        _responseText.text = response.Content;
+    }
+
+    public void ConfirmNpcResponse()
+    {
+        _playerInputField.text = "";
+
+        _playerInputPanel.SetActive(true);
+        _npcResponsePanel.SetActive(false);
     }
 }

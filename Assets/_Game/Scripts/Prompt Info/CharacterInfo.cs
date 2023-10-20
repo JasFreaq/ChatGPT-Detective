@@ -24,6 +24,8 @@ namespace ChatGPT_Detective
 
         public int CharId => _characterId;
 
+        public string CharacterName => _characterName;
+
         public string CharInfo => $"<character>\n{_characterInfo}\n</character>";
 
         public string CharInstructions => $"{_characterInstructions}\n\n###\n\n";

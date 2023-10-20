@@ -19,11 +19,13 @@ public class PopupUIHandler : MonoBehaviour
 
     private bool _popupEnabled;
 
+    public bool PopupEnabled => _popupEnabled;
+
     public void EnablePopup(int id, bool disregardInteraction = false)
     {
         if (!_popupEnabled)
         {
-            NPCPopupDataHolder popupData = NPCTraceCache.Instance.GetPopupData(id);
+            NpcPopupDataHolder popupData = NpcDataCache.Instance.GetPopupData(id);
 
             if (popupData != null) 
             {

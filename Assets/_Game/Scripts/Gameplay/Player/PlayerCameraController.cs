@@ -8,6 +8,7 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerCameraController : MonoBehaviour
 {
+    [SerializeField] private InputActionReference _holdInputAction;
     [SerializeField] private InputActionReference _lookInputAction;
 
     [Header("Cinemachine")]
@@ -31,8 +32,6 @@ public class PlayerCameraController : MonoBehaviour
     [Header("Mouse Cursor Settings")] [SerializeField]
     private bool _cursorLocked = true;
 
-    [SerializeField] private bool _cursorInputForLook = true;
-
     private PlayerInput _playerInput;
 
     private float _cinemachineTargetYaw;
@@ -42,11 +41,8 @@ public class PlayerCameraController : MonoBehaviour
 
     private Vector2 _lookInput;
 
-    private bool IsCurrentDeviceMouse
-    {
-        get { return _playerInput.currentControlScheme == "KeyboardMouse"; }
-    }
-
+    private bool _rotate;
+    
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
@@ -59,20 +55,24 @@ public class PlayerCameraController : MonoBehaviour
 
     private void Update()
     {
-        _lookInput = _lookInputAction.action.ReadValue<Vector2>();
+        if (_holdInputAction.action.WasPressedThisFrame())
+        {
+            _rotate = true;
+        }
+        else if (_holdInputAction.action.WasReleasedThisFrame())
+        {
+            _rotate = false;
+        }
+
+        if (_rotate)
+        {
+            _lookInput = _lookInputAction.action.ReadValue<Vector2>();
+        }
     }
 
     private void LateUpdate()
     {
         CameraRotation();
-    }
-
-    public void OnLook(InputValue value)
-    {
-        if (_cursorInputForLook)
-        {
-            _lookInput = value.Get<Vector2>();
-        }
     }
 
     private void OnApplicationFocus(bool hasFocus)
@@ -85,8 +85,10 @@ public class PlayerCameraController : MonoBehaviour
         // if there is an input and camera position is not fixed
         if (_lookInput.sqrMagnitude >= _threshold && !_lockCameraPosition)
         {
+            bool isCurrentDeviceMouse = _playerInput.currentControlScheme == "KeyboardMouse";
+
             //Don't multiply mouse input by Time.deltaTime;
-            float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+            float deltaTimeMultiplier = isCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
             _cinemachineTargetYaw += _lookInput.x * deltaTimeMultiplier;
             _cinemachineTargetPitch += _lookInput.y * deltaTimeMultiplier;
@@ -96,7 +98,7 @@ public class PlayerCameraController : MonoBehaviour
         _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
         _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, _bottomClamp, _topClamp);
 
-        // Cinemachine will follow this target
+        // cinemachine will follow this target
         _cinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + _cameraAngleOverride,
             _cinemachineTargetYaw, 0.0f);
     }

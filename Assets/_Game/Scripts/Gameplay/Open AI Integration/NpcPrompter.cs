@@ -28,6 +28,8 @@ namespace ChatGPT_Detective
 
         private string _lastPrompt;
 
+        public CharacterInfo CharInfo => _charInfo;
+
         private static int CountWords(string input)
         {
             if (string.IsNullOrWhiteSpace(input))

@@ -36,7 +36,7 @@ public class PlayerLocomotionController : MonoBehaviour
     private Animator _animator;
     private CharacterController _controller;
     private GameObject _mainCamera;
-
+    
     private AudioSource _footstepAudioSource;
     
     private Vector2 _moveInputToProcess;
@@ -61,7 +61,7 @@ public class PlayerLocomotionController : MonoBehaviour
 
         _animator = GetComponent<Animator>();
         _controller = GetComponent<CharacterController>();
-
+        
         _footstepAudioSource = GetComponentInChildren<AudioSource>();
     }
 
@@ -90,23 +90,29 @@ public class PlayerLocomotionController : MonoBehaviour
         bool beganMove = _lastMoveInput == Vector2.zero && currentMoveInput != Vector2.zero;
         bool endedMove = _lastMoveInput != Vector2.zero && currentMoveInput == Vector2.zero;
 
-        if (beganMove)
+        if (beganMove || endedMove)
         {
-            _animator.SetBool(_animHashStartedWalking, true);
+            _animator.SetBool(_animHashStartedWalking, beganMove);
+
+            if (_isLocomotionBlending)
+            {
+                _locomotionBlendTimer = _locomotionBlendTime - _locomotionBlendTimer;
+            }
+
+            if (beganMove)
+            {
+                _locomotionBlendSrc = 0f;
+                _locomotionBlendTarget = 1f;
+            }
+            else
+            {
+                _locomotionBlendSrc = 1f;
+                _locomotionBlendTarget = 0f;
+
+                _lastMoveDirection = _lastMoveInput.normalized;
+            }
 
             _isLocomotionBlending = true;
-            _locomotionBlendSrc = 0f;
-            _locomotionBlendTarget = 1f;
-        }
-        else if (endedMove)
-        {
-            _animator.SetBool(_animHashStartedWalking, false);
-
-            _isLocomotionBlending = true;
-            _locomotionBlendSrc = 1f;
-            _locomotionBlendTarget = 0f;
-
-            _lastMoveDirection = _lastMoveInput.normalized;
         }
         else
         {
@@ -151,12 +157,11 @@ public class PlayerLocomotionController : MonoBehaviour
 
         // a reference to the players current horizontal velocity
         float currentSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
-
-        float speed;
-        float inputMagnitude = _moveInputToProcess.magnitude;
         
+        float inputMagnitude = _moveInputToProcess.magnitude;
+
         // accelerate or decelerate to target speed
-        speed = _moveSpeed * inputMagnitude;
+        float speed = _moveSpeed * inputMagnitude;
         // round speed to 3 decimal places
         speed = Mathf.Round(speed * 1000f) / 1000f;
         
@@ -164,7 +169,6 @@ public class PlayerLocomotionController : MonoBehaviour
         // normalise input direction
         Vector3 inputDirection = new Vector3(_moveInputToProcess.x, 0.0f, _moveInputToProcess.y).normalized;
         
-        // if there is a move input rotate player when the player is moving
         if (_moveInputToProcess != Vector2.zero)
         {
             _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
@@ -176,7 +180,6 @@ public class PlayerLocomotionController : MonoBehaviour
             // rotate to face input direction relative to camera position
             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
         }
-
 
         Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 

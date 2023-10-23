@@ -18,9 +18,7 @@ public class PopupUIHandler : MonoBehaviour
     [SerializeField] private GameObject _popupInteraction;
 
     private bool _popupEnabled;
-
-    public bool PopupEnabled => _popupEnabled;
-
+    
     public void EnablePopup(int id, bool disregardInteraction = false)
     {
         if (!_popupEnabled)

@@ -1,3 +1,4 @@
+using GLTFast.Schema;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,33 +24,40 @@ public class PlayerLocomotionController : MonoBehaviour
 
     [Header("Animation")]
     [SerializeField] private string _speedAnimParameter = "Speed";
-    [SerializeField] private string _startedWalkingParameter = "StartedWalking";
+
+    [SerializeField] private string _stoppedParameter = "Stopped";
     
     // Player
     private float _targetRotation;
+
     private float _rotationVelocity;
     
     // Animation Hashes
     private int _animHashSpeed;
-    private int _animHashStartedWalking;
+
+    private int _animHashStopped;
     
     private Animator _animator;
+
     private CharacterController _controller;
+
     private GameObject _mainCamera;
     
     private AudioSource _footstepAudioSource;
-    
+
+    private Interpolator<float> _locomotionBlendInterpolator;
+
+    private Interpolator<Quaternion> _interactionViewInterpolator;
+
     private Vector2 _moveInputToProcess;
+
     private Vector2 _lastMoveInput;
-    private Vector2 _lastMoveDirection;
+    
+    private float _interactionViewInterpTime;
 
-    private bool _isLocomotionBlending;
+    private bool _disableInput;
 
-    private float _locomotionBlendTimer;
-
-    private float _locomotionBlendSrc;
-
-    private float _locomotionBlendTarget;
+    public float InteractionViewInterpTime { set => _interactionViewInterpTime = value; }
 
     private void Awake()
     {
@@ -68,19 +76,32 @@ public class PlayerLocomotionController : MonoBehaviour
     private void Start()
     {
         AssignAnimationHashes();
+
+        _locomotionBlendInterpolator = new Interpolator<float>(0f, 1f, _locomotionBlendTime, Mathf.Lerp);
+
+        _interactionViewInterpolator = new Interpolator<Quaternion>(Quaternion.identity, Quaternion.identity,
+            _interactionViewInterpTime,
+            Quaternion.Slerp, InterruptLocomotion, null, null, () => _disableInput = false);
     }
 
     private void Update()
     {
-        HandleLocomotionBlending();
+        if (!_disableInput) 
+        {
+            HandleLocomotionBlending();
+            ProcessLocomotion();
+        }
 
-        ProcessLocomotion();
+        if (_interactionViewInterpolator.Interpolating)
+        {
+            transform.rotation = _interactionViewInterpolator.Update();
+        }
     }
 
     private void AssignAnimationHashes()
     {
         _animHashSpeed = Animator.StringToHash(_speedAnimParameter);
-        _animHashStartedWalking = Animator.StringToHash(_startedWalkingParameter);
+        _animHashStopped = Animator.StringToHash(_stoppedParameter);
     }
 
     private void HandleLocomotionBlending()
@@ -88,64 +109,33 @@ public class PlayerLocomotionController : MonoBehaviour
         Vector2 currentMoveInput = _moveInputAction.action.ReadValue<Vector2>();
 
         bool beganMove = _lastMoveInput == Vector2.zero && currentMoveInput != Vector2.zero;
-        bool endedMove = _lastMoveInput != Vector2.zero && currentMoveInput == Vector2.zero;
-
-        if (beganMove || endedMove)
+        
+        if (beganMove)
         {
-            _animator.SetBool(_animHashStartedWalking, beganMove);
+            _animator.SetBool(_animHashStopped, false);
 
-            if (_isLocomotionBlending)
+            _locomotionBlendInterpolator.Toggle(true);
+        }
+        else if (_locomotionBlendInterpolator.Interpolating) 
+        {
+            float currentMag = _locomotionBlendInterpolator.Update();
+
+            if (currentMoveInput != Vector2.zero)
             {
-                _locomotionBlendTimer = _locomotionBlendTime - _locomotionBlendTimer;
+                _moveInputToProcess = currentMoveInput.normalized * currentMag;
             }
-
-            if (beganMove)
-            {
-                _locomotionBlendSrc = 0f;
-                _locomotionBlendTarget = 1f;
-            }
-            else
-            {
-                _locomotionBlendSrc = 1f;
-                _locomotionBlendTarget = 0f;
-
-                _lastMoveDirection = _lastMoveInput.normalized;
-            }
-
-            _isLocomotionBlending = true;
         }
         else
         {
             _moveInputToProcess = currentMoveInput;
         }
 
-        if (_isLocomotionBlending)
+        bool endedMove = _lastMoveInput != Vector2.zero && currentMoveInput == Vector2.zero;
+
+        if (endedMove)
         {
-            _locomotionBlendTimer += Time.deltaTime;
-
-            float t = _locomotionBlendTimer / _locomotionBlendTime;
-
-            if (t > 1f)
-            {
-                _locomotionBlendTimer = 0f;
-
-                _isLocomotionBlending = false;
-
-                _moveInputToProcess = _moveInputToProcess.normalized * _locomotionBlendTarget;
-            }
-            else
-            {
-                float currentMag = Mathf.Lerp(_locomotionBlendSrc, _locomotionBlendTarget, t);
-
-                if (currentMoveInput != Vector2.zero)
-                {
-                    _moveInputToProcess = currentMoveInput.normalized * currentMag;
-                }
-                else
-                {
-                    _moveInputToProcess = _lastMoveDirection * currentMag;
-                }
-            }
+            _animator.SetBool(_animHashStopped, true);
+            _interactionViewInterpolator.Reset();
         }
 
         _lastMoveInput = currentMoveInput;
@@ -187,6 +177,32 @@ public class PlayerLocomotionController : MonoBehaviour
         _controller.Move(targetDirection.normalized * (speed * Time.deltaTime));
 
         _animator.SetFloat(_animHashSpeed, speed);
+    }
+
+    public void ToggleInteractionView(bool enable, Vector3 viewPosition = new Vector3())
+    {
+        if (enable)
+        {
+            _interactionViewInterpolator.DefaultVal = transform.rotation;
+
+            Vector3 lookDirection = viewPosition - transform.position;
+
+            _interactionViewInterpolator.TargetVal = Quaternion.LookRotation(lookDirection);
+
+            _interactionViewInterpolator.Toggle(true);
+        }
+        else
+        {
+            _interactionViewInterpolator.Toggle(false);
+        }
+    }
+
+    private void InterruptLocomotion()
+    {
+        _disableInput = true;
+
+        _animator.SetBool(_animHashStopped, true);
+        _animator.SetFloat(_animHashSpeed, 0f);
     }
 
     private void OnFootstep(AnimationEvent animationEvent)

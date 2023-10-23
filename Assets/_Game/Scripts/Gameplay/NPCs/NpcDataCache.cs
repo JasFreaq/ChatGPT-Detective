@@ -5,6 +5,30 @@ using UnityEngine;
 
 public class NpcDataCache : MonoBehaviour
 {
+    private struct NpcData
+    {
+        private NpcPrompter _npcPrompter;
+
+        private NpcPopupDataHolder _npcPopupDataHolder;
+
+        private NpcInteractionHandler _npcInteractionHandler;
+
+        public NpcPrompter Prompter => _npcPrompter;
+
+        public NpcPopupDataHolder PopupData => _npcPopupDataHolder;
+
+        public NpcInteractionHandler InteractionHandler => _npcInteractionHandler;
+
+        public NpcData(NpcPrompter prompter, NpcPopupDataHolder popupData,
+            NpcInteractionHandler interactionHandler)
+
+        {
+            _npcPrompter = prompter;
+            _npcPopupDataHolder = popupData;
+            _npcInteractionHandler = interactionHandler;
+        }
+    }
+
     private static NpcDataCache _instance;
 
     public static NpcDataCache Instance
@@ -20,9 +44,7 @@ public class NpcDataCache : MonoBehaviour
 
     [SerializeField] private string _npcTag = "Npc";
 
-    private Dictionary<int, NpcPrompter> _npcPrompters = new Dictionary<int, NpcPrompter>();
-    
-    private Dictionary<int, NpcPopupDataHolder> _npcPopupData = new Dictionary<int, NpcPopupDataHolder>();
+    private Dictionary<int, NpcData> _npcCache = new Dictionary<int, NpcData>();
     
     private void Awake()
     {
@@ -47,21 +69,23 @@ public class NpcDataCache : MonoBehaviour
         {
             NpcPrompter prompter = npc.GetComponent<NpcPrompter>();
 
-            NpcPopupDataHolder popupData = npc.GetComponentInChildren<NpcPopupDataHolder>();
+            NpcPopupDataHolder popupData = npc.GetComponent<NpcPopupDataHolder>();
+
+            NpcInteractionHandler interactionHandler = npc.GetComponent<NpcInteractionHandler>();
 
             int id = npc.GetHashCode();
 
-            _npcPrompters.Add(id, prompter);
+            NpcData npcData = new NpcData(prompter, popupData, interactionHandler);
 
-            _npcPopupData.Add(id, popupData);
+            _npcCache.Add(id, npcData);
         }
     }
 
     public NpcPrompter GetPrompter(int id)
     {
-        if (_npcPrompters.TryGetValue(id, out NpcPrompter prompter))
+        if (_npcCache.TryGetValue(id, out NpcData npcData))
         {
-            return prompter;
+            return npcData.Prompter;
         }
 
         return null;
@@ -69,9 +93,19 @@ public class NpcDataCache : MonoBehaviour
     
     public NpcPopupDataHolder GetPopupData(int id)
     {
-        if (_npcPopupData.TryGetValue(id, out NpcPopupDataHolder popupData))
+        if (_npcCache.TryGetValue(id, out NpcData npcData))
         {
-            return popupData;
+            return npcData.PopupData;
+        }
+
+        return null;
+    }
+    
+    public NpcInteractionHandler GetInteractionHandler(int id)
+    {
+        if (_npcCache.TryGetValue(id, out NpcData npcData))
+        {
+            return npcData.InteractionHandler;
         }
 
         return null;

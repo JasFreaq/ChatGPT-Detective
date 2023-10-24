@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using ChatGPT_Detective;
+using OpenAI.Chat;
 using UnityEngine;
 
 public class NpcInteractionHandler : MonoBehaviour
@@ -82,7 +84,7 @@ public class NpcInteractionHandler : MonoBehaviour
         }
     }
     
-    public void PlayRandomReaction()
+    public void PlayRandomReaction(Message _)
     {
         int randomIndex = Random.Range(0, _reactionStates);
 
@@ -105,10 +107,14 @@ public class NpcInteractionHandler : MonoBehaviour
             _interactionViewInterpolator.TargetVal = Quaternion.LookRotation(lookDirection);
 
             _interactionViewInterpolator.Toggle(true);
+
+            GPTPromptIntegrator.Instance.RegisterOnResponseReceived(PlayRandomReaction);
         }
         else
         {
             _interactionViewInterpolator.Toggle(false);
+
+            GPTPromptIntegrator.Instance.DeregisterOnResponseReceived(PlayRandomReaction);
         }
     }
 }

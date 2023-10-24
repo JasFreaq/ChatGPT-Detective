@@ -82,6 +82,12 @@ namespace ChatGPT_Detective
 
         private Action<Message> _onResponseReceived;
 
+        private Queue<PromptMessageData> _promptQueue = new Queue<PromptMessageData>();
+
+        private bool _goalCheckedForLastMessage = true;
+
+        private bool _processingPrompt;
+
         private float _tokenPerSecondRate;
         
         private float _lastMessageTime;
@@ -107,6 +113,11 @@ namespace ChatGPT_Detective
             _embeddingsClient = new OpenAIClient();
         }
 
+        private void OnEnable()
+        {
+            _goalsManager.RegisterOnGoalChecked(ProcessGoalCheck);
+        }
+
         private void Start()
         {
             _tokenPerSecondRate = 1 / (_modelTPM / 60f);
@@ -114,28 +125,56 @@ namespace ChatGPT_Detective
             _lastMessageTime = 0;
         }
 
+        private void Update()
+        {
+            if (_promptQueue.Count > 0 && _goalCheckedForLastMessage && !_processingPrompt)
+            {
+                PromptMessageData prompt = _promptQueue.Dequeue();
+
+                SendPromptMessage(prompt);
+            }
+        }
+
+        private void OnDisable()
+        {
+            _goalsManager.DeregisterOnGoalChecked(ProcessGoalCheck);
+        }
+
         #region OpenAI Functions
 
-        public async void SendPromptMessage(CharacterInfo charInfo, string newPrompt, HistoryData historyData, GoalInfo npcCurrentGoal)
+        public async void SendPromptMessage(PromptMessageData promptMessage)
         {
-            List<Message> history = await FormatPromptRequest(charInfo.CharInstructions, newPrompt, historyData);
-
-            FormatHistory(charInfo.CharInfo, npcCurrentGoal.Goal, history);
-
-            ChatRequest chatRequest = new ChatRequest(history, Model.GPT4, _temperature);
-            ChatResponse response = await _conversationClient.ChatEndpoint.GetCompletionAsync(chatRequest);
-
-            if (response.Choices?.Count > 0)
+            if (_goalCheckedForLastMessage && !_processingPrompt)
             {
-                Message reply = response.Choices[0].Message;
+                _processingPrompt = true;
 
-                _goalsManager.CheckGoalStatus(npcCurrentGoal.Id, history, reply);
+                List<Message> history = await FormatPromptRequest(promptMessage.CharInfo.CharInstructions, promptMessage.NewPrompt, promptMessage.HistoryData);
 
-                _onResponseReceived?.Invoke(reply);
+                FormatHistory(promptMessage.CharInfo.CharInfo, promptMessage.NpcCurrentGoal.Goal, history);
+
+                ChatRequest chatRequest = new ChatRequest(history, Model.GPT4, _temperature);
+
+                ChatResponse response = await _conversationClient.ChatEndpoint.GetCompletionAsync(chatRequest);
+
+                if (response.Choices?.Count > 0)
+                {
+                    Message reply = response.Choices[0].Message;
+
+                    _goalsManager.CheckGoalStatus(promptMessage.NpcCurrentGoal.Id, history, reply);
+
+                    _processingPrompt = false;
+                    _goalCheckedForLastMessage = false;
+
+                    _onResponseReceived?.Invoke(reply);
+                }
+                else
+                {
+                    Debug.LogWarning("No text was generated from this prompt.");
+                }
             }
             else
             {
-                Debug.LogWarning("No text was generated from this prompt.");
+                _promptQueue.Enqueue(promptMessage);
             }
         }
 
@@ -172,7 +211,7 @@ namespace ChatGPT_Detective
             }
             else
             {
-
+                validHistory.AddRange(historyData.HistoryList);
             }
 
             _lastMessageTime = Time.time;
@@ -245,6 +284,11 @@ namespace ChatGPT_Detective
                 new Message(Role.System, $"{_goalSystemInstructions}\n\n###\n\nGoal: {npcCurrentGoal}");
             
             history.Insert(history.Count - 1, goalSystemMessage);
+        }
+
+        private void ProcessGoalCheck()
+        {
+            _goalCheckedForLastMessage = true;
         }
 
         #endregion

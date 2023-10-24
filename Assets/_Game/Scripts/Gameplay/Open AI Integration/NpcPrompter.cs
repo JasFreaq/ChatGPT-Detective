@@ -66,7 +66,9 @@ namespace ChatGPT_Detective
 
         public void ProcessPromptRequest(string newPrompt)
         {
-            GPTPromptIntegrator.Instance.SendPromptMessage(_charInfo, newPrompt, _historyData, _goalsHandler.CurrentGoal);
+            PromptMessageData promptMessage = new PromptMessageData(_charInfo, newPrompt, _historyData, _goalsHandler.CurrentGoal);
+
+            GPTPromptIntegrator.Instance.SendPromptMessage(promptMessage);
 
             _lastPrompt = newPrompt;
         }

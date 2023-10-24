@@ -39,6 +39,8 @@ public class SystemGoalsManager : MonoBehaviour
             })
     };
 
+    private Action _onGoalChecked;
+
     private void Awake()
     {
         _goalClient = new OpenAIClient();
@@ -59,6 +61,8 @@ public class SystemGoalsManager : MonoBehaviour
         {
             UpdateGoalStatus(goalId);
         }
+
+        _onGoalChecked?.Invoke();
     }
 
     private void UpdateGoalStatus(int id)
@@ -67,5 +71,15 @@ public class SystemGoalsManager : MonoBehaviour
         {
             goalsHandler.UpdateGoals(id);
         }
+    }
+
+    public void RegisterOnGoalChecked(Action action)
+    {
+        _onGoalChecked += action;
+    }
+    
+    public void DeregisterOnGoalChecked(Action action)
+    {
+        _onGoalChecked -= action;
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using ChatGPT_Detective;
@@ -55,12 +56,15 @@ public class ChatUIHandler : MonoBehaviour
 
     public void SendPlayerInput()
     {
-        _npcPrompter.ProcessPromptRequest(_playerInputField.text);
+        if (_playerInputField.text != string.Empty) 
+        {
+            _npcPrompter.ProcessPromptRequest(_playerInputField.text);
 
-        _responseText.text = "...";
+            _responseText.text = "...";
 
-        _playerInputPanel.SetActive(false);
-        _npcResponsePanel.SetActive(true);
+            _playerInputPanel.SetActive(false);
+            _npcResponsePanel.SetActive(true);
+        }
     }
 
     public void ClearPlayerInput()

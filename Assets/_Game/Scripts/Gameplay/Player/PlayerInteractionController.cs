@@ -6,10 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerInteractionController : MonoBehaviour
 {
     [SerializeField] private float _interactionViewInterpTime = 1f;
-
-    [Header("UI")]
-    [SerializeField] private PopupUIHandler _popupUIHandler;
-    [SerializeField] private ChatUIHandler _chatUIHandler;
+    [SerializeField] private UICoordinator _uiCoordinator;
 
     private PlayerLocomotionController _locomotionController;
 
@@ -38,19 +35,31 @@ public class PlayerInteractionController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other != null)
+        if (other != null && _uiCoordinator.CanEngageConversation())
         {
             int id = other.gameObject.GetHashCode();
 
             _currentNpc = NpcDataCache.Instance.GetInteractionHandler(id);
             
-            _popupUIHandler.EnablePopup(id);
+            _uiCoordinator.TogglePopup(id);
+        }
+    }
+    
+    private void OnTriggerStay(Collider other)
+    {
+        if (other != null && _uiCoordinator.CanEngageConversation() && !_currentNpc)
+        {
+            int id = other.gameObject.GetHashCode();
+
+            _currentNpc = NpcDataCache.Instance.GetInteractionHandler(id);
+            
+            _uiCoordinator.TogglePopup(id);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        _popupUIHandler.DisablePopup();
+        _uiCoordinator.TogglePopup();
 
         _currentNpc = null;
     }
@@ -64,9 +73,8 @@ public class PlayerInteractionController : MonoBehaviour
     {
         if (_currentNpc != null && !_engagedConversation)
         {
-            _popupUIHandler.DisablePopup();
-
-            _chatUIHandler.EnableChat(_currentNpc.gameObject.GetHashCode());
+            _uiCoordinator.TogglePopup();
+            _uiCoordinator.ToggleChat(_currentNpc.gameObject.GetHashCode());
 
             _locomotionController.ToggleInteractionView(true, _currentNpc.transform.position);
             _cameraController.ToggleInteractionView(true);
@@ -81,9 +89,8 @@ public class PlayerInteractionController : MonoBehaviour
     {
         if (_engagedConversation)
         {
-            _popupUIHandler.EnablePopup(_currentNpc.gameObject.GetHashCode());
-
-            _chatUIHandler.DisableChat();
+            _uiCoordinator.TogglePopup(_currentNpc.gameObject.GetHashCode());
+            _uiCoordinator.ToggleChat();
 
             _locomotionController.ToggleInteractionView(false);
             _cameraController.ToggleInteractionView(false);

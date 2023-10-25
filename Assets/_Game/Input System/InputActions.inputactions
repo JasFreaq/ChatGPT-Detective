@@ -188,17 +188,6 @@
                 },
                 {
                     "name": "",
-                    "id": "6406fd58-44ab-4a85-8c67-494dbb81c0fe",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "KeyboardMouse",
-                    "action": "Interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "9b6994ab-7b0d-46a9-86cd-f7c8f8261d16",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",

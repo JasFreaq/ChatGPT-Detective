@@ -18,6 +18,14 @@ namespace ChatGPT_Detective
 {
     public class NpcPrompter : MonoBehaviour
     {
+        public class NpcPrompterComparer : IComparer<NpcPrompter>
+        {
+            public int Compare(NpcPrompter a, NpcPrompter b)
+            {
+                return a._charInfo.CharId.CompareTo(b._charInfo.CharId);
+            }
+        }
+
         [SerializeField] private CharacterInfo _charInfo;
 
         private HistoryData _historyData = new HistoryData();
@@ -29,6 +37,8 @@ namespace ChatGPT_Detective
         private string _lastPrompt;
 
         public CharacterInfo CharInfo => _charInfo;
+
+        public IReadOnlyList<DialogueChunk> History => _historyData.PromptHistory;
 
         private static int CountWords(string input)
         {

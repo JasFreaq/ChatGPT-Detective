@@ -265,7 +265,7 @@ public class BookUIHandler : MonoBehaviour
     {
         _bookAnimator.gameObject.SetActive(true);
 
-        yield return FlipBookAnimationRoutine(0, true);
+        yield return FlipBookAnimationRoutine(close: true);
 
         _bookAnimator.gameObject.SetActive(false);
 

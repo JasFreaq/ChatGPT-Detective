@@ -116,5 +116,17 @@ namespace ChatGPT_Detective
                 Debug.LogWarning("No embeddings were generated from this prompt.");
             }
         }
+
+        public void InitialiseFromSaveData(List<SerializableDialogueChunk> promptHistory)
+        {
+            foreach (SerializableDialogueChunk serializableChunk in promptHistory)
+            {
+                _historyData = new HistoryData();
+
+                DialogueChunk newChunk = new DialogueChunk(serializableChunk);
+
+                _historyData.Add(newChunk);
+            }
+        }
     }
 }

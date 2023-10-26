@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class HistoryData
 {
-    private const int VectorDimension = 1536;
+    public const int VectorDimension = 1536;
 
     private List<DialogueChunk> _promptHistory;
 

@@ -11,7 +11,7 @@ namespace ChatGPT_Detective
     {
         private int _historyIndex;
 
-        public double[]? _messageVectors;
+        private double[]? _messageVectors;
 
         private Message _prompt;
         private Message _response;
@@ -23,6 +23,14 @@ namespace ChatGPT_Detective
             _response = responseMsg;
             _messageVectors = vectors;
         }
+        
+        public DialogueChunk(SerializableDialogueChunk serializableChunk)
+        {
+            _historyIndex = serializableChunk.historyIndex;
+            _prompt = GetMessageFromSerializable(serializableChunk.prompt);
+            _response = GetMessageFromSerializable(serializableChunk.response);
+            _messageVectors = serializableChunk.messageVectors;
+        }
 
         public int HistoryIndex => _historyIndex;
         
@@ -33,6 +41,14 @@ namespace ChatGPT_Detective
         public double[] GetVector()
         {
             return _messageVectors ?? throw new Exception("Message Vectors not set");
+        }
+
+        private static Message GetMessageFromSerializable(SerializableMessage serializableMessage)
+        {
+            Role role = Enum.Parse<Role>(serializableMessage.role);
+
+            Message message = new Message(role, serializableMessage.content, serializableMessage.name);
+            return message;
         }
     }
 }

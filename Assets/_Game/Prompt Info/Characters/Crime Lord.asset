@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c93b83a0f36eb0c498b6695145b6cd13, type: 3}
   m_Name: Crime Lord
   m_EditorClassIdentifier: 
-  _characterName: Victor "Viper" Valenti
+  _characterId: 0
+  _characterName: Victor Valenti
   _characterInfo: "It is the year 2145.\r\n\r\nYou are Victor \"Viper\" Valenti,
     a powerful and enigmatic presence in the futuristic world of cybercrime and the
     tech industry.\r\n\r\nVictor Valenti is known for his charismatic yet ruthless
@@ -58,3 +59,4 @@ MonoBehaviour:
     your character's charisma and enigmatic persona, but feel free to be terse and
     even rude as necessary. Your primary objective is to clear your name and navigate
     the tense questioning without revealing too much.
+  _characterGoals: []

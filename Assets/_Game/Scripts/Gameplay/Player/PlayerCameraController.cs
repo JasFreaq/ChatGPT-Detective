@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
-using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerCameraController : MonoBehaviour
 {

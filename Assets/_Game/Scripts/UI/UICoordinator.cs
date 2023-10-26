@@ -11,11 +11,11 @@ public class UICoordinator : MonoBehaviour
     [Header("HUD UI")]
     [SerializeField] private BookUIHandler _bookUIHandler;
 
-    public void TogglePopup(int id = 0)
+    public void TogglePopup(NpcPopupDataHolder popupData = null)
     {
-        if (id != 0)
+        if (popupData != null)
         {
-            _popupUIHandler.EnablePopup(id);
+            _popupUIHandler.EnablePopup(popupData);
         }
         else
         {

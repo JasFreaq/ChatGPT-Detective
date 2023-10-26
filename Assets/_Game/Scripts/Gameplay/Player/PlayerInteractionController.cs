@@ -14,6 +14,10 @@ public class PlayerInteractionController : MonoBehaviour
 
     private NpcInteractionHandler _currentNpc;
 
+    private NpcPopupDataHolder _currentPopup;
+    
+    private bool _canInteractWithNpc;
+    
     private bool _engagedConversation;
 
     private void Awake()
@@ -40,20 +44,18 @@ public class PlayerInteractionController : MonoBehaviour
             int id = other.gameObject.GetHashCode();
 
             _currentNpc = NpcDataCache.Instance.GetInteractionHandler(id);
-            
-            _uiCoordinator.TogglePopup(id);
+
+            _currentPopup = NpcDataCache.Instance.GetPopupData(id);
+
+            _uiCoordinator.TogglePopup(_currentPopup);
         }
     }
     
     private void OnTriggerStay(Collider other)
     {
-        if (other != null && _uiCoordinator.CanEngageConversation() && !_currentNpc)
+        if (other != null && _uiCoordinator.CanEngageConversation() && _currentNpc)
         {
-            int id = other.gameObject.GetHashCode();
-
-            _currentNpc = NpcDataCache.Instance.GetInteractionHandler(id);
-            
-            _uiCoordinator.TogglePopup(id);
+            _uiCoordinator.TogglePopup(_currentPopup);
         }
     }
 
@@ -62,6 +64,7 @@ public class PlayerInteractionController : MonoBehaviour
         _uiCoordinator.TogglePopup();
 
         _currentNpc = null;
+        _currentPopup = null;
     }
 
     private void OnInteract(InputValue value)
@@ -71,7 +74,7 @@ public class PlayerInteractionController : MonoBehaviour
 
     private void EngageConversation()
     {
-        if (_currentNpc != null && !_engagedConversation)
+        if (_currentNpc != null && !_engagedConversation && !_currentPopup.NoInteraction)
         {
             _uiCoordinator.TogglePopup();
             _uiCoordinator.ToggleChat(_currentNpc.gameObject.GetHashCode());
@@ -89,7 +92,7 @@ public class PlayerInteractionController : MonoBehaviour
     {
         if (_engagedConversation)
         {
-            _uiCoordinator.TogglePopup(_currentNpc.gameObject.GetHashCode());
+            _uiCoordinator.TogglePopup(_currentPopup);
             _uiCoordinator.ToggleChat();
 
             _locomotionController.ToggleInteractionView(false);

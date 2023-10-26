@@ -80,6 +80,8 @@ namespace ChatGPT_Detective
 
         private OpenAIClient _embeddingsClient;
 
+        private Action<string> _onResponseStreaming;
+        
         private Action<Message> _onResponseReceived;
 
         private Queue<PromptMessageData> _promptQueue = new Queue<PromptMessageData>();
@@ -154,23 +156,28 @@ namespace ChatGPT_Detective
 
                 ChatRequest chatRequest = new ChatRequest(history, Model.GPT4, _temperature);
 
-                ChatResponse response = await _conversationClient.ChatEndpoint.GetCompletionAsync(chatRequest);
-
-                if (response.Choices?.Count > 0)
+                await _conversationClient.ChatEndpoint.StreamCompletionAsync(chatRequest, response =>
                 {
-                    Message reply = response.Choices[0].Message;
+                    if (response.Choices?.Count > 0)
+                    {
+                        if (!string.IsNullOrEmpty(response.Choices[0].Delta?.Content))
+                        {
+                            _onResponseStreaming.Invoke(response.Choices[0].Delta.Content);
+                        }
+                        
+                        if (!string.IsNullOrEmpty(response.Choices[0].Message?.Content))
+                        {
+                            Message reply = response.Choices[0].Message;
 
-                    _goalsManager.CheckGoalStatus(promptMessage.NpcCurrentGoal.Id, history, reply);
+                            _goalsManager.CheckGoalStatus(promptMessage.NpcCurrentGoal.Id, history, reply);
 
-                    _processingPrompt = false;
-                    _goalCheckedForLastMessage = false;
+                            _processingPrompt = false;
+                            _goalCheckedForLastMessage = false;
 
-                    _onResponseReceived?.Invoke(reply);
-                }
-                else
-                {
-                    Debug.LogWarning("No text was generated from this prompt.");
-                }
+                            _onResponseReceived?.Invoke(reply);
+                        }
+                    }
+                });
             }
             else
             {
@@ -299,10 +306,20 @@ namespace ChatGPT_Detective
         {
             _onResponseReceived += action;
         }
-        
+
+        public void RegisterOnResponseStreaming(Action<string> action)
+        {
+            _onResponseStreaming += action;
+        }
+
         public void DeregisterOnResponseReceived(Action<Message> action)
         {
             _onResponseReceived -= action;
+        }
+
+        public void DeregisterOnResponseStreaming(Action<string> action)
+        {
+            _onResponseStreaming -= action;
         }
 
         #endregion

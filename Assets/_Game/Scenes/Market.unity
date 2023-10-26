@@ -1552,6 +1552,8 @@ MonoBehaviour:
   _playerInputField: {fileID: 478707976}
   _responseText: {fileID: 1627393434}
   _npcNameText: {fileID: 1573585999}
+  _npcResponseConfirmationButton: {fileID: 1446302101}
+  _streamInterpolationSpeed: 0.1
 --- !u!222 &666024982
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2349,7 +2351,7 @@ GameObject:
   - component: {fileID: 907557103}
   - component: {fileID: 907557102}
   m_Layer: 5
-  m_Name: Confirm Button
+  m_Name: Menu Placeholder Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2417,19 +2419,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 907557103}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 666024981}
-        m_TargetAssemblyTypeName: ChatUIHandler, Assembly-CSharp
-        m_MethodName: SendPlayerInput
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &907557103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8212,19 +8202,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1446302102}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 666024981}
-        m_TargetAssemblyTypeName: ChatUIHandler, Assembly-CSharp
-        m_MethodName: ConfirmNpcResponse
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1446302102
 MonoBehaviour:
   m_ObjectHideFlags: 0

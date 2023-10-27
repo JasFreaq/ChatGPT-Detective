@@ -1,159 +1,158 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using ChatGPT_Detective;
 using OpenAI.Chat;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem.HID;
 
-public class ChatUIHandler : MonoBehaviour
+namespace ChatGPT_Detective
 {
-    [SerializeField] private GameObject _playerInputPanel;
-
-    [SerializeField] private GameObject _npcResponsePanel;
-
-    [SerializeField] private TMP_InputField _playerInputField;
-
-    [SerializeField] private TextMeshProUGUI _responseText;
-
-    [SerializeField] private TextMeshProUGUI _npcNameText;
-
-    [SerializeField] private Button _npcResponseConfirmationButton;
-
-    [SerializeField] private float _streamInterpolationSpeed = 0.1f;
-
-    private NpcPrompter _npcPrompter;
-
-    private string _streamResponseTargetString;
-
-    private Coroutine _streamResponseCoroutine;
-
-    private void Start()
+    public class ChatUIHandler : MonoBehaviour
     {
-        _npcResponseConfirmationButton.onClick.AddListener(ConfirmNpcResponse);
-    }
+        [SerializeField] private GameObject m_playerInputPanel;
 
-    private void OnEnable()
-    {
-        GPTPromptIntegrator.Instance.RegisterOnResponseStreaming(StreamNpcResponse);
-        GPTPromptIntegrator.Instance.RegisterOnResponseReceived(UpdateNpcResponse);
-    }
+        [SerializeField] private GameObject m_npcResponsePanel;
 
-    private void OnDisable()
-    {
-        GPTPromptIntegrator.Instance.DeregisterOnResponseStreaming(StreamNpcResponse);
-        GPTPromptIntegrator.Instance.DeregisterOnResponseReceived(UpdateNpcResponse);
-    }
+        [SerializeField] private TMP_InputField m_playerInputField;
 
-    public void EnableChat(int id)
-    {
-        NpcPrompter prompter = NpcDataCache.Instance.GetPrompter(id);
+        [SerializeField] private TextMeshProUGUI m_responseText;
 
-        if (prompter != null)
+        [SerializeField] private TextMeshProUGUI m_npcNameText;
+
+        [SerializeField] private Button m_npcResponseConfirmationButton;
+
+        [SerializeField] private float m_streamInterpolationSpeed = 0.1f;
+
+        private NpcPrompter m_npcPrompter;
+
+        private string m_streamResponseTargetString;
+
+        private Coroutine m_streamResponseCoroutine;
+
+        private void Start()
         {
-            _npcPrompter = prompter;
-            _npcPrompter.enabled = true;
-
-            _npcNameText.text = _npcPrompter.CharInfo.CharacterName;
-            
-            _playerInputPanel.SetActive(true);
+            m_npcResponseConfirmationButton.onClick.AddListener(ConfirmNpcResponse);
         }
-    }
 
-    public void DisableChat()
-    {
-        _playerInputPanel.SetActive(false);
-        _npcResponsePanel.SetActive(false);
-
-        _npcPrompter.enabled = false;
-        _npcPrompter = null;
-    }
-
-    public void SendPlayerInput()
-    {
-        if (_playerInputField.text != string.Empty) 
+        private void OnEnable()
         {
-            _npcPrompter.ProcessPromptRequest(_playerInputField.text);
-
-            _streamResponseTargetString = string.Empty;
-            _responseText.text = "...";
-
-            _playerInputPanel.SetActive(false);
-            _npcResponsePanel.SetActive(true);
-
-            _npcResponseConfirmationButton.gameObject.SetActive(false);
+            GPTPromptIntegrator.Instance.RegisterOnResponseStreaming(StreamNpcResponse);
+            GPTPromptIntegrator.Instance.RegisterOnResponseReceived(UpdateNpcResponse);
         }
-    }
 
-    public void ClearPlayerInput()
-    {
-        _playerInputField.text = "";
-    }
-
-    private void StreamNpcResponse(string response)
-    {
-        if (string.IsNullOrEmpty(_streamResponseTargetString))
+        private void OnDisable()
         {
-            _responseText.text = string.Empty;
-
-            _streamResponseTargetString = response;
-            _streamResponseCoroutine = StartCoroutine(StringInterpolationRoutine());
+            GPTPromptIntegrator.Instance.DeregisterOnResponseStreaming(StreamNpcResponse);
+            GPTPromptIntegrator.Instance.DeregisterOnResponseReceived(UpdateNpcResponse);
         }
-        else
-        {
-            _streamResponseTargetString += response;
 
-            _streamResponseCoroutine ??= StartCoroutine(StringInterpolationRoutine());
-        }
-    }
-    
-    private void UpdateNpcResponse(Message _)
-    {
-        _npcResponseConfirmationButton.gameObject.SetActive(true);
-    }
-
-    private void ConfirmNpcResponse()
-    {
-        if (_responseText.text.Length < _streamResponseTargetString.Length)
+        public void EnableChat(int id)
         {
-            if (_streamResponseCoroutine != null)
+            NpcPrompter prompter = NpcDataCache.Instance.GetPrompter(id);
+
+            if (prompter != null)
             {
-                StopCoroutine(_streamResponseCoroutine);
-                _streamResponseCoroutine = null;
+                m_npcPrompter = prompter;
+                m_npcPrompter.enabled = true;
+
+                m_npcNameText.text = m_npcPrompter.CharInfo.CharacterName;
+
+                m_playerInputPanel.SetActive(true);
             }
-            
-            _responseText.text = _streamResponseTargetString;
         }
-        else
+
+        public void DisableChat()
         {
-            _playerInputField.text = string.Empty;
+            m_playerInputPanel.SetActive(false);
+            m_npcResponsePanel.SetActive(false);
 
-            _playerInputPanel.SetActive(true);
-            _npcResponsePanel.SetActive(false);
+            m_npcPrompter.enabled = false;
+            m_npcPrompter = null;
         }
-    }
 
-    private IEnumerator StringInterpolationRoutine()
-    {
-        int maxLength = _streamResponseTargetString.Length;
-        int i = _responseText.text.Length;
-
-        while (i < maxLength)
+        public void SendPlayerInput()
         {
-            string interpolatedString = _responseText.text;
+            if (m_playerInputField.text != string.Empty)
+            {
+                m_npcPrompter.ProcessPromptRequest(m_playerInputField.text);
 
-            interpolatedString += _streamResponseTargetString[i];
+                m_streamResponseTargetString = string.Empty;
+                m_responseText.text = "...";
 
-            _responseText.text = interpolatedString;
+                m_playerInputPanel.SetActive(false);
+                m_npcResponsePanel.SetActive(true);
 
-            yield return new WaitForSeconds(_streamInterpolationSpeed);
-
-            i++;
-            maxLength = _streamResponseTargetString.Length;
+                m_npcResponseConfirmationButton.gameObject.SetActive(false);
+            }
         }
 
-        _streamResponseCoroutine = null;
+        public void ClearPlayerInput()
+        {
+            m_playerInputField.text = "";
+        }
+
+        private void StreamNpcResponse(string response)
+        {
+            if (string.IsNullOrEmpty(m_streamResponseTargetString))
+            {
+                m_responseText.text = string.Empty;
+
+                m_streamResponseTargetString = response;
+                m_streamResponseCoroutine = StartCoroutine(StringInterpolationRoutine());
+            }
+            else
+            {
+                m_streamResponseTargetString += response;
+
+                m_streamResponseCoroutine ??= StartCoroutine(StringInterpolationRoutine());
+            }
+        }
+
+        private void UpdateNpcResponse(Message _)
+        {
+            m_npcResponseConfirmationButton.gameObject.SetActive(true);
+        }
+
+        private void ConfirmNpcResponse()
+        {
+            if (m_responseText.text.Length < m_streamResponseTargetString.Length)
+            {
+                if (m_streamResponseCoroutine != null)
+                {
+                    StopCoroutine(m_streamResponseCoroutine);
+                    m_streamResponseCoroutine = null;
+                }
+
+                m_responseText.text = m_streamResponseTargetString;
+            }
+            else
+            {
+                m_playerInputField.text = string.Empty;
+
+                m_playerInputPanel.SetActive(true);
+                m_npcResponsePanel.SetActive(false);
+            }
+        }
+
+        private IEnumerator StringInterpolationRoutine()
+        {
+            int maxLength = m_streamResponseTargetString.Length;
+            int i = m_responseText.text.Length;
+
+            while (i < maxLength)
+            {
+                string interpolatedString = m_responseText.text;
+
+                interpolatedString += m_streamResponseTargetString[i];
+
+                m_responseText.text = interpolatedString;
+
+                yield return new WaitForSeconds(m_streamInterpolationSpeed);
+
+                i++;
+                maxLength = m_streamResponseTargetString.Length;
+            }
+
+            m_streamResponseCoroutine = null;
+        }
     }
 }

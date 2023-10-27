@@ -1,180 +1,178 @@
-using System.Collections;
-using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.InputSystem;
-using UnityEngine.Windows;
 
-public class PlayerCameraController : MonoBehaviour
+namespace ChatGPT_Detective
 {
-    [SerializeField] private InputActionReference _holdInputAction;
-    [SerializeField] private InputActionReference _lookInputAction;
-
-    [Header("Cinemachine")]
-
-    [SerializeField] private CinemachineVirtualCamera _virtualCamera;
-
-    [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
-    [SerializeField] private GameObject _cinemachineCameraTarget;
-
-    [Tooltip("How far in degrees can you move the camera up")] 
-    [SerializeField] private float _topClamp = 70.0f;
-
-    [Tooltip("How far in degrees can you move the camera down")] 
-    [SerializeField] private float _bottomClamp = -30.0f;
-
-    [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
-    [SerializeField] private float _cameraAngleOverride = 0.0f;
-
-    [Tooltip("For locking the camera position on all axis")] 
-    [SerializeField] private bool _lockCameraPosition = false;
-
-    [SerializeField] private float _interactionViewCameraDistance = 1.2f;
-
-    [SerializeField] private Vector3 _interactionViewCameraRotation = new Vector3(15, 340, 0);
-
-    [Header("Mouse Cursor Settings")] [SerializeField]
-    private bool _cursorLocked = true;
-
-    private PlayerInput _playerInput;
-
-    private Cinemachine3rdPersonFollow _cinemachine3rdPersonFollow;
-
-    private Interpolator<float> _interactionViewDistanceInterpolator;
-    
-    private Interpolator<Quaternion> _interactionViewRotationInterpolator;
-    
-    private float _cinemachineTargetYaw;
-
-    private float _cinemachineTargetPitch;
-
-    private float _interactionViewInterpTime;
-
-    private const float _threshold = 0.01f;
-
-    private bool _rotate;
-    
-    private bool _disableInput;
-
-    private Vector2 _lookInput;
-
-    public float InteractionViewInterpTime { set => _interactionViewInterpTime = value; }
-
-    private void Awake()
+    public class PlayerCameraController : MonoBehaviour
     {
-        _playerInput = GetComponent<PlayerInput>();
+        [SerializeField] private InputActionReference m_holdInputAction;
+        [SerializeField] private InputActionReference m_lookInputAction;
 
-        _cinemachine3rdPersonFollow = _virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
-    }
+        [Header("Cinemachine")]
+        [SerializeField] private CinemachineVirtualCamera m_virtualCamera;
+        
+        [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
+        [SerializeField] private GameObject m_cinemachineCameraTarget;
+        
+        [Tooltip("How far in degrees can you move the camera up")]
+        [SerializeField] private float m_topClamp = 70.0f;
+        
+        [Tooltip("How far in degrees can you move the camera down")]
+        [SerializeField] private float m_bottomClamp = -30.0f;
+        
+        [Tooltip("Additional degrees to override the camera. Useful for fine-tuning camera position when locked")]
+        [SerializeField] private float m_cameraAngleOverride = 0.0f;
+        
+        [Tooltip("For locking the camera position on all axes")]
+        
+        [SerializeField] private bool m_lockCameraPosition = false;
+        
+        [SerializeField] private float m_interactionViewCameraDistance = 1.2f;
+        
+        [SerializeField] private Vector3 m_interactionViewCameraRotation = new Vector3(15, 340, 0);
 
-    private void Start()
-    {
-        _cinemachineTargetYaw = _cinemachineCameraTarget.transform.rotation.eulerAngles.y;
+        [Header("Mouse Cursor Settings")]
+        [SerializeField] private bool m_cursorLocked = true;
 
-        float initialDistance = _cinemachine3rdPersonFollow.CameraDistance;
+        private PlayerInput m_playerInput;
 
-        _interactionViewDistanceInterpolator = new Interpolator<float>(initialDistance, _interactionViewCameraDistance,
-            _interactionViewInterpTime, Mathf.Lerp, () => _disableInput = true, null, null,
-            () => _disableInput = false);
+        private Cinemachine3rdPersonFollow m_cinemachine3rdPersonFollow;
 
-        _interactionViewRotationInterpolator = new Interpolator<Quaternion>(Quaternion.identity,
-            Quaternion.Euler(_interactionViewCameraRotation),
-            _interactionViewInterpTime, Quaternion.Slerp);
-    }
+        private Interpolator<float> m_interactionViewDistanceInterpolator;
 
-    private void Update()
-    {
-        if (!_disableInput) 
+        private Interpolator<Quaternion> m_interactionViewRotationInterpolator;
+
+        private float m_cinemachineTargetYaw;
+
+        private float m_cinemachineTargetPitch;
+
+        private float m_interactionViewInterpTime;
+
+        private const float m_threshold = 0.01f;
+
+        private bool m_rotate;
+
+        private bool m_disableInput;
+
+        private Vector2 m_lookInput;
+
+        public float InteractionViewInterpTime
         {
-            ProcessInputs();
+            set => m_interactionViewInterpTime = value;
         }
 
-        if (_interactionViewDistanceInterpolator.Interpolating)
+        private void Awake()
         {
-            _cinemachine3rdPersonFollow.CameraDistance = _interactionViewDistanceInterpolator.Update();
+            m_playerInput = GetComponent<PlayerInput>();
+            m_cinemachine3rdPersonFollow = m_virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
         }
 
-        if (_interactionViewRotationInterpolator.Interpolating)
+        private void Start()
         {
-            _cinemachineCameraTarget.transform.localRotation = _interactionViewRotationInterpolator.Update();
-        }
-    }
+            m_cinemachineTargetYaw = m_cinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
-    private void ProcessInputs()
-    {
-        if (_holdInputAction.action.WasPressedThisFrame())
-        {
-            _rotate = true;
-        }
-        else if (_holdInputAction.action.WasReleasedThisFrame())
-        {
-            _rotate = false;
-        }
+            float initialDistance = m_cinemachine3rdPersonFollow.CameraDistance;
 
-        if (_rotate)
-        {
-            _lookInput = _lookInputAction.action.ReadValue<Vector2>();
-        }
-    }
+            m_interactionViewDistanceInterpolator = new Interpolator<float>(initialDistance,
+                m_interactionViewCameraDistance,
+                m_interactionViewInterpTime, Mathf.Lerp, () => m_disableInput = true,
+                onReachedDefault: () => m_disableInput = false);
 
-    private void LateUpdate()
-    {
-        if (!_disableInput) 
-        {
-            CameraRotation();
-        }
-    }
-
-    private void OnApplicationFocus(bool hasFocus)
-    {
-        SetCursorState(_cursorLocked);
-    }
-
-    private void CameraRotation()
-    {
-        // if there is an input and camera position is not fixed
-        if (_lookInput.sqrMagnitude >= _threshold && !_lockCameraPosition)
-        {
-            bool isCurrentDeviceMouse = _playerInput.currentControlScheme == "KeyboardMouse";
-
-            //Don't multiply mouse input by Time.deltaTime;
-            float deltaTimeMultiplier = isCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-
-            _cinemachineTargetYaw += _lookInput.x * deltaTimeMultiplier;
-            _cinemachineTargetPitch += _lookInput.y * deltaTimeMultiplier;
+            m_interactionViewRotationInterpolator = new Interpolator<Quaternion>(Quaternion.identity,
+                Quaternion.Euler(m_interactionViewCameraRotation),
+                m_interactionViewInterpTime, Quaternion.Slerp);
         }
 
-        // clamp our rotations so our values are limited 360 degrees
-        _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-        _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, _bottomClamp, _topClamp);
-
-        // cinemachine will follow this target
-        _cinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + _cameraAngleOverride,
-            _cinemachineTargetYaw, 0.0f);
-    }
-
-    public void ToggleInteractionView(bool enable)
-    {
-        _interactionViewDistanceInterpolator.Toggle(enable);
-
-        if (enable)
+        private void Update()
         {
-            _interactionViewRotationInterpolator.DefaultVal = _cinemachineCameraTarget.transform.localRotation;
+            if (!m_disableInput)
+            {
+                ProcessInputs();
+            }
+
+            if (m_interactionViewDistanceInterpolator.Interpolating)
+            {
+                m_cinemachine3rdPersonFollow.CameraDistance = m_interactionViewDistanceInterpolator.Update();
+            }
+
+            if (m_interactionViewRotationInterpolator.Interpolating)
+            {
+                m_cinemachineCameraTarget.transform.localRotation = m_interactionViewRotationInterpolator.Update();
+            }
         }
 
-        _interactionViewRotationInterpolator.Toggle(enable);
-    }
+        private void ProcessInputs()
+        {
+            if (m_holdInputAction.action.WasPressedThisFrame())
+            {
+                m_rotate = true;
+            }
+            else if (m_holdInputAction.action.WasReleasedThisFrame())
+            {
+                m_rotate = false;
+            }
 
-    private void SetCursorState(bool newState)
-    {
-        Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
-    }
+            if (m_rotate)
+            {
+                m_lookInput = m_lookInputAction.action.ReadValue<Vector2>();
+            }
+        }
 
-    private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
-    {
-        if (lfAngle < -360f) lfAngle += 360f;
-        if (lfAngle > 360f) lfAngle -= 360f;
-        return Mathf.Clamp(lfAngle, lfMin, lfMax);
+        private void LateUpdate()
+        {
+            if (!m_disableInput)
+            {
+                CameraRotation();
+            }
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            SetCursorState(m_cursorLocked);
+        }
+
+        private void CameraRotation()
+        {
+            if (m_lookInput.sqrMagnitude >= m_threshold && !m_lockCameraPosition)
+            {
+                bool isCurrentDeviceMouse = m_playerInput.currentControlScheme == "KeyboardMouse";
+                float deltaTimeMultiplier = isCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+
+                m_cinemachineTargetYaw += m_lookInput.x * deltaTimeMultiplier;
+                m_cinemachineTargetPitch += m_lookInput.y * deltaTimeMultiplier;
+            }
+
+            m_cinemachineTargetYaw = ClampAngle(m_cinemachineTargetYaw, float.MinValue, float.MaxValue);
+            m_cinemachineTargetPitch = ClampAngle(m_cinemachineTargetPitch, m_bottomClamp, m_topClamp);
+
+            m_cinemachineCameraTarget.transform.rotation = Quaternion.Euler(
+                m_cinemachineTargetPitch + m_cameraAngleOverride,
+                m_cinemachineTargetYaw, 0.0f);
+        }
+
+        public void ToggleInteractionView(bool enable)
+        {
+            m_interactionViewDistanceInterpolator.Toggle(enable);
+
+            if (enable)
+            {
+                m_interactionViewRotationInterpolator.DefaultVal = m_cinemachineCameraTarget.transform.localRotation;
+            }
+
+            m_interactionViewRotationInterpolator.Toggle(enable);
+        }
+
+        private void SetCursorState(bool newState)
+        {
+            Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+        }
+
+        private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
+        {
+            if (lfAngle < -360f) lfAngle += 360f;
+            if (lfAngle > 360f) lfAngle -= 360f;
+            return Mathf.Clamp(lfAngle, lfMin, lfMax);
+        }
     }
 }

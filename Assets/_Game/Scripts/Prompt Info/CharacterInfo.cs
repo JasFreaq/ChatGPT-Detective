@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,38 +9,42 @@ namespace ChatGPT_Detective
     {
         #region Member Variables
 
-        [SerializeField] private int _characterId;
-        
-        [SerializeField] private string _characterName;
+        [SerializeField] private int m_characterId;
 
-        [SerializeField] [TextArea(5, 15)] private string _characterInfo;
+        [SerializeField] private string m_characterName;
 
-        [SerializeField] [TextArea(5, 15)] private string _characterInstructions;
+        [SerializeField][TextArea(5, 15)] private string m_characterInfo;
 
-        [SerializeField] private List<GoalInfo> _characterGoals = new List<GoalInfo>();
+        [SerializeField][TextArea(5, 15)] private string m_characterInstructions;
+
+        [SerializeField] private List<GoalInfo> m_characterGoals = new List<GoalInfo>();
+
+        [SerializeField][TextArea(5, 15)] private string m_characterFallbackGoal;
 
         #endregion
 
-        public int CharId => _characterId;
+        public int CharId => m_characterId;
 
-        public string CharacterName => _characterName;
+        public string CharacterName => m_characterName;
 
-        public string CharInfo => $"<character>\n{_characterInfo}\n</character>";
+        public string CharInfo => $"<character>\n{m_characterInfo}\n</character>";
 
-        public string CharInstructions => $"{_characterInstructions}\n\n###\n\n";
+        public string CharInstructions => $"{m_characterInstructions}\n\n###\n\n";
 
-        public IReadOnlyList<GoalInfo> CharGoals => _characterGoals;
+        public IReadOnlyList<GoalInfo> CharGoals => m_characterGoals;
+
+        public string CharFallbackGoal => m_characterFallbackGoal;
 
         #region Functions
-        
+
         public void GenerateGoalIds()
         {
-            for (int i = 0, n = _characterGoals.Count; i < n; i++)
+            for (int i = 0, n = m_characterGoals.Count; i < n; i++)
             {
-                GoalInfo goal = _characterGoals[i];
-                int id = Convert.ToInt32($"{_characterId}{i + 1}");
+                GoalInfo goal = m_characterGoals[i];
+                int id = Convert.ToInt32($"{m_characterId}{i + 1}");
 
-                _characterGoals[i] = new GoalInfo(id, goal);
+                m_characterGoals[i] = new GoalInfo(id, goal);
             }
         }
 

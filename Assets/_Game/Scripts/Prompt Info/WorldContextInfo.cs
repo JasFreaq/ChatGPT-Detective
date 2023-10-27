@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ChatGPT_Detective
@@ -9,9 +7,9 @@ namespace ChatGPT_Detective
     {
         #region Member Variables
 
-        [SerializeField] [TextArea(5, 15)] private string _plotInfo;
+        [SerializeField] private string m_plotInfo;
 
-        [SerializeField] [TextArea(5, 15)] private string _settingInfo;
+        [SerializeField] private string m_settingInfo;
 
         #endregion
 
@@ -19,8 +17,8 @@ namespace ChatGPT_Detective
 
         public string GetWorldInfo()
         {
-            return $"<plot>\n{_plotInfo}\n</plot>\n\n###\n\n" +
-                   $"<setting>\n{_settingInfo}\n</setting>\n\n###";
+            return $"<plot>\n{m_plotInfo}\n</plot>\n\n###\n\n" +
+                   $"<setting>\n{m_settingInfo}\n</setting>\n\n###";
         }
 
         #endregion

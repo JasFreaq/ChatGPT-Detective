@@ -1,110 +1,107 @@
-using ChatGPT_Detective;
-using OpenAI;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
-public class SaveSystem : MonoBehaviour
+namespace ChatGPT_Detective
 {
-    private static SaveSystem _instance;
-
-    public static SaveSystem Instance
+    public class SaveSystem : MonoBehaviour
     {
-        get
+        private static SaveSystem s_instance;
+
+        public static SaveSystem Instance
         {
-            if (!_instance)
-                _instance = FindFirstObjectByType<SaveSystem>();
-
-            return _instance;
-        }
-    }
-
-    private string _savePath;
-
-    private Transform _player;
-
-    private NpcPrompter[] _npcs;
-
-    private void Awake()
-    {
-        SaveSystem[] handlers = FindObjectsByType<SaveSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-
-        if (handlers.Length > 1)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            _instance = this;
-        }
-
-        _savePath = Path.Combine(Application.persistentDataPath, "saveGame.sav");
-
-        _player = GameObject.FindGameObjectWithTag("Player")?.transform;
-
-        _npcs = FindObjectsByType<NpcPrompter>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-    }
-
-    private void Start()
-    {
-        LoadGameData();
-    }
-
-    public void SavePlayerData()
-    {
-        PlayerTransformSaveData playerTransformSave = new PlayerTransformSaveData(_player);
-
-        NpcHistorySaveData[] npcHistorySaves = new NpcHistorySaveData[_npcs.Length];
-
-        for (int i = 0, l = _npcs.Length; i < l; i++)
-        {
-            npcHistorySaves[i] = new NpcHistorySaveData(_npcs[i]);
-        }
-
-        GameSaveData gameSaveData = new GameSaveData(playerTransformSave, npcHistorySaves);
-
-        string json = JsonUtility.ToJson(gameSaveData);
-
-        File.WriteAllText(_savePath, json);
-    }
-
-    private void LoadGameData()
-    {
-        if (File.Exists(_savePath))
-        {
-            string json = File.ReadAllText(_savePath);
-            
-            GameSaveData gameSaveData = JsonUtility.FromJson<GameSaveData>(json);
-
-            PlayerTransformSaveData playerTransformSave = gameSaveData.playerTransformSave;
-
-            _player.position = playerTransformSave.position.ToVector();
-            _player.rotation = Quaternion.Euler(playerTransformSave.rotation.ToVector());
-
-            NpcHistorySaveData[] npcHistorySaves = gameSaveData.npcSaveData;
-
-            foreach (NpcHistorySaveData npcSaveData in npcHistorySaves)
+            get
             {
-                NpcPrompter npc = null;
-                for (int i = 0, l = _npcs.Length; i < l; i++)
-                {
-                    if (npcSaveData.charId == _npcs[i].CharInfo.CharId)
-                    {
-                        npc = _npcs[i];
-                        break;
-                    }
-                }
+                if (!s_instance)
+                    s_instance = FindFirstObjectByType<SaveSystem>();
 
-                npc.InitialiseFromSaveData(npcSaveData.promptHistory);
+                return s_instance;
             }
         }
-        else
+
+        private string m_savePath;
+
+        private Transform m_playerTransform;
+
+        private NpcPrompter[] m_npcs;
+
+        private void Awake()
         {
-            Debug.Log("No Save Data Found");
+            SaveSystem[] handlers =
+                FindObjectsByType<SaveSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+
+            if (handlers.Length > 1)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                s_instance = this;
+            }
+
+            m_savePath = Path.Combine(Application.persistentDataPath, "saveGame.sav");
+
+            m_playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
+
+            m_npcs = FindObjectsByType<NpcPrompter>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        }
+
+        private void Start()
+        {
+            LoadGameData();
+        }
+
+        public void SavePlayerData()
+        {
+            PlayerTransformSaveData playerTransformSave = new PlayerTransformSaveData(m_playerTransform);
+
+            NpcHistorySaveData[] npcHistorySaves = new NpcHistorySaveData[m_npcs.Length];
+
+            for (int i = 0, l = m_npcs.Length; i < l; i++)
+            {
+                npcHistorySaves[i] = new NpcHistorySaveData(m_npcs[i]);
+            }
+
+            GameSaveData gameSaveData = new GameSaveData(playerTransformSave, npcHistorySaves);
+
+            string json = JsonUtility.ToJson(gameSaveData);
+
+            File.WriteAllText(m_savePath, json);
+        }
+
+        private void LoadGameData()
+        {
+            if (File.Exists(m_savePath))
+            {
+                string json = File.ReadAllText(m_savePath);
+
+                GameSaveData gameSaveData = JsonUtility.FromJson<GameSaveData>(json);
+
+                PlayerTransformSaveData playerTransformSave = gameSaveData.m_playerTransformSave;
+
+                m_playerTransform.position = playerTransformSave.mPosition.ToVector();
+                m_playerTransform.rotation = Quaternion.Euler(playerTransformSave.mRotation.ToVector());
+
+                NpcHistorySaveData[] npcHistorySaves = gameSaveData.m_npcSaveData;
+
+                foreach (NpcHistorySaveData npcSaveData in npcHistorySaves)
+                {
+                    NpcPrompter npc = null;
+                    for (int i = 0, l = m_npcs.Length; i < l; i++)
+                    {
+                        if (npcSaveData.mCharId == m_npcs[i].CharInfo.CharId)
+                        {
+                            npc = m_npcs[i];
+                            break;
+                        }
+                    }
+
+                    npc.InitialiseFromSaveData(npcSaveData.mPromptHistory);
+                }
+            }
+            else
+            {
+                Debug.Log("No Save Data Found");
+            }
         }
     }
 }

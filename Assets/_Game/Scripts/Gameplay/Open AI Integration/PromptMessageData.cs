@@ -1,35 +1,30 @@
-using ChatGPT_Detective;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace ChatGPT_Detective
 {
     public struct PromptMessageData
     {
-        private CharacterInfo _charInfo;
+        private CharacterInfo m_charInfo;
 
-        private string _newPrompt;
+        private string m_newPrompt;
 
-        private HistoryData _historyData;
+        private HistoryData m_historyData;
 
-        private GoalInfo _npcCurrentGoal;
+        private GoalInfo m_npcCurrentGoal;
 
-        public CharacterInfo CharInfo => _charInfo;
+        public CharacterInfo CharInfo => m_charInfo;
 
-        public string NewPrompt => _newPrompt;
+        public string NewPrompt => m_newPrompt;
 
-        public HistoryData HistoryData => _historyData;
+        public HistoryData HistoryData => m_historyData;
 
-        public GoalInfo NpcCurrentGoal => _npcCurrentGoal;
+        public GoalInfo NpcCurrentGoal => m_npcCurrentGoal;
 
         public PromptMessageData(CharacterInfo charInfo, string newPrompt, HistoryData historyData,
             GoalInfo npcCurrentGoal)
         {
-            _charInfo = charInfo;
-            _newPrompt = newPrompt;
-            _historyData = historyData;
-            _npcCurrentGoal = npcCurrentGoal;
+            m_charInfo = charInfo;
+            m_newPrompt = newPrompt;
+            m_historyData = historyData;
+            m_npcCurrentGoal = npcCurrentGoal;
         }
     }
 }

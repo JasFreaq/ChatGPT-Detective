@@ -1,22 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class NpcPopupDataHolder : MonoBehaviour
+namespace ChatGPT_Detective
 {
-    [SerializeField] private Sprite _characterSprite;
+    public class NpcPopupDataHolder : MonoBehaviour
+    {
+        [SerializeField] private Sprite m_characterSprite;
 
-    [SerializeField] private string _characterName;
+        [SerializeField] private string m_characterName;
 
-    [SerializeField] private bool _isMale = true;
+        [SerializeField] private bool m_isMale = true;
 
-    [SerializeField] private bool _noInteraction;
+        [SerializeField] private bool m_noInteraction;
 
-    public Sprite CharacterSprite => _characterSprite;
+        public Sprite CharacterSprite => m_characterSprite;
 
-    public string CharacterName => _characterName;
+        public string CharacterName => m_characterName;
 
-    public bool IsMale => _isMale;
+        public bool IsMale => m_isMale;
 
-    public bool NoInteraction => _noInteraction;
+        public bool NoInteraction => m_noInteraction;
+    }
 }

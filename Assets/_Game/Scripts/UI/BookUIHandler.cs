@@ -1,332 +1,358 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using ChatGPT_Detective;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class BookUIHandler : MonoBehaviour
+namespace ChatGPT_Detective
 {
-    [SerializeField] private float _bookOpenTime = 1.2f;
-    [SerializeField] private GameObject _bookUI;
-
-    [Header("Interpolation")] 
-    [SerializeField] private GameObject _bookButton;
-    [SerializeField] private RectTransform _bookInterpIcon;
-    [SerializeField] private RectTransform _sourceTransform;
-    [SerializeField] private RectTransform _targetTransform;
-
-    [Header("Animation")]
-    [SerializeField] private Animator _bookAnimator;
-    [SerializeField] private string _openState = "Open";
-    [SerializeField] private string _closeState = "Close";
-    [SerializeField] private string _forwardFlipState = "Flip Forward";
-    [SerializeField] private string _reverseFlipState = "Flip Reverse";
-    [SerializeField] private float _openAnimationTime = 0.5f;
-    [SerializeField] private float _flipAnimationTime = 0.5f;
-
-    [Header("UI")]
-    [SerializeField] private NpcHistoryButton _npcHistoryButtonPrefab;
-    [SerializeField] private GameObject _npcButtonsPanel;
-    [SerializeField] private TextMeshProUGUI _firstPageText;
-    [SerializeField] private TextMeshProUGUI _secondPageText;
-    [SerializeField] private GameObject _npcHistoryPanel;
-    [SerializeField] private GameObject[] _flipLeftButton;
-    [SerializeField] private GameObject[] _flipRightButton;
-
-    private NpcPrompter[] _npcs;
-    private NpcHistoryButton[] _npcButtons;
-
-    private Interpolator<float> _bookAnimationInterpolator;
-
-    private bool _isBookOpen;
-
-    private int _animHashOpen;
-    private int _animHashClose;
-    private int _animHashForwardFlip;
-    private int _animHashReverseFlip;
-    
-    public bool IsBookOpen => _isBookOpen;
-
-    private void Awake()
+    public class BookUIHandler : MonoBehaviour
     {
-        _npcs = FindObjectsByType<NpcPrompter>(FindObjectsInactive.Include,
-            FindObjectsSortMode.None);
+        [SerializeField] private float m_bookOpenTime = 1.2f;
 
-        Array.Sort(_npcs, new NpcPrompter.NpcPrompterComparer());
-    }
+        [SerializeField] private GameObject m_bookUI;
 
-    private void Start()
-    {
-        _bookAnimationInterpolator = new Interpolator<float>(0f, 1f, _bookOpenTime, Mathf.Lerp, null, null,
-            OpenBook, DisableBook);
+        [Header("Interpolation")] 
+        [SerializeField] private GameObject m_bookButton;
 
-        AssignAnimationHashes();
+        [SerializeField] private RectTransform m_bookInterpIcon;
 
-        SetupNpcHistoryUI();
-    }
+        [SerializeField] private RectTransform m_sourceTransform;
 
-    private void AssignAnimationHashes()
-    {
-        _animHashOpen = Animator.StringToHash(_openState);
-        _animHashClose = Animator.StringToHash(_closeState);
-        _animHashForwardFlip = Animator.StringToHash(_forwardFlipState);
-        _animHashReverseFlip = Animator.StringToHash(_reverseFlipState);
-    }
+        [SerializeField] private RectTransform m_targetTransform;
 
-    private void SetupNpcHistoryUI()
-    {
-        _npcButtons = new NpcHistoryButton[_npcs.Length];
+        [Header("Animation")] 
+        [SerializeField] private Animator m_bookAnimator;
 
-        for (int i = 0; i < _npcs.Length; i++)
+        [SerializeField] private string m_openState = "Open";
+
+        [SerializeField] private string m_closeState = "Close";
+
+        [SerializeField] private string m_forwardFlipState = "Flip Forward";
+
+        [SerializeField] private string m_reverseFlipState = "Flip Reverse";
+
+        [SerializeField] private float m_openAnimationTime = 0.5f;
+
+        [SerializeField] private float m_flipAnimationTime = 0.5f;
+
+        [Header("UI")] 
+        [SerializeField] private NpcHistoryButton m_npcHistoryButtonPrefab;
+
+        [SerializeField] private GameObject m_npcButtonsPanel;
+
+        [SerializeField] private TextMeshProUGUI m_firstPageText;
+
+        [SerializeField] private TextMeshProUGUI m_secondPageText;
+
+        [SerializeField] private GameObject m_npcHistoryPanel;
+
+        [SerializeField] private GameObject[] m_flipLeftButton;
+
+        [SerializeField] private GameObject[] m_flipRightButton;
+
+        private NpcPrompter[] m_npcs;
+
+        private NpcHistoryButton[] m_npcButtons;
+
+        private Interpolator<float> m_bookAnimationInterpolator;
+
+        private bool m_isBookOpen;
+
+        private int m_animHashOpen;
+
+        private int m_animHashClose;
+
+        private int m_animHashForwardFlip;
+
+        private int m_animHashReverseFlip;
+
+        public bool IsBookOpen => m_isBookOpen;
+
+        private void Awake()
         {
-            NpcHistoryButton npcHistoryButton = Instantiate(_npcHistoryButtonPrefab, _npcButtonsPanel.transform);
+            m_npcs = FindObjectsByType<NpcPrompter>(FindObjectsInactive.Include,
+                FindObjectsSortMode.None);
 
-            int index = i;
-            npcHistoryButton.SetupButton(() => { EnableNpcHistoryLayout(index); }, _npcs[i].CharInfo.CharacterName);
-
-            _npcButtons[i] = npcHistoryButton;
-        }
-    }
-
-    private void Update()
-    {
-        if (_bookAnimationInterpolator.Interpolating)
-        {
-            float t = _bookAnimationInterpolator.Update();
-
-            _bookInterpIcon.position = Vector3.Lerp(_sourceTransform.position, _targetTransform.position, t);
-            _bookInterpIcon.sizeDelta = Vector2.Lerp(_sourceTransform.sizeDelta, _targetTransform.sizeDelta, t);
-        }
-    }
-
-    public void EnableBook()
-    {
-        _bookInterpIcon.gameObject.SetActive(true);
-        _bookButton.SetActive(false);
-
-        _isBookOpen = true;
-
-        _bookAnimationInterpolator.Toggle(true);
-    }
-
-    private void DisableBook()
-    {
-        _bookInterpIcon.gameObject.SetActive(false);
-        _bookButton.SetActive(true);
-
-        _isBookOpen = false;
-    }
-
-    private void OpenBook()
-    {
-        _bookInterpIcon.gameObject.SetActive(false);
-        
-        StartCoroutine(OpenBookRoutine());
-    }
-    
-    public void CloseBook()
-    {
-        _bookUI.SetActive(false);
-        
-        _npcHistoryPanel.SetActive(false);
-        foreach (GameObject obj in _flipLeftButton)
-            obj.SetActive(false);
-        foreach (GameObject obj in _flipRightButton)
-            obj.SetActive(false);
-
-        StartCoroutine(CloseBookRoutine());
-    }
-
-    private IEnumerator OpenBookRoutine()
-    {
-        _bookAnimator.gameObject.SetActive(true);
-
-        _bookAnimator.Play(_animHashOpen);
-
-        yield return new WaitForSeconds(_openAnimationTime);
-
-        yield return FlipBookAnimationRoutine(1);
-
-        _bookAnimator.gameObject.SetActive(false);
-
-        EnableNpcButtonsLayout();
-
-        _bookUI.SetActive(true);
-    }
-    
-    private IEnumerator CloseBookRoutine()
-    {
-        _bookAnimator.gameObject.SetActive(true);
-
-        yield return FlipBookAnimationRoutine(1, true);
-        
-        _bookAnimator.Play(_animHashClose);
-
-        yield return new WaitForSeconds(_openAnimationTime);
-
-        _bookAnimator.gameObject.SetActive(false);
-
-        _bookInterpIcon.gameObject.SetActive(true);
-
-        _bookAnimationInterpolator.Toggle(false);
-    }
-
-    private IEnumerator FlipBookAnimationRoutine(int repeat = 0, bool close = false)
-    {
-        _bookAnimator.Play(close ? _animHashReverseFlip : _animHashForwardFlip);
-
-        yield return new WaitForSeconds(_flipAnimationTime * (repeat + 1));
-    }
-
-    private void EnableNpcButtonsLayout()
-    {
-        for (int i = 0; i < _npcs.Length; i++)
-        {
-            bool interacted = _npcs[i].History.Count > 0;
-            _npcButtons[i].gameObject.SetActive(interacted);
-        }
-        
-        _npcButtonsPanel.SetActive(true);
-    }
-    
-    private void EnableNpcHistoryLayout(int index)
-    {
-        _npcButtonsPanel.SetActive(false);
-
-        IReadOnlyList<DialogueChunk> history = _npcs[index].History;
-
-        string name = _npcs[index].CharInfo.CharacterName;
-        string historyText = "";
-
-        foreach (DialogueChunk chunk in history)
-        {
-            historyText += $"Detective: {chunk.Prompt.Content}\n";
-            historyText += $"{name}: {chunk.Response.Content}\n";
+            Array.Sort(m_npcs, new NpcPrompter.NpcPrompterComparer());
         }
 
-        _firstPageText.text = historyText;
-
-        StartCoroutine(EnableNpcHistoryLayoutRoutine(index));
-    }
-    
-    private IEnumerator EnableNpcHistoryLayoutRoutine(int index)
-    {
-        _bookAnimator.gameObject.SetActive(true);
-
-        yield return FlipBookAnimationRoutine();
-
-        _bookAnimator.gameObject.SetActive(false);
-
-        string historyText = _firstPageText.text;
-
-        _npcHistoryPanel.SetActive(true);
-
-        foreach (GameObject obj in _flipLeftButton)
-            obj.SetActive(true);
-
-        yield return new WaitForEndOfFrame();
-
-        if (_firstPageText.textInfo.pageCount > 1)
+        private void Start()
         {
-            int firstPageLastIndex = _firstPageText.textInfo.pageInfo[0].lastCharacterIndex;
-            _secondPageText.text = historyText.Substring(firstPageLastIndex + 1, historyText.Length - firstPageLastIndex - 1);
+            m_bookAnimationInterpolator = new Interpolator<float>(0f, 1f, m_bookOpenTime, Mathf.Lerp,
+                onReachedTarget: OpenBook, onReachedDefault: DisableBook);
 
-            _secondPageText.gameObject.SetActive(true);
+            AssignAnimationHashes();
 
-            if (_firstPageText.textInfo.pageCount > 2)
+            SetupNpcHistoryUI();
+        }
+
+        private void AssignAnimationHashes()
+        {
+            m_animHashOpen = Animator.StringToHash(m_openState);
+            m_animHashClose = Animator.StringToHash(m_closeState);
+            m_animHashForwardFlip = Animator.StringToHash(m_forwardFlipState);
+            m_animHashReverseFlip = Animator.StringToHash(m_reverseFlipState);
+        }
+
+        private void SetupNpcHistoryUI()
+        {
+            m_npcButtons = new NpcHistoryButton[m_npcs.Length];
+
+            for (int i = 0; i < m_npcs.Length; i++)
             {
-                foreach (GameObject obj in _flipRightButton)
+                NpcHistoryButton npcHistoryButton = Instantiate(m_npcHistoryButtonPrefab, m_npcButtonsPanel.transform);
+
+                int index = i;
+                npcHistoryButton.SetupButton(() => { EnableNpcHistoryLayout(index); },
+                    m_npcs[i].CharInfo.CharacterName);
+
+                m_npcButtons[i] = npcHistoryButton;
+            }
+        }
+
+        private void Update()
+        {
+            if (m_bookAnimationInterpolator.Interpolating)
+            {
+                float t = m_bookAnimationInterpolator.Update();
+
+                m_bookInterpIcon.position = Vector3.Lerp(m_sourceTransform.position, m_targetTransform.position, t);
+                m_bookInterpIcon.sizeDelta = Vector2.Lerp(m_sourceTransform.sizeDelta, m_targetTransform.sizeDelta, t);
+            }
+        }
+
+        public void EnableBook()
+        {
+            m_bookInterpIcon.gameObject.SetActive(true);
+            m_bookButton.SetActive(false);
+
+            UICoordinator.Instance.DisablePopup();
+
+            m_isBookOpen = true;
+
+            m_bookAnimationInterpolator.Toggle(true);
+        }
+
+        private void DisableBook()
+        {
+            m_bookInterpIcon.gameObject.SetActive(false);
+            m_bookButton.SetActive(true);
+
+            m_isBookOpen = false;
+        }
+
+        private void OpenBook()
+        {
+            m_bookInterpIcon.gameObject.SetActive(false);
+
+            StartCoroutine(OpenBookRoutine());
+        }
+
+        public void CloseBook()
+        {
+            m_bookUI.SetActive(false);
+
+            m_npcHistoryPanel.SetActive(false);
+            foreach (GameObject obj in m_flipLeftButton)
+                obj.SetActive(false);
+            foreach (GameObject obj in m_flipRightButton)
+                obj.SetActive(false);
+
+            StartCoroutine(CloseBookRoutine());
+        }
+
+        private IEnumerator OpenBookRoutine()
+        {
+            m_bookAnimator.gameObject.SetActive(true);
+
+            m_bookAnimator.Play(m_animHashOpen);
+
+            yield return new WaitForSeconds(m_openAnimationTime);
+
+            yield return FlipBookAnimationRoutine(1);
+
+            m_bookAnimator.gameObject.SetActive(false);
+
+            EnableNpcButtonsLayout();
+
+            m_bookUI.SetActive(true);
+        }
+
+        private IEnumerator CloseBookRoutine()
+        {
+            m_bookAnimator.gameObject.SetActive(true);
+
+            yield return FlipBookAnimationRoutine(1, true);
+
+            m_bookAnimator.Play(m_animHashClose);
+
+            yield return new WaitForSeconds(m_openAnimationTime);
+
+            m_bookAnimator.gameObject.SetActive(false);
+
+            m_bookInterpIcon.gameObject.SetActive(true);
+
+            m_bookAnimationInterpolator.Toggle(false);
+        }
+
+        private IEnumerator FlipBookAnimationRoutine(int repeat = 0, bool close = false)
+        {
+            m_bookAnimator.Play(close ? m_animHashReverseFlip : m_animHashForwardFlip);
+
+            yield return new WaitForSeconds(m_flipAnimationTime * (repeat + 1));
+        }
+
+        private void EnableNpcButtonsLayout()
+        {
+            for (int i = 0; i < m_npcs.Length; i++)
+            {
+                bool interacted = m_npcs[i].History.Count > 0;
+                m_npcButtons[i].gameObject.SetActive(interacted);
+            }
+
+            m_npcButtonsPanel.SetActive(true);
+        }
+
+        private void EnableNpcHistoryLayout(int index)
+        {
+            m_npcButtonsPanel.SetActive(false);
+
+            IReadOnlyList<DialogueChunk> history = m_npcs[index].History;
+
+            string name = m_npcs[index].CharInfo.CharacterName;
+            string historyText = "";
+
+            foreach (DialogueChunk chunk in history)
+            {
+                historyText += $"Detective: {chunk.Prompt.Content}\n";
+                historyText += $"{name}: {chunk.Response.Content}\n";
+            }
+
+            m_firstPageText.text = historyText;
+
+            StartCoroutine(EnableNpcHistoryLayoutRoutine(index));
+        }
+
+        private IEnumerator EnableNpcHistoryLayoutRoutine(int index)
+        {
+            m_bookAnimator.gameObject.SetActive(true);
+
+            yield return FlipBookAnimationRoutine();
+
+            m_bookAnimator.gameObject.SetActive(false);
+
+            string historyText = m_firstPageText.text;
+
+            m_npcHistoryPanel.SetActive(true);
+
+            foreach (GameObject obj in m_flipLeftButton)
+                obj.SetActive(true);
+
+            yield return new WaitForEndOfFrame();
+
+            if (m_firstPageText.textInfo.pageCount > 1)
+            {
+                int firstPageLastIndex = m_firstPageText.textInfo.pageInfo[0].lastCharacterIndex;
+                m_secondPageText.text =
+                    historyText.Substring(firstPageLastIndex + 1, historyText.Length - firstPageLastIndex - 1);
+
+                m_secondPageText.gameObject.SetActive(true);
+
+                if (m_firstPageText.textInfo.pageCount > 2)
+                {
+                    foreach (GameObject obj in m_flipRightButton)
+                        obj.SetActive(true);
+                }
+            }
+            else
+            {
+                m_secondPageText.gameObject.SetActive(false);
+            }
+        }
+
+        public void FlipPageLeft()
+        {
+            m_npcHistoryPanel.SetActive(false);
+
+            StartCoroutine(FlipPageLeftRoutine());
+        }
+
+        public void FlipPageRight()
+        {
+            m_npcHistoryPanel.SetActive(false);
+
+            StartCoroutine(FlipPageRightRoutine());
+        }
+
+        private IEnumerator FlipPageLeftRoutine()
+        {
+            m_bookAnimator.gameObject.SetActive(true);
+
+            yield return FlipBookAnimationRoutine(close: true);
+
+            m_bookAnimator.gameObject.SetActive(false);
+
+            if (m_firstPageText.pageToDisplay == 1)
+            {
+                foreach (GameObject obj in m_flipLeftButton)
+                    obj.SetActive(false);
+
+                EnableNpcButtonsLayout();
+            }
+            else
+            {
+                string historyText = m_firstPageText.text;
+
+                m_npcHistoryPanel.SetActive(true);
+
+                int nextPage = m_firstPageText.pageToDisplay - 2;
+                m_firstPageText.pageToDisplay = nextPage;
+
+                int firstPageLastIndex = m_firstPageText.textInfo.pageInfo[nextPage - 1].lastCharacterIndex;
+                m_secondPageText.text =
+                    historyText.Substring(firstPageLastIndex + 1, historyText.Length - firstPageLastIndex - 1);
+
+                m_secondPageText.gameObject.SetActive(true);
+
+                foreach (GameObject obj in m_flipRightButton)
                     obj.SetActive(true);
             }
         }
-        else
+
+        private IEnumerator FlipPageRightRoutine()
         {
-            _secondPageText.gameObject.SetActive(false);
-        }
-    }
+            m_bookAnimator.gameObject.SetActive(true);
 
-    public void FlipPageLeft()
-    {
-        _npcHistoryPanel.SetActive(false);
+            yield return FlipBookAnimationRoutine();
 
-        StartCoroutine(FlipPageLeftRoutine());
-    }
+            m_bookAnimator.gameObject.SetActive(false);
 
-    public void FlipPageRight()
-    {
-        _npcHistoryPanel.SetActive(false);
+            string historyText = m_firstPageText.text;
 
-        StartCoroutine(FlipPageRightRoutine());
-    }
+            m_npcHistoryPanel.SetActive(true);
 
-    private IEnumerator FlipPageLeftRoutine()
-    {
-        _bookAnimator.gameObject.SetActive(true);
+            int nextPage = m_firstPageText.pageToDisplay + 2;
+            m_firstPageText.pageToDisplay = nextPage;
 
-        yield return FlipBookAnimationRoutine(close: true);
+            if (m_firstPageText.textInfo.pageCount > nextPage)
+            {
+                int firstPageLastIndex = m_firstPageText.textInfo.pageInfo[nextPage - 1].lastCharacterIndex;
+                m_secondPageText.text =
+                    historyText.Substring(firstPageLastIndex + 1, historyText.Length - firstPageLastIndex - 1);
 
-        _bookAnimator.gameObject.SetActive(false);
+                m_secondPageText.gameObject.SetActive(true);
 
-        if (_firstPageText.pageToDisplay == 1)
-        {
-            foreach (GameObject obj in _flipLeftButton)
-                obj.SetActive(false);
-         
-            EnableNpcButtonsLayout();
-        }
-        else
-        {
-            string historyText = _firstPageText.text;
+                foreach (GameObject obj in m_flipRightButton)
+                    obj.SetActive(m_firstPageText.textInfo.pageCount > nextPage + 1);
+            }
+            else
+            {
+                m_secondPageText.gameObject.SetActive(false);
 
-            _npcHistoryPanel.SetActive(true);
-
-            int nextPage = _firstPageText.pageToDisplay - 2;
-            _firstPageText.pageToDisplay = nextPage;
-
-            int firstPageLastIndex = _firstPageText.textInfo.pageInfo[nextPage - 1].lastCharacterIndex;
-            _secondPageText.text =
-                historyText.Substring(firstPageLastIndex + 1, historyText.Length - firstPageLastIndex - 1);
-
-            _secondPageText.gameObject.SetActive(true);
-
-            foreach (GameObject obj in _flipRightButton)
-                obj.SetActive(true);
-        }
-    }
-    
-    private IEnumerator FlipPageRightRoutine()
-    {
-        _bookAnimator.gameObject.SetActive(true);
-
-        yield return FlipBookAnimationRoutine();
-
-        _bookAnimator.gameObject.SetActive(false);
-
-        string historyText = _firstPageText.text;
-
-        _npcHistoryPanel.SetActive(true);
-
-        int nextPage = _firstPageText.pageToDisplay + 2;
-        _firstPageText.pageToDisplay = nextPage;
-
-        if (_firstPageText.textInfo.pageCount > nextPage)
-        {
-            int firstPageLastIndex = _firstPageText.textInfo.pageInfo[nextPage - 1].lastCharacterIndex;
-            _secondPageText.text = historyText.Substring(firstPageLastIndex + 1, historyText.Length - firstPageLastIndex - 1);
-
-            _secondPageText.gameObject.SetActive(true);
-
-            foreach (GameObject obj in _flipRightButton)
-                obj.SetActive(_firstPageText.textInfo.pageCount > nextPage + 1);
-        }
-        else
-        {
-            _secondPageText.gameObject.SetActive(false);
-
-            foreach (GameObject obj in _flipRightButton)
-                obj.SetActive(false);
+                foreach (GameObject obj in m_flipRightButton)
+                    obj.SetActive(false);
+            }
         }
     }
 }

@@ -1,63 +1,91 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Utilities.Extensions;
 
-public class PopupUIHandler : MonoBehaviour
+namespace ChatGPT_Detective
 {
-    [SerializeField] private GameObject _popupHolder;
-
-    [SerializeField] private Image _maleNPCImage;
-    
-    [SerializeField] private Image _femaleNPCImage;
-
-    [SerializeField] private TextMeshProUGUI _nameText;
-
-    [SerializeField] private GameObject _popupInteraction;
-
-    private bool _popupEnabled;
-    
-    public void EnablePopup(NpcPopupDataHolder popupData)
+    public class PopupUIHandler : MonoBehaviour
     {
-        if (!_popupEnabled)
+        [SerializeField] private GameObject m_popupHolder;
+
+        [SerializeField] private Image m_maleNPCImage;
+
+        [SerializeField] private Image m_femaleNPCImage;
+
+        [SerializeField] private TextMeshProUGUI m_nameText;
+
+        [SerializeField] private GameObject m_popupNpcInfo;
+
+        [SerializeField] private GameObject m_popupInteraction;
+
+        [SerializeField] private TextMeshProUGUI m_interactionText;
+
+        [SerializeField] private string m_npcInteractionMessage = "Press Interact to Talk";
+
+        private bool m_isPopupEnabled;
+
+        public void EnableNpcPopup(NpcPopupDataHolder popupData)
         {
-            if (popupData != null) 
+            if (!m_isPopupEnabled)
             {
                 if (popupData.IsMale)
                 {
-                    _maleNPCImage.sprite = popupData.CharacterSprite;
+                    m_maleNPCImage.sprite = popupData.CharacterSprite;
 
-                    _maleNPCImage.gameObject.SetActive(true);
-                    _femaleNPCImage.gameObject.SetActive(false);
+                    m_maleNPCImage.gameObject.SetActive(true);
+                    m_femaleNPCImage.gameObject.SetActive(false);
                 }
                 else
                 {
-                    _femaleNPCImage.sprite = popupData.CharacterSprite;
+                    m_femaleNPCImage.sprite = popupData.CharacterSprite;
 
-                    _maleNPCImage.gameObject.SetActive(false);
-                    _femaleNPCImage.gameObject.SetActive(true);
+                    m_maleNPCImage.gameObject.SetActive(false);
+                    m_femaleNPCImage.gameObject.SetActive(true);
                 }
 
-                _nameText.text = popupData.CharacterName;
+                m_nameText.text = popupData.CharacterName;
 
-                _popupInteraction.SetActive(!popupData.NoInteraction);
+                m_popupNpcInfo.SetActive(true);
 
-                _popupHolder.SetActive(true);
+                if (!popupData.NoInteraction)
+                {
+                    m_interactionText.text = m_npcInteractionMessage;
+                    m_popupInteraction.SetActive(true);
+                }
+                else
+                {
+                    m_popupInteraction.SetActive(false);
+                }
 
-                _popupEnabled = true;
+                m_popupHolder.SetActive(true);
+
+                m_isPopupEnabled = true;
             }
         }
-    }
-
-    public void DisablePopup()
-    {
-        if (_popupEnabled)
+        
+        public void EnableEnvironmentPopup(string popupMessage)
         {
-            _popupHolder.SetActive(false);
+            if (!m_isPopupEnabled)
+            {
+                m_popupNpcInfo.SetActive(false);
 
-            _popupEnabled = false;
+                m_interactionText.text = popupMessage;
+                m_popupInteraction.SetActive(true);
+
+                m_popupHolder.SetActive(true);
+
+                m_isPopupEnabled = true;
+            }
+        }
+
+        public void DisablePopup()
+        {
+            if (m_isPopupEnabled)
+            {
+                m_popupHolder.SetActive(false);
+
+                m_isPopupEnabled = false;
+            }
         }
     }
 }

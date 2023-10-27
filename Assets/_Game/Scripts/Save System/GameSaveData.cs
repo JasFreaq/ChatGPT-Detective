@@ -1,17 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-[System.Serializable]
-public class GameSaveData
+namespace ChatGPT_Detective
 {
-    public PlayerTransformSaveData playerTransformSave;
-
-    public NpcHistorySaveData[] npcSaveData;
-
-    public GameSaveData(PlayerTransformSaveData playerTransform, NpcHistorySaveData[] npcSaves)
+    [System.Serializable]
+    public class GameSaveData
     {
-        playerTransformSave = playerTransform;
-        npcSaveData = npcSaves;
+        public PlayerTransformSaveData m_playerTransformSave;
+
+        public NpcHistorySaveData[] m_npcSaveData;
+
+        public GameSaveData(PlayerTransformSaveData playerTransform, NpcHistorySaveData[] npcSaves)
+        {
+            m_playerTransformSave = playerTransform;
+            m_npcSaveData = npcSaves;
+        }
     }
 }

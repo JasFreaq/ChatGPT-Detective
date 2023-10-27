@@ -1,106 +1,136 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerInteractionController : MonoBehaviour
+namespace ChatGPT_Detective
 {
-    [SerializeField] private float _interactionViewInterpTime = 1f;
-    [SerializeField] private UICoordinator _uiCoordinator;
-
-    private PlayerLocomotionController _locomotionController;
-
-    private PlayerCameraController _cameraController;
-
-    private NpcInteractionHandler _currentNpc;
-
-    private NpcPopupDataHolder _currentPopup;
-    
-    private bool _canInteractWithNpc;
-    
-    private bool _engagedConversation;
-
-    private void Awake()
+    public class PlayerInteractionController : MonoBehaviour
     {
-        _locomotionController = GetComponent<PlayerLocomotionController>();
-        _locomotionController.InteractionViewInterpTime = _interactionViewInterpTime;
+        [SerializeField] private float m_interactionViewInterpTime = 1f;
+        
+        private PlayerLocomotionController m_locomotionController;
 
-        _cameraController = GetComponent<PlayerCameraController>();
-        _cameraController.InteractionViewInterpTime = _interactionViewInterpTime;
+        private PlayerCameraController m_cameraController;
 
-        NpcInteractionHandler[] npcInteractionHandlers = FindObjectsByType<NpcInteractionHandler>(FindObjectsInactive.Include,
-            FindObjectsSortMode.None);
+        private NpcInteractionHandler m_currentNpc;
 
-        foreach (NpcInteractionHandler interactionHandler in npcInteractionHandlers)
+        private Interactable m_currentInteractable;
+
+        private NpcPopupDataHolder m_currentPopup;
+        
+        private bool m_isEngagedInConversation;
+
+        private void Awake()
         {
-            interactionHandler.InteractionViewInterpTime = _interactionViewInterpTime;
+            m_locomotionController = GetComponent<PlayerLocomotionController>();
+            m_locomotionController.InteractionViewInterpTime = m_interactionViewInterpTime;
+
+            m_cameraController = GetComponent<PlayerCameraController>();
+            m_cameraController.InteractionViewInterpTime = m_interactionViewInterpTime;
+
+            NpcInteractionHandler[] npcInteractionHandlers = FindObjectsByType<NpcInteractionHandler>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None);
+
+            foreach (NpcInteractionHandler interactionHandler in npcInteractionHandlers)
+            {
+                interactionHandler.InteractionViewInterpolationTime = m_interactionViewInterpTime;
+            }
         }
-    }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other != null && _uiCoordinator.CanEngageConversation())
+        private void OnTriggerEnter(Collider other)
         {
-            int id = other.gameObject.GetHashCode();
+            if (other != null && UICoordinator.Instance.CanInteractWithEnvironment())
+            {
+                int id = other.gameObject.GetHashCode();
 
-            _currentNpc = NpcDataCache.Instance.GetInteractionHandler(id);
+                m_currentNpc = NpcDataCache.Instance.GetInteractionHandler(id);
 
-            _currentPopup = NpcDataCache.Instance.GetPopupData(id);
+                m_currentPopup = NpcDataCache.Instance.GetPopupData(id);
 
-            _uiCoordinator.TogglePopup(_currentPopup);
+                if (m_currentPopup != null)
+                {
+                    UICoordinator.Instance.EnableNpcPopup(m_currentPopup);
+                }
+                else
+                {
+                    m_currentInteractable = EnvironmentCache.Instance.GetInteractable(id);
+
+                    if (m_currentInteractable != null)
+                    {
+                        UICoordinator.Instance.EnableEnvironmentPopup(m_currentInteractable);
+                    }
+                }
+            }
         }
-    }
-    
-    private void OnTriggerStay(Collider other)
-    {
-        if (other != null && _uiCoordinator.CanEngageConversation() && _currentNpc)
+
+        private void OnTriggerStay(Collider other)
         {
-            _uiCoordinator.TogglePopup(_currentPopup);
+            if (other != null && UICoordinator.Instance.CanInteractWithEnvironment())
+            {
+                if (m_currentPopup != null) 
+                {
+                    UICoordinator.Instance.EnableNpcPopup(m_currentPopup);
+                }
+                else if (m_currentInteractable != null)
+                {
+                    UICoordinator.Instance.EnableEnvironmentPopup(m_currentInteractable);
+                }
+            }
         }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        _uiCoordinator.TogglePopup();
-
-        _currentNpc = null;
-        _currentPopup = null;
-    }
-
-    private void OnInteract(InputValue value)
-    {
-        EngageConversation();
-    }
-
-    private void EngageConversation()
-    {
-        if (_currentNpc != null && !_engagedConversation && !_currentPopup.NoInteraction)
+        private void OnTriggerExit(Collider other)
         {
-            _uiCoordinator.TogglePopup();
-            _uiCoordinator.ToggleChat(_currentNpc.gameObject.GetHashCode());
-
-            _locomotionController.ToggleInteractionView(true, _currentNpc.transform.position);
-            _cameraController.ToggleInteractionView(true);
-
-            _currentNpc.ToggleInteractionView(true, transform.position);
-
-            _engagedConversation = true;
+            m_currentNpc = null;
+            m_currentPopup = null;
+         
+            UICoordinator.Instance.DisablePopup();
         }
-    }
-    
-    public void DisengageConversation()
-    {
-        if (_engagedConversation)
+
+        private void OnInteract(InputValue value)
         {
-            _uiCoordinator.TogglePopup(_currentPopup);
-            _uiCoordinator.ToggleChat();
+            if (UICoordinator.Instance.CanInteractWithEnvironment()) 
+            {
+                if (m_currentNpc != null)
+                {
+                    EngageConversation();
+                }
+                else if (m_currentInteractable != null)
+                {
+                    m_currentInteractable.Interact();
+                }
+            }
+        }
 
-            _locomotionController.ToggleInteractionView(false);
-            _cameraController.ToggleInteractionView(false);
+        private void EngageConversation()
+        {
+            if (!m_isEngagedInConversation && !m_currentPopup.NoInteraction)
+            {
+                UICoordinator.Instance.DisablePopup();
+                UICoordinator.Instance.ToggleChat(m_currentNpc.gameObject.GetHashCode());
 
-            _currentNpc.ToggleInteractionView(false);
+                m_locomotionController.ToggleInteractionView(true, m_currentNpc.transform.position);
+                m_cameraController.ToggleInteractionView(true);
 
-            _engagedConversation = false;
+                m_currentNpc.ToggleInteractionView(true, transform.position);
+
+                m_isEngagedInConversation = true;
+            }
+        }
+
+        public void DisengageConversation()
+        {
+            if (m_isEngagedInConversation)
+            {
+                UICoordinator.Instance.EnableNpcPopup(m_currentPopup);
+                UICoordinator.Instance.ToggleChat();
+
+                m_locomotionController.ToggleInteractionView(false);
+                m_cameraController.ToggleInteractionView(false);
+
+                m_currentNpc.ToggleInteractionView(false);
+
+                m_isEngagedInConversation = false;
+            }
         }
     }
 }

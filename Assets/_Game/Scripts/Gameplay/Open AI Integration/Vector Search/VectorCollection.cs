@@ -1,39 +1,29 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace ChatGPT_Detective
 {
     public class VectorCollection<T> where T : IVectorObject
     {
-        private readonly int _dimensions;
-        private List<T> _objects = new List<T>();
+        private List<T> m_objects = new List<T>();
 
         public int Count
         {
-            get { return _objects.Count; }
+            get { return m_objects.Count; }
         }
-
-        public VectorCollection(int dimensions)
-        {
-            _dimensions = dimensions;
-        }
-
-        public int Dimensions => _dimensions;
-
+        
         public void Add(T obj)
         {
-            _objects.Add(obj);
+            m_objects.Add(obj);
         }
 
         public void AddRange(IEnumerable<T> objects)
         {
-            _objects.AddRange(objects);
+            m_objects.AddRange(objects);
         }
 
         public IVectorObject GetItem(int index)
         {
-            return _objects[index];
+            return m_objects[index];
         }
 
         private T FindNearest(double[] query)
@@ -41,9 +31,9 @@ namespace ChatGPT_Detective
             double maxDotProduct = 0;
             int bestIndex = 0;
 
-            for (int i = 0; i < _objects.Count; i++)
+            for (int i = 0; i < m_objects.Count; i++)
             {
-                double dotProd = VectorMath.DotProduct(_objects[i].GetVector(), query);
+                double dotProd = VectorMath.DotProduct(m_objects[i].GetVector(), query);
 
                 if (dotProd > maxDotProduct)
                 {
@@ -52,9 +42,9 @@ namespace ChatGPT_Detective
                 }
             }
 
-            return _objects[bestIndex];
+            return m_objects[bestIndex];
         }
-        
+
         public List<T> FindNearest(double[] query, int resultCount)
         {
             List<T> results = new List<T>();

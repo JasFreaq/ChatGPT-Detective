@@ -1,120 +1,134 @@
-using System.Collections;
 using System.Collections.Generic;
-using ChatGPT_Detective;
 using OpenAI.Chat;
 using UnityEngine;
 
-public class NpcInteractionHandler : MonoBehaviour
+namespace ChatGPT_Detective
 {
-    [Header("Animation")]
-    [SerializeField] private int _randomIdleStates = 2;
-    
-    [SerializeField] private int _reactionStates = 3;
-    
-    private Animator _animator;
-
-    private Interpolator<Quaternion> _interactionViewInterpolator;
-
-    private int _baseIdleHash;
-
-    private List<int> _randomIdleHashes = new List<int>();
-
-    private List<int> _reactionHashes = new List<int>();
-
-    private float _interactionViewInterpTime;
-
-    private bool _disableRandomIdle;
-
-    public float InteractionViewInterpTime { set => _interactionViewInterpTime = value; }
-
-    private void Awake()
+    public class NpcInteractionHandler : MonoBehaviour
     {
-        _animator = GetComponent<Animator>();
-    }
+        [Header("Animation")]
+        [SerializeField] private int m_randomIdleStates = 2;
 
-    private void Start()
-    {
-        AssignAnimationHashes();
+        [SerializeField] private int m_reactionStates = 3;
 
-        _interactionViewInterpolator = new Interpolator<Quaternion>(transform.rotation, Quaternion.identity,
-            _interactionViewInterpTime, Quaternion.Slerp, InterruptRandomIdle, null, null,
-            () => _disableRandomIdle = false);
-    }
+        private Animator m_animator;
 
-    private void Update()
-    {
-        if (!_disableRandomIdle)
-            PlayRandomIdle();
+        private NpcPrompter m_npcPrompter;
+        
+        private Interpolator<Quaternion> m_interactionViewInterpolator;
 
-        if (_interactionViewInterpolator.Interpolating)
+        private List<int> m_randomIdleHashes = new List<int>();
+
+        private List<int> m_reactionHashes = new List<int>();
+
+        private float m_interactionViewInterpolationTime;
+        
+        private int m_baseIdleHash;
+
+        private bool m_disableRandomIdle;
+
+        public float InteractionViewInterpolationTime
         {
-            transform.rotation = _interactionViewInterpolator.Update();
-        }
-    }
-
-    private void AssignAnimationHashes()
-    {
-        _baseIdleHash = Animator.StringToHash("Idle0");
-
-        for (int i = 0; i < _randomIdleStates; i++)
-        {
-            int hash = Animator.StringToHash($"Idle{i + 1}");
-            _randomIdleHashes.Add(hash);
+            set => m_interactionViewInterpolationTime = value;
         }
 
-        for (int i = 0; i < _reactionStates; i++)
+        private void Awake()
         {
-            int hash = Animator.StringToHash($"Reaction{i + 1}");
-            _reactionHashes.Add(hash);
+            m_animator = GetComponent<Animator>();
+
+            m_npcPrompter = GetComponent<NpcPrompter>();
         }
-    }
 
-    private void PlayRandomIdle()
-    {
-        if (Random.Range(0, 3600) < 1)
+        private void Start()
         {
-            AnimatorStateInfo currentState = _animator.GetCurrentAnimatorStateInfo(0);
+            m_npcPrompter.enabled = false;
 
-            if (currentState.shortNameHash == _baseIdleHash)
+            AssignAnimationHashes();
+
+            m_interactionViewInterpolator = new Interpolator<Quaternion>(transform.rotation, Quaternion.identity,
+                m_interactionViewInterpolationTime, Quaternion.Slerp, InterruptRandomIdle,
+                onReachedDefault: () => m_disableRandomIdle = false);
+        }
+
+        private void Update()
+        {
+            if (!m_disableRandomIdle)
+                PlayRandomIdle();
+
+            if (m_interactionViewInterpolator.Interpolating)
             {
-                int randomIndex = Random.Range(0, _randomIdleStates);
-
-                _animator.Play(_randomIdleHashes[randomIndex]);
+                transform.rotation = m_interactionViewInterpolator.Update();
             }
         }
-    }
-    
-    public void PlayRandomReaction(Message _)
-    {
-        int randomIndex = Random.Range(0, _reactionStates);
 
-        _animator.Play(_reactionHashes[randomIndex]);
-    }
-
-    private void InterruptRandomIdle()
-    {
-        _disableRandomIdle = true;
-
-        _animator.Play(_baseIdleHash);
-    }
-
-    public void ToggleInteractionView(bool enable, Vector3 viewPosition = new Vector3())
-    {
-        if (enable)
+        private void AssignAnimationHashes()
         {
-            Vector3 lookDirection = viewPosition - transform.position;
+            m_baseIdleHash = Animator.StringToHash("Idle0");
 
-            _interactionViewInterpolator.TargetVal = Quaternion.LookRotation(lookDirection);
+            for (int i = 0; i < m_randomIdleStates; i++)
+            {
+                int hash = Animator.StringToHash($"Idle{i + 1}");
+                m_randomIdleHashes.Add(hash);
+            }
 
-            _interactionViewInterpolator.Toggle(true);
-
-            GPTPromptIntegrator.Instance.RegisterOnResponseReceived(PlayRandomReaction);
+            for (int i = 0; i < m_reactionStates; i++)
+            {
+                int hash = Animator.StringToHash($"Reaction{i + 1}");
+                m_reactionHashes.Add(hash);
+            }
         }
-        else
-        {
-            _interactionViewInterpolator.Toggle(false);
 
-            GPTPromptIntegrator.Instance.DeregisterOnResponseReceived(PlayRandomReaction);
+        private void PlayRandomIdle()
+        {
+            if (Random.Range(0, 3600) < 1)
+            {
+                AnimatorStateInfo currentState = m_animator.GetCurrentAnimatorStateInfo(0);
+
+                if (currentState.shortNameHash == m_baseIdleHash)
+                {
+                    int randomIndex = Random.Range(0, m_randomIdleStates);
+
+                    m_animator.Play(m_randomIdleHashes[randomIndex]);
+                }
+            }
+        }
+
+        public void PlayRandomReaction(Message _)
+        {
+            int randomIndex = Random.Range(0, m_reactionStates);
+
+            m_animator.Play(m_reactionHashes[randomIndex]);
+        }
+
+        private void InterruptRandomIdle()
+        {
+            m_disableRandomIdle = true;
+
+            m_animator.Play(m_baseIdleHash);
+        }
+
+        public void ToggleInteractionView(bool enable, Vector3 viewPosition = new Vector3())
+        {
+            if (enable)
+            {
+                m_npcPrompter.enabled = true;
+
+                Vector3 lookDirection = viewPosition - transform.position;
+
+                m_interactionViewInterpolator.TargetVal = Quaternion.LookRotation(lookDirection);
+
+                m_interactionViewInterpolator.Toggle(true);
+
+                GPTPromptIntegrator.Instance.RegisterOnResponseReceived(PlayRandomReaction);
+            }
+            else
+            {
+                m_npcPrompter.enabled = false;
+
+                m_interactionViewInterpolator.Toggle(false);
+
+                GPTPromptIntegrator.Instance.DeregisterOnResponseReceived(PlayRandomReaction);
+            }
         }
     }
 }

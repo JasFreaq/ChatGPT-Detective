@@ -1,55 +1,66 @@
-using ChatGPT_Detective;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NpcGoalsHandler : MonoBehaviour
+namespace ChatGPT_Detective
 {
-    private GoalInfo _currentGoal;
-
-    private IReadOnlyList<GoalInfo> _goalsList = new List<GoalInfo>();
-
-    private Dictionary<int, bool> _prereqTracker = new Dictionary<int, bool>();
-
-    private int _currentGoalIndex = 0;
-
-    public GoalInfo CurrentGoal => _currentGoal;
-
-    public void SetupGoalHandling(IReadOnlyList<GoalInfo> charGoals)
+    public class NpcGoalsHandler : MonoBehaviour
     {
-        _goalsList = charGoals;
+        private IReadOnlyList<GoalInfo> m_goalsList = new List<GoalInfo>();
 
-        _currentGoal = _goalsList[0];
+        private Dictionary<int, bool> m_goalClearingTracker = new Dictionary<int, bool>();
+        
+        private GoalInfo m_currentGoal;
 
-        foreach (GoalInfo goal in _goalsList)
+        private GoalInfo m_fallbackGoal;
+
+        private int m_currentGoalIndex;
+
+        public GoalInfo CurrentGoal => m_currentGoal;
+
+        public void SetupGoalHandling(IReadOnlyList<GoalInfo> charGoals, string charFallbackGoal)
         {
-            foreach (int prereqId in goal.PrerequisiteIds)
+            m_goalsList = charGoals;
+            m_currentGoal = m_goalsList[0];
+            m_fallbackGoal = new GoalInfo(0, charFallbackGoal);
+
+            foreach (GoalInfo goal in m_goalsList)
             {
-                _prereqTracker.Add(prereqId, false);
+                foreach (int prereqId in goal.PrerequisiteIds)
+                {
+                    m_goalClearingTracker.Add(prereqId, false);
+                }
             }
         }
-    }
 
-    public void UpdateGoals(int prereqId)
-    {
-        if (_prereqTracker.TryGetValue(prereqId, out bool value))
+        public void UpdateGoals(int clearedId)
         {
-            _prereqTracker[prereqId] = true;
-
-            bool cleared = true;
-
-            foreach (int id in _currentGoal.PrerequisiteIds)
+            if (m_goalClearingTracker.TryGetValue(clearedId, out bool value))
             {
-                cleared &= _prereqTracker[id];
-            }
+                m_goalClearingTracker[clearedId] = true;
 
-            if (cleared)
-            {
-                _currentGoalIndex++;
-
-                if(_currentGoalIndex< _goalsList.Count)
+                if (m_currentGoalIndex < m_goalsList.Count - 1) 
                 {
-                    _currentGoal = _goalsList[_currentGoalIndex];
+                    GoalInfo nextGoal = m_goalsList[m_currentGoalIndex + 1];
+
+                    bool clearedNextGoalPrerequisites = true;
+                    foreach (int id in nextGoal.PrerequisiteIds)
+                    {
+                        clearedNextGoalPrerequisites &= m_goalClearingTracker[id];
+                    }
+
+                    if (clearedNextGoalPrerequisites)
+                    {
+                        m_currentGoalIndex++;
+                        m_currentGoal = m_goalsList[m_currentGoalIndex];
+                    }
+                    else
+                    {
+                        m_currentGoal = m_fallbackGoal;
+                    }
+                }
+                else
+                {
+                    m_currentGoal = m_fallbackGoal;
                 }
             }
         }

@@ -1,36 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public struct SerializableVector
+namespace ChatGPT_Detective
 {
-    public float x;
-    public float y;
-    public float z;
-
-    public SerializableVector(Vector3 v)
+    [System.Serializable]
+    public struct SerializableVector
     {
-        x = v.x;
-        y = v.y;
-        z = v.z;
+        public float mX;
+        public float mY;
+        public float mZ;
+
+        public SerializableVector(Vector3 v)
+        {
+            mX = v.x;
+            mY = v.y;
+            mZ = v.z;
+        }
+
+        public Vector3 ToVector()
+        {
+            return new Vector3(mX, mY, mZ);
+        }
     }
 
-    public Vector3 ToVector()
+    [System.Serializable]
+    public class PlayerTransformSaveData
     {
-        return new Vector3(x, y, z);
-    }
-}
+        public SerializableVector mPosition;
 
-[System.Serializable]
-public class PlayerTransformSaveData
-{
-    public SerializableVector position;
-    public SerializableVector rotation;
+        public SerializableVector mRotation;
 
-    public PlayerTransformSaveData(Transform transform)
-    {
-        position = new SerializableVector(transform.position);
-        rotation = new SerializableVector(transform.rotation.eulerAngles);
+        public PlayerTransformSaveData(Transform transform)
+        {
+            mPosition = new SerializableVector(transform.position);
+            mRotation = new SerializableVector(transform.rotation.eulerAngles);
+        }
     }
 }

@@ -1,63 +1,63 @@
 using ChatGPT_Detective;
-using System.Collections;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using OpenAI.Chat;
-using UnityEngine;
 
-[System.Serializable]
-public struct SerializableMessage
+namespace ChatGPT_Detective
 {
-    public string content;
-
-    public string name;
-
-    public string role;
-
-    public SerializableMessage(Message message)
+    [System.Serializable]
+    public struct SerializableMessage
     {
-        content = message.Content;
-        name = message.Name;
-        role = message.Role.ToString();
-    }
-}
+        public string mContent;
 
+        public string mName;
 
-public struct SerializableDialogueChunk
-{
-    public int historyIndex;
+        public string mRole;
 
-    public double[]? messageVectors;
-
-    public SerializableMessage prompt;
-    public SerializableMessage response;
-
-    public SerializableDialogueChunk(DialogueChunk chunk)
-    {
-        historyIndex = chunk.HistoryIndex;
-
-        messageVectors = chunk.GetVector();
-
-        prompt = new SerializableMessage(chunk.Prompt);
-        response = new SerializableMessage(chunk.Response);
-    }
-}
-
-[System.Serializable]
-public class NpcHistorySaveData
-{
-    public int charId;
-
-    public List<SerializableDialogueChunk> promptHistory;
-
-    public NpcHistorySaveData(NpcPrompter npc)
-    {
-        charId = npc.CharInfo.CharId;
-
-        promptHistory = new List<SerializableDialogueChunk>();
-        foreach (DialogueChunk chunk in npc.History)
+        public SerializableMessage(Message message)
         {
-            promptHistory.Add(new SerializableDialogueChunk(chunk));
+            mContent = message.Content;
+            mName = message.Name;
+            mRole = message.Role.ToString();
+        }
+    }
+
+
+    public struct SerializableDialogueChunk
+    {
+        public int mHistoryIndex;
+
+        public double[]? mMessageVectors;
+
+        public SerializableMessage mPrompt;
+        public SerializableMessage mResponse;
+
+        public SerializableDialogueChunk(DialogueChunk chunk)
+        {
+            mHistoryIndex = chunk.HistoryIndex;
+
+            mMessageVectors = chunk.GetVector();
+
+            mPrompt = new SerializableMessage(chunk.Prompt);
+            mResponse = new SerializableMessage(chunk.Response);
+        }
+    }
+
+    [System.Serializable]
+    public class NpcHistorySaveData
+    {
+        public int mCharId;
+
+        public List<SerializableDialogueChunk> mPromptHistory;
+
+        public NpcHistorySaveData(NpcPrompter npc)
+        {
+            mCharId = npc.CharInfo.CharId;
+
+            mPromptHistory = new List<SerializableDialogueChunk>();
+            foreach (DialogueChunk chunk in npc.History)
+            {
+                mPromptHistory.Add(new SerializableDialogueChunk(chunk));
+            }
         }
     }
 }

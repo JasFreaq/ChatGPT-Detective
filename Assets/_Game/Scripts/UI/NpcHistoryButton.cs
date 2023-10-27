@@ -1,22 +1,23 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class NpcHistoryButton : MonoBehaviour
+namespace ChatGPT_Detective
 {
-    [SerializeField] private Button _button;
-    [SerializeField] private TextMeshProUGUI _nameText;
-    
-    public void SetupButton(Action buttonCallback, string name)
+    public class NpcHistoryButton : MonoBehaviour
     {
-        UnityAction unityAction = new UnityAction(buttonCallback);
-        _button.onClick.AddListener(unityAction);
+        [SerializeField] private Button m_button;
 
-        _nameText.text = name;
+        [SerializeField] private TextMeshProUGUI m_nameText;
+
+        public void SetupButton(Action buttonCallback, string name)
+        {
+            UnityAction unityAction = new UnityAction(buttonCallback);
+            m_button.onClick.AddListener(unityAction);
+
+            m_nameText.text = name;
+        }
     }
 }

@@ -1,18 +1,11 @@
 using System;
 using OpenAI;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using OpenAI.Chat;
 using OpenAI.Embeddings;
 using OpenAI.Models;
-using Unity.VisualScripting;
-using UnityEditor.Search;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
 namespace ChatGPT_Detective
 {
@@ -22,46 +15,34 @@ namespace ChatGPT_Detective
         {
             public int Compare(NpcPrompter a, NpcPrompter b)
             {
-                return a._charInfo.CharId.CompareTo(b._charInfo.CharId);
+                return a.m_charInfo.CharId.CompareTo(b.m_charInfo.CharId);
             }
         }
 
-        [SerializeField] private CharacterInfo _charInfo;
+        [SerializeField] private CharacterInfo m_charInfo;
 
-        private HistoryData _historyData = new HistoryData();
+        private HistoryData m_historyData = new HistoryData();
 
-        private OpenAIClient _embeddingsClient;
+        private OpenAIClient m_embeddingsClient;
+
+        private NpcGoalsHandler m_goalsHandler;
+
+        private string m_lastPrompt;
+
+        public CharacterInfo CharInfo => m_charInfo;
+
+        public IReadOnlyList<DialogueChunk> History => m_historyData.PromptHistory;
         
-        private NpcGoalsHandler _goalsHandler;
-
-        private string _lastPrompt;
-
-        public CharacterInfo CharInfo => _charInfo;
-
-        public IReadOnlyList<DialogueChunk> History => _historyData.PromptHistory;
-
-        private static int CountWords(string input)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                return 0;
-            }
-            
-            string[] words = input.Split(new char[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-
-            return words.Length;
-        }
-
         private void Awake()
         {
-            _embeddingsClient = new OpenAIClient();
-            
-            _goalsHandler = GetComponent<NpcGoalsHandler>();
+            m_embeddingsClient = new OpenAIClient();
+
+            m_goalsHandler = GetComponent<NpcGoalsHandler>();
         }
 
         private void Start()
         {
-            _goalsHandler.SetupGoalHandling(_charInfo.CharGoals);
+            m_goalsHandler.SetupGoalHandling(m_charInfo.CharGoals, m_charInfo.CharFallbackGoal);
         }
 
         private void OnEnable()
@@ -76,13 +57,13 @@ namespace ChatGPT_Detective
 
         public void ProcessPromptRequest(string newPrompt)
         {
-            PromptMessageData promptMessage = new PromptMessageData(_charInfo, newPrompt, _historyData, _goalsHandler.CurrentGoal);
+            PromptMessageData promptMessage = new PromptMessageData(m_charInfo, newPrompt, m_historyData, m_goalsHandler.CurrentGoal);
 
             GPTPromptIntegrator.Instance.SendPromptMessage(promptMessage);
 
-            _lastPrompt = newPrompt;
+            m_lastPrompt = newPrompt;
         }
-        
+
         private void UpdateHistory(Message response)
         {
             UpdateHistoryAsync(response);
@@ -91,21 +72,21 @@ namespace ChatGPT_Detective
         private async void UpdateHistoryAsync(Message response)
         {
             EmbeddingsResponse embeddings =
-                await _embeddingsClient.EmbeddingsEndpoint.CreateEmbeddingAsync($"{_lastPrompt}\n{response.Content}",
+                await m_embeddingsClient.EmbeddingsEndpoint.CreateEmbeddingAsync($"{m_lastPrompt}\n{response.Content}",
                     Model.Embedding_Ada_002);
-            
+
             if (embeddings.Data?.Count > 0)
             {
-                Message lastMessage = new Message(Role.User, _lastPrompt);
+                Message lastMessage = new Message(Role.User, m_lastPrompt);
 
-                DialogueChunk newChunk = new DialogueChunk(_historyData.PromptHistory.Count,
+                DialogueChunk newChunk = new DialogueChunk(m_historyData.PromptHistory.Count,
                     lastMessage, response,
                     embeddings.Data[0].Embedding.ToArray());
-                
-                _historyData.Add(newChunk);
+
+                m_historyData.Add(newChunk);
 
                 string hist = "";
-                foreach (DialogueChunk chunk in _historyData.PromptHistory)
+                foreach (DialogueChunk chunk in m_historyData.PromptHistory)
                 {
                     hist += $"User: {chunk.Prompt.Content}\nAssistant: {chunk.Response.Content}\n";
                 }
@@ -121,11 +102,11 @@ namespace ChatGPT_Detective
         {
             foreach (SerializableDialogueChunk serializableChunk in promptHistory)
             {
-                _historyData = new HistoryData();
+                m_historyData = new HistoryData();
 
                 DialogueChunk newChunk = new DialogueChunk(serializableChunk);
 
-                _historyData.Add(newChunk);
+                m_historyData.Add(newChunk);
             }
         }
     }

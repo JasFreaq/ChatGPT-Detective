@@ -1,42 +1,43 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PauseUIHandler : MonoBehaviour
+namespace ChatGPT_Detective
 {
-    [SerializeField] private GameObject _pausePanel;
-
-    private bool _paused;
-
-    public void TogglePause()
+    public class PauseUIHandler : MonoBehaviour
     {
-        if (!_paused)
+        [SerializeField] private GameObject m_pausePanel;
+
+        private bool m_isPaused;
+
+        public void TogglePause()
         {
-            _pausePanel.SetActive(true);
-            Time.timeScale = 0;
+            if (!m_isPaused)
+            {
+                m_pausePanel.SetActive(true);
+                Time.timeScale = 0;
+            }
+            else
+            {
+                m_pausePanel.SetActive(false);
+                Time.timeScale = 1;
+            }
+
+            m_isPaused = !m_isPaused;
         }
-        else
+
+        public void GoToMainMenu()
         {
-            _pausePanel.SetActive(false);
-            Time.timeScale = 1;
+            SceneManager.LoadScene(0);
         }
 
-        _paused = !_paused;
-    }
+        public void Save()
+        {
+            SaveSystem.Instance.SavePlayerData();
+        }
 
-    public void GoToMainMenu()
-    {
-        SceneManager.LoadScene(0);
-    }
-    
-    public void Save()
-    {
-        SaveSystem.Instance.SavePlayerData();
-    }
-
-    public void Exit()
-    {
-        Application.Quit();
+        public void Exit()
+        {
+            Application.Quit();
+        }
     }
 }

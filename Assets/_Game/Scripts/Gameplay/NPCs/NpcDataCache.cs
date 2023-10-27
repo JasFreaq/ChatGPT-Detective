@@ -1,5 +1,4 @@
 using ChatGPT_Detective;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,44 +6,44 @@ public class NpcDataCache : MonoBehaviour
 {
     private struct NpcData
     {
-        private NpcPrompter _npcPrompter;
+        private NpcPrompter m_npcPrompter;
 
-        private NpcPopupDataHolder _npcPopupDataHolder;
+        private NpcPopupDataHolder m_npcPopupDataHolder;
 
-        private NpcInteractionHandler _npcInteractionHandler;
+        private NpcInteractionHandler m_npcInteractionHandler;
 
-        public NpcPrompter Prompter => _npcPrompter;
+        public NpcPrompter Prompter => m_npcPrompter;
 
-        public NpcPopupDataHolder PopupData => _npcPopupDataHolder;
+        public NpcPopupDataHolder PopupData => m_npcPopupDataHolder;
 
-        public NpcInteractionHandler InteractionHandler => _npcInteractionHandler;
+        public NpcInteractionHandler InteractionHandler => m_npcInteractionHandler;
 
         public NpcData(NpcPrompter prompter, NpcPopupDataHolder popupData,
             NpcInteractionHandler interactionHandler)
 
         {
-            _npcPrompter = prompter;
-            _npcPopupDataHolder = popupData;
-            _npcInteractionHandler = interactionHandler;
+            m_npcPrompter = prompter;
+            m_npcPopupDataHolder = popupData;
+            m_npcInteractionHandler = interactionHandler;
         }
     }
 
-    private static NpcDataCache _instance;
+    private static NpcDataCache s_instance;
 
     public static NpcDataCache Instance
     {
         get
         {
-            if (!_instance)
-                _instance = FindFirstObjectByType<NpcDataCache>();
+            if (!s_instance)
+                s_instance = FindFirstObjectByType<NpcDataCache>();
 
-            return _instance;
+            return s_instance;
         }
     }
 
-    [SerializeField] private string _npcTag = "Npc";
+    [SerializeField] private string m_npcTag = "Npc";
 
-    private Dictionary<int, NpcData> _npcCache = new Dictionary<int, NpcData>();
+    private Dictionary<int, NpcData> m_npcCache = new Dictionary<int, NpcData>();
     
     private void Awake()
     {
@@ -57,13 +56,13 @@ public class NpcDataCache : MonoBehaviour
         }
         else
         {
-            _instance = this;
+            s_instance = this;
         }
     }
 
     private void Start()
     {
-        GameObject[] npcs = GameObject.FindGameObjectsWithTag(_npcTag);
+        GameObject[] npcs = GameObject.FindGameObjectsWithTag(m_npcTag);
 
         foreach (GameObject npc in npcs)
         {
@@ -77,13 +76,13 @@ public class NpcDataCache : MonoBehaviour
 
             NpcData npcData = new NpcData(prompter, popupData, interactionHandler);
 
-            _npcCache.Add(id, npcData);
+            m_npcCache.Add(id, npcData);
         }
     }
 
     public NpcPrompter GetPrompter(int id)
     {
-        if (_npcCache.TryGetValue(id, out NpcData npcData))
+        if (m_npcCache.TryGetValue(id, out NpcData npcData))
         {
             return npcData.Prompter;
         }
@@ -93,7 +92,7 @@ public class NpcDataCache : MonoBehaviour
     
     public NpcPopupDataHolder GetPopupData(int id)
     {
-        if (_npcCache.TryGetValue(id, out NpcData npcData))
+        if (m_npcCache.TryGetValue(id, out NpcData npcData))
         {
             return npcData.PopupData;
         }
@@ -103,7 +102,7 @@ public class NpcDataCache : MonoBehaviour
     
     public NpcInteractionHandler GetInteractionHandler(int id)
     {
-        if (_npcCache.TryGetValue(id, out NpcData npcData))
+        if (m_npcCache.TryGetValue(id, out NpcData npcData))
         {
             return npcData.InteractionHandler;
         }

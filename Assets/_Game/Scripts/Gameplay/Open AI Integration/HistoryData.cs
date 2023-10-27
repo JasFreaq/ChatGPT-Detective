@@ -1,48 +1,44 @@
-using ChatGPT_Detective;
-using System.Collections;
 using System.Collections.Generic;
 using OpenAI.Chat;
-using Unity.VisualScripting;
-using UnityEngine;
 
-public class HistoryData
+namespace ChatGPT_Detective
 {
-    public const int VectorDimension = 1536;
-
-    private List<DialogueChunk> _promptHistory;
-
-    private VectorCollection<DialogueChunk> _dialogueVectors;
-
-    public List<DialogueChunk> PromptHistory => _promptHistory;
-
-    public VectorCollection<DialogueChunk> DialogueVectors => _dialogueVectors;
-
-    public List<Message> HistoryList
+    public class HistoryData
     {
-        get
+        private List<DialogueChunk> m_promptHistory;
+
+        private VectorCollection<DialogueChunk> m_dialogueVectors;
+
+        public List<DialogueChunk> PromptHistory => m_promptHistory;
+
+        public VectorCollection<DialogueChunk> DialogueVectors => m_dialogueVectors;
+
+        public List<Message> HistoryList
         {
-            List<Message> history = new List<Message>();
-
-            foreach (DialogueChunk chunk in _promptHistory)
+            get
             {
-                history.Add(chunk.Prompt);
-                history.Add(chunk.Response);
+                List<Message> history = new List<Message>();
+
+                foreach (DialogueChunk chunk in m_promptHistory)
+                {
+                    history.Add(chunk.Prompt);
+                    history.Add(chunk.Response);
+                }
+
+                return history;
             }
-
-            return history;
         }
-    }
 
-    public HistoryData()
-    {
-        _promptHistory = new List<DialogueChunk>();
+        public HistoryData()
+        {
+            m_promptHistory = new List<DialogueChunk>();
+            m_dialogueVectors = new VectorCollection<DialogueChunk>();
+        }
 
-        _dialogueVectors = new VectorCollection<DialogueChunk>(VectorDimension);
-    }
-
-    public void Add(DialogueChunk chunk)
-    {
-        _promptHistory.Add(chunk);
-        _dialogueVectors.Add(chunk);
+        public void Add(DialogueChunk chunk)
+        {
+            m_promptHistory.Add(chunk);
+            m_dialogueVectors.Add(chunk);
+        }
     }
 }

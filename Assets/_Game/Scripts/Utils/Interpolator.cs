@@ -1,131 +1,121 @@
-using Cinemachine;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Interpolator<T>
+namespace ChatGPT_Detective
 {
-    private Tuple<T, T> _interpValues;
-    
-    private T _defaultVal;
-    
-    private T _targetVal;
-    
-    private float _interpTime;
-
-    private float _interpTimer;
-
-    private bool _interpolating;
-    
-    private bool _inTargetState;
-    
-    private bool _interpolatingTowardsTargetState;
-
-    private Func<T, T, float, T> _interpFunc;
-
-    private Action _onToggledOn;
-    
-    private Action _onToggledOff;
-
-    private Action _onReachedTargetState;
-
-    private Action _onReachedDefaultState;
-
-    public T DefaultVal { set => _defaultVal = value; }
-    
-    public T TargetVal { set => _targetVal = value; }
-
-    public bool Interpolating => _interpolating;
-    
-    public Interpolator(T defaultVal, T targetVal, float interpTime,
-        Func<T, T, float, T> interpFunc,
-        Action onToggledOn = null, Action onToggledOff = null,
-        Action onReachedTarget = null, Action onReachedDefault = null)
+    public class Interpolator<T>
     {
-        _defaultVal = defaultVal;
-        _targetVal = targetVal;
+        private Tuple<T, T> m_interpValues;
 
-        _interpTime = interpTime;
+        private T m_defaultVal;
 
-        _interpFunc = interpFunc;
+        private T m_targetVal;
 
-        _onToggledOn += onToggledOn;
-        _onToggledOff += onToggledOff;
+        private float m_interpTime;
 
-        _onReachedTargetState += onReachedTarget;
-        _onReachedDefaultState += onReachedDefault;
-    }
+        private float m_interpTimer;
 
-    public T Update()
-    {
-        _interpTimer += Time.deltaTime;
+        private bool m_interpolating;
 
-        float t = _interpTimer / _interpTime;
-        
-        T value = _interpFunc.Invoke(_interpValues.Item1, _interpValues.Item2, t);
+        private bool m_inTargetState;
 
-        if (t >= 1f)
+        private bool m_interpolatingTowardsTargetState;
+
+        private Func<T, T, float, T> m_interpFunc;
+
+        private Action m_onToggledOn;
+
+        private Action m_onToggledOff;
+
+        private Action m_onReachedTargetState;
+
+        private Action m_onReachedDefaultState;
+
+        public T DefaultVal
         {
-            value = _interpValues.Item2;
+            set => m_defaultVal = value;
+        }
 
-            _interpolating = false;
+        public T TargetVal
+        {
+            set => m_targetVal = value;
+        }
 
-            if (_interpolatingTowardsTargetState)
+        public bool Interpolating => m_interpolating;
+
+        public Interpolator(T defaultVal, T targetVal, float interpTime,
+            Func<T, T, float, T> interpFunc,
+            Action onToggledOn = null, Action onToggledOff = null,
+            Action onReachedTarget = null, Action onReachedDefault = null)
+        {
+            m_defaultVal = defaultVal;
+            m_targetVal = targetVal;
+            m_interpTime = interpTime;
+            m_interpFunc = interpFunc;
+            m_onToggledOn += onToggledOn;
+            m_onToggledOff += onToggledOff;
+            m_onReachedTargetState += onReachedTarget;
+            m_onReachedDefaultState += onReachedDefault;
+        }
+
+        public T Update()
+        {
+            m_interpTimer += Time.deltaTime;
+            float t = m_interpTimer / m_interpTime;
+            T value = m_interpFunc.Invoke(m_interpValues.Item1, m_interpValues.Item2, t);
+
+            if (t >= 1f)
             {
-                _inTargetState = true;
+                value = m_interpValues.Item2;
+                m_interpolating = false;
 
-                _onReachedTargetState?.Invoke();
+                if (m_interpolatingTowardsTargetState)
+                {
+                    m_inTargetState = true;
+                    m_onReachedTargetState?.Invoke();
+                }
+                else
+                {
+                    m_inTargetState = false;
+                    m_onReachedDefaultState?.Invoke();
+                }
             }
-            else
-            {
-                _inTargetState = false;
 
-                _onReachedDefaultState?.Invoke();
+            return value;
+        }
+
+        public void Toggle(bool enable)
+        {
+            bool interpToTarget = enable && !m_inTargetState && !m_interpolatingTowardsTargetState;
+            bool interpToDefault = !enable && m_inTargetState && m_interpolatingTowardsTargetState;
+
+            if (interpToTarget || interpToDefault)
+            {
+                m_interpTimer = m_interpolating ? m_interpTime - m_interpTimer : 0;
+
+                if (interpToTarget)
+                {
+                    m_interpolatingTowardsTargetState = true;
+                    m_interpValues = new Tuple<T, T>(m_defaultVal, m_targetVal);
+                    m_onToggledOn?.Invoke();
+                }
+                else
+                {
+                    m_interpolatingTowardsTargetState = false;
+                    m_interpValues = new Tuple<T, T>(m_targetVal, m_defaultVal);
+                    m_onToggledOff?.Invoke();
+                }
+
+                m_interpolating = true;
             }
         }
 
-        return value;
-    }
-
-    public void Toggle(bool enable)
-    {
-        bool interpToTarget = enable && !_inTargetState && !_interpolatingTowardsTargetState;
-
-        bool interpToDefault = !enable && _inTargetState && _interpolatingTowardsTargetState;
-
-        if (interpToTarget || interpToDefault)
+        public void Reset()
         {
-            _interpTimer = _interpolating ? _interpTime - _interpTimer : 0;
-
-            if (interpToTarget)
-            {
-                _interpolatingTowardsTargetState = true;
-
-                _interpValues = new Tuple<T, T>(_defaultVal, _targetVal);
-
-                _onToggledOn?.Invoke();
-            }
-            else
-            {
-                _interpolatingTowardsTargetState = false;
-
-                _interpValues = new Tuple<T, T>(_targetVal, _defaultVal);
-
-                _onToggledOff?.Invoke();
-            }
-
-            _interpolating = true;
+            m_interpolating = false;
+            m_inTargetState = false;
+            m_interpolatingTowardsTargetState = false;
+            m_interpTimer = 0;
         }
-    }
-
-    public void Reset()
-    {
-        _interpolating = false;
-        
-        _inTargetState = false;
-        _interpolatingTowardsTargetState = false;
-
-        _interpTimer = 0;
     }
 }

@@ -256,7 +256,7 @@ MonoBehaviour:
   m_moveSpeed: 2
   m_rotationSmoothTime: 0.12
   m_locomotionBlendTime: 1.6
-  m_footstepsSoundHandler: {fileID: 0}
+  m_footstepsSoundHandler: {fileID: 2761251801606775366}
   m_speedAnimParameter: Speed
   m_stoppedParameter: Stopped
 --- !u!114 &5376628469509391485

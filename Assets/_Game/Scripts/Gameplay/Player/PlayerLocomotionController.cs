@@ -23,7 +23,7 @@ namespace ChatGPT_Detective
 
         [SerializeField] private float m_locomotionBlendTime = 1.6f;
 
-        [SerializeField] private AudioClip[] m_footstepAudioClips;
+        [SerializeField] private SoundEffectsHandler m_footstepsSoundHandler;
 
         [Header("Animation")]
         [SerializeField] private string m_speedAnimParameter = "Speed";
@@ -45,9 +45,7 @@ namespace ChatGPT_Detective
         private CharacterController m_controller;
 
         private GameObject m_mainCamera;
-
-        private AudioSource m_footstepAudioSource;
-
+        
         private Interpolator<float> m_locomotionBlendInterpolator;
 
         private Interpolator<Quaternion> m_interactionViewInterpolator;
@@ -74,8 +72,8 @@ namespace ChatGPT_Detective
             }
 
             m_animator = GetComponent<Animator>();
+
             m_controller = GetComponent<CharacterController>();
-            m_footstepAudioSource = GetComponentInChildren<AudioSource>();
         }
 
         private void Start()
@@ -213,13 +211,7 @@ namespace ChatGPT_Detective
         {
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                if (m_footstepAudioClips.Length > 0 && !m_footstepAudioSource.isPlaying)
-                {
-                    int index = Random.Range(0, m_footstepAudioClips.Length);
-                    m_footstepAudioSource.clip = m_footstepAudioClips[index];
-
-                    m_footstepAudioSource.Play();
-                }
+                m_footstepsSoundHandler.PlaySound();
             }
         }
     }

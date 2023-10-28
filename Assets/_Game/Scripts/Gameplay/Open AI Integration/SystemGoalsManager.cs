@@ -12,8 +12,10 @@ namespace ChatGPT_Detective
     {
         private class GoalStatusArgs
         {
-            public bool m_status;
+            public bool mStatus;
         }
+
+        [SerializeField] private string m_goalQueryMessage = "Do you think the assistant's last response satisfied the current goal?";
 
         [SerializeField] private List<NpcGoalsHandler> m_npcGoalsHandlers = new List<NpcGoalsHandler>();
 
@@ -29,13 +31,13 @@ namespace ChatGPT_Detective
                     ["type"] = "object",
                     ["properties"] = new JObject
                     {
-                        ["status"] = new JObject
+                        ["mStatus"] = new JObject
                         {
                             ["type"] = "boolean",
                             ["description"] = "The goal completion status."
                         }
                     },
-                    ["required"] = new JArray { "status" }
+                    ["required"] = new JArray { "mStatus" }
                 })
         };
 
@@ -54,6 +56,10 @@ namespace ChatGPT_Detective
             {
                 history.Add(reply);
 
+                Message goalQueryMessage = new Message(Role.User, m_goalQueryMessage);
+
+                history.Add(goalQueryMessage);
+
                 ChatRequest goalRequest =
                     new ChatRequest(history, functions: m_goalFunction, functionCall: "CheckGoalStatus",
                         model: "gpt-3.5-turbo");
@@ -63,8 +69,8 @@ namespace ChatGPT_Detective
                 GoalStatusArgs functionArgs =
                     JsonConvert.DeserializeObject<GoalStatusArgs>(goalResponse.FirstChoice.Message.Function.Arguments
                         .ToString());
-                Debug.Log(functionArgs.m_status);
-                if (functionArgs.m_status)
+
+                if (functionArgs.mStatus)
                 {
                     UpdateGoalStatus(goalId);
                 }

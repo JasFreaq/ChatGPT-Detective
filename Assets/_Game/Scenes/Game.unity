@@ -5996,6 +5996,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d59519dbdb3554597b272e9a8608fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_goalQueryMessage: Do you think the assistant's last response satisfied the current
+    goal?
   m_npcGoalsHandlers:
   - {fileID: 1557766135}
   - {fileID: 2040803923}
@@ -6027,8 +6029,8 @@ MonoBehaviour:
   m_goalSystemInstructions: Engage the detective in a conversation while keeping
     the goal outlined in XML tags below in mind. Respond solely as the character
     you're portraying, using information from the ongoing conversation and avoiding
-    knowledge from the plot. Respond within a single paragraph. Invoke the CheckGoalStatus
-    function when the goal has been cleared.
+    knowledge from the plot. Respond within 50 words. Call the CheckGoalStatus function
+    if you think the goal has been completed.
   m_temperature: 1
   m_goalsManager: {fileID: 884903775}
   m_modelTPM: 10000

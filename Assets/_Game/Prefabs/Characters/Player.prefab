@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3396323476269447365}
+  - component: {fileID: 2761251801606775366}
   - component: {fileID: 2866737282404815702}
   m_Layer: 8
-  m_Name: Footsteps AudioSource
+  m_Name: Footsteps Sound Handler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,6 +33,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5121192085814955420}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2761251801606775366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4319718407947310870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0aa2807f52e6a142aa8135f1b85e709, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_audioClips:
+  - {fileID: 8300000, guid: 72f526a6a9890f643a88e85a61c86c8a, type: 3}
+  - {fileID: 8300000, guid: 85016e0f2b01da248b9663dd49a161b0, type: 3}
+  - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
+  - {fileID: 8300000, guid: 1a91fcd19acf1e54bba0945d9f390849, type: 3}
+  - {fileID: 8300000, guid: 14e8a8d2158bec840b56c54f5266e692, type: 3}
+  - {fileID: 8300000, guid: 29841e7d5bbfb5b419c9ad16ca8bc4c1, type: 3}
+  - {fileID: 8300000, guid: dd1af302b8902684d9381de1f2d3a5af, type: 3}
+  - {fileID: 8300000, guid: 67c8b33e424ccdc4486edf538ab91c5a, type: 3}
+  - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
+  - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
+  m_areClipsPlayedFromRandomTime: 0
 --- !u!82 &2866737282404815702
 AudioSource:
   m_ObjectHideFlags: 0
@@ -227,21 +252,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2781657b418585743afee69f9d246de2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_moveInputAction: {fileID: 0}
+  m_moveInputAction: {fileID: -3552364970006637457, guid: 6e6fcad693c9e37428fce6e30184d094, type: 3}
   m_moveSpeed: 2
   m_rotationSmoothTime: 0.12
   m_locomotionBlendTime: 1.6
-  m_footstepAudioClips:
-  - {fileID: 8300000, guid: 72f526a6a9890f643a88e85a61c86c8a, type: 3}
-  - {fileID: 8300000, guid: 85016e0f2b01da248b9663dd49a161b0, type: 3}
-  - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
-  - {fileID: 8300000, guid: 1a91fcd19acf1e54bba0945d9f390849, type: 3}
-  - {fileID: 8300000, guid: 14e8a8d2158bec840b56c54f5266e692, type: 3}
-  - {fileID: 8300000, guid: 29841e7d5bbfb5b419c9ad16ca8bc4c1, type: 3}
-  - {fileID: 8300000, guid: dd1af302b8902684d9381de1f2d3a5af, type: 3}
-  - {fileID: 8300000, guid: 67c8b33e424ccdc4486edf538ab91c5a, type: 3}
-  - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
-  - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
+  m_footstepsSoundHandler: {fileID: 0}
   m_speedAnimParameter: Speed
   m_stoppedParameter: Stopped
 --- !u!114 &5376628469509391485
@@ -354,8 +369,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5bda0a3c9d698648b3c58afe011e5a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_holdInputAction: {fileID: 0}
-  m_lookInputAction: {fileID: 0}
+  m_holdInputAction: {fileID: -583475557454686659, guid: 6e6fcad693c9e37428fce6e30184d094, type: 3}
+  m_lookInputAction: {fileID: -3787169064211337688, guid: 6e6fcad693c9e37428fce6e30184d094, type: 3}
   m_virtualCamera: {fileID: 0}
   m_cinemachineCameraTarget: {fileID: 0}
   m_topClamp: 70
@@ -378,7 +393,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_interactionViewInterpTime: 1
-  m_uiCoordinator: {fileID: 0}
 --- !u!1 &8797944791531325694
 GameObject:
   m_ObjectHideFlags: 0

@@ -84,13 +84,6 @@ namespace ChatGPT_Detective
                     embeddings.Data[0].Embedding.ToArray());
 
                 m_historyData.Add(newChunk);
-
-                string hist = "";
-                foreach (DialogueChunk chunk in m_historyData.PromptHistory)
-                {
-                    hist += $"User: {chunk.Prompt.Content}\nAssistant: {chunk.Response.Content}\n";
-                }
-                Debug.Log(hist);
             }
             else
             {

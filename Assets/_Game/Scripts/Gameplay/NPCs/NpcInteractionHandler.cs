@@ -12,8 +12,6 @@ namespace ChatGPT_Detective
         [SerializeField] private int m_reactionStates = 3;
 
         private Animator m_animator;
-
-        private NpcPrompter m_npcPrompter;
         
         private Interpolator<Quaternion> m_interactionViewInterpolator;
 
@@ -35,14 +33,10 @@ namespace ChatGPT_Detective
         private void Awake()
         {
             m_animator = GetComponent<Animator>();
-
-            m_npcPrompter = GetComponent<NpcPrompter>();
         }
 
         private void Start()
         {
-            m_npcPrompter.enabled = false;
-
             AssignAnimationHashes();
 
             m_interactionViewInterpolator = new Interpolator<Quaternion>(transform.rotation, Quaternion.identity,
@@ -111,8 +105,6 @@ namespace ChatGPT_Detective
         {
             if (enable)
             {
-                m_npcPrompter.enabled = true;
-
                 Vector3 lookDirection = viewPosition - transform.position;
 
                 m_interactionViewInterpolator.TargetVal = Quaternion.LookRotation(lookDirection);
@@ -123,8 +115,6 @@ namespace ChatGPT_Detective
             }
             else
             {
-                m_npcPrompter.enabled = false;
-
                 m_interactionViewInterpolator.Toggle(false);
 
                 GPTPromptIntegrator.Instance.DeregisterOnResponseReceived(PlayRandomReaction);

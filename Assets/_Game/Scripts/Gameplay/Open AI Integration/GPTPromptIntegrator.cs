@@ -50,9 +50,7 @@ namespace ChatGPT_Detective
 
             return length;
         }
-
-        #region Member Variables
-
+        
         [SerializeField] private WorldContextInfo m_worldContext;
 
         [SerializeField][TextArea(5, 15)] private string m_baseSystemInstructions = "";
@@ -86,15 +84,13 @@ namespace ChatGPT_Detective
         private float m_tokenPerSecondRate;
 
         private float m_lastMessageTime;
-
-        #endregion
-
+        
         private void Awake()
         {
-            GPTPromptIntegrator[] handlers = FindObjectsByType<GPTPromptIntegrator>(FindObjectsInactive.Include,
+            GPTPromptIntegrator[] integrators = FindObjectsByType<GPTPromptIntegrator>(FindObjectsInactive.Include,
                 FindObjectsSortMode.None);
 
-            if (handlers.Length > 1)
+            if (integrators.Length > 1)
             {
                 Destroy(gameObject);
             }
@@ -134,16 +130,15 @@ namespace ChatGPT_Detective
         {
             m_goalsManager.DeregisterOnGoalChecked(ProcessGoalCheck);
         }
-
-        #region OpenAI Functions
-
+        
         public async void SendPromptMessage(PromptMessageData promptMessage)
         {
             if (m_goalCheckedForLastMessage && !m_processingPrompt)
             {
                 m_processingPrompt = true;
 
-                List<Message> history = await FormatPromptRequest(promptMessage.CharInfo.CharInstructions, promptMessage.NewPrompt,
+                List<Message> history = await FormatPromptRequest(promptMessage.CharInfo.CharInstructions,
+                    promptMessage.NewPrompt,
                     promptMessage.HistoryData);
 
                 FormatHistory(promptMessage.CharInfo.CharInfo, promptMessage.NpcCurrentGoal.Goal, history);
@@ -170,6 +165,10 @@ namespace ChatGPT_Detective
 
                             m_onResponseReceived?.Invoke(reply);
                         }
+                    }
+                    else
+                    {
+                        Debug.LogWarning("No text was generated from this prompt.");
                     }
                 });
             }
@@ -292,11 +291,7 @@ namespace ChatGPT_Detective
         {
             m_goalCheckedForLastMessage = true;
         }
-
-        #endregion
-
-        #region Delegate Functions
-
+        
         public void RegisterOnResponseReceived(Action<Message> action)
         {
             m_onResponseReceived += action;
@@ -316,7 +311,5 @@ namespace ChatGPT_Detective
         {
             m_onResponseStreaming -= action;
         }
-
-        #endregion
     }
 }

@@ -32,14 +32,17 @@ namespace ChatGPT_Detective
                 }
             }
         }
-
+        
         public void UpdateGoals(int clearedId)
         {
-            if (m_goalClearingTracker.TryGetValue(clearedId, out bool value))
+            if (m_goalClearingTracker.ContainsKey(clearedId))
             {
                 m_goalClearingTracker[clearedId] = true;
+            }
 
-                if (m_currentGoalIndex < m_goalsList.Count - 1) 
+            if (clearedId == m_currentGoal.Id)
+            {
+                if (m_currentGoalIndex < m_goalsList.Count - 1)
                 {
                     GoalInfo nextGoal = m_goalsList[m_currentGoalIndex + 1];
 

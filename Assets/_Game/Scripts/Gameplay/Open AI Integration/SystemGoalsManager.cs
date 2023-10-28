@@ -5,6 +5,7 @@ using OpenAI.Chat;
 using Newtonsoft.Json;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
+using OpenAI.Models;
 
 namespace ChatGPT_Detective
 {
@@ -15,7 +16,7 @@ namespace ChatGPT_Detective
             public bool mStatus;
         }
 
-        [SerializeField] private string m_goalQueryMessage = "Do you think the assistant's last response satisfied the current goal?";
+        [SerializeField] private int m_maxAttemptsBeforeGoalAutoPasses = 3;
 
         [SerializeField] private List<NpcGoalsHandler> m_npcGoalsHandlers = new List<NpcGoalsHandler>();
 
@@ -41,7 +42,10 @@ namespace ChatGPT_Detective
                 })
         };
 
+        private Dictionary<int, int> m_processedGoalsLog = new Dictionary<int, int>();
+
         private Action m_onGoalChecked;
+
 
         private void Awake()
         {
@@ -52,25 +56,29 @@ namespace ChatGPT_Detective
 
         public async void CheckGoalStatus(int goalId, List<Message> history, Message reply)
         {
-            if (goalId != 0) 
+            if (goalId != 0)
             {
+                if (m_processedGoalsLog.ContainsKey(goalId))
+                {
+                    m_processedGoalsLog[goalId]++;
+                }
+                else
+                {
+                    m_processedGoalsLog.Add(goalId, 0);
+                }
+
                 history.Add(reply);
-
-                Message goalQueryMessage = new Message(Role.User, m_goalQueryMessage);
-
-                history.Add(goalQueryMessage);
-
+                
                 ChatRequest goalRequest =
-                    new ChatRequest(history, functions: m_goalFunction, functionCall: "CheckGoalStatus",
-                        model: "gpt-3.5-turbo");
-
+                    new ChatRequest(history, Model.GPT3_5_Turbo, 0f, functions: m_goalFunction, functionCall: "CheckGoalStatus");
+                
                 ChatResponse goalResponse = await m_goalClient.ChatEndpoint.GetCompletionAsync(goalRequest);
 
                 GoalStatusArgs functionArgs =
                     JsonConvert.DeserializeObject<GoalStatusArgs>(goalResponse.FirstChoice.Message.Function.Arguments
                         .ToString());
 
-                if (functionArgs.mStatus)
+                if (functionArgs.mStatus || m_processedGoalsLog[goalId] >= m_maxAttemptsBeforeGoalAutoPasses) 
                 {
                     UpdateGoalStatus(goalId);
                 }

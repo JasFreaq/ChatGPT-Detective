@@ -6031,7 +6031,7 @@ MonoBehaviour:
     you're portraying, using information from the ongoing conversation and avoiding
     knowledge from the plot. Respond within 50 words. Call the CheckGoalStatus function
     if you think the goal has been completed.
-  m_temperature: 1
+  m_temperature: 0.6
   m_goalsManager: {fileID: 884903775}
   m_modelTPM: 10000
   m_embeddingsWindowSize: 5

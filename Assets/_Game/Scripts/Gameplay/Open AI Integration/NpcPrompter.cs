@@ -29,6 +29,8 @@ namespace ChatGPT_Detective
 
         private string m_lastPrompt;
 
+        private bool m_sentPrompt;
+
         public CharacterInfo CharInfo => m_charInfo;
 
         public IReadOnlyList<DialogueChunk> History => m_historyData.PromptHistory;
@@ -62,11 +64,17 @@ namespace ChatGPT_Detective
             GPTPromptIntegrator.Instance.SendPromptMessage(promptMessage);
 
             m_lastPrompt = newPrompt;
+
+            m_sentPrompt = true;
         }
 
         private void UpdateHistory(Message response)
         {
-            UpdateHistoryAsync(response);
+            if (m_sentPrompt) 
+            {
+                UpdateHistoryAsync(response);
+                m_sentPrompt = false;
+            }
         }
 
         private async void UpdateHistoryAsync(Message response)

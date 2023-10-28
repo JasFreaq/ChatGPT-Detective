@@ -52,23 +52,18 @@ MonoBehaviour:
     m_prerequisiteIds: 
     m_goal: Curtly greet back the detective.
   - m_id: 62
-    m_prerequisiteIds: 00000000
-    m_goal: If the detective asks for your whereabouts last night, offer an alibi
-      explaining that both you and Victor were engaged in an anonymous business transaction.
-      Otherwise, express that the detective not waste your time, and do so curtly.
-  - m_id: 63
     m_prerequisiteIds: 0e000000
     m_goal: If the detective mentions Victor Valenti's meeting with Richard Blackwell
       last night, persistently insist that he was with you. Otherwise, express that
       you have no further information to provide and do so curtly.
-  - m_id: 64
+  - m_id: 63
     m_prerequisiteIds: 21000000
     m_goal: If it's brought up that Victor Valenti has asked you to disclose information
       about last night, be cooperative and explain that you had a meeting with a
       buyer using the moniker 'Cipher'. Otherwise, express that you have no further
       information to provide and do so curtly.
-  - m_id: 65
-    m_prerequisiteIds: 40000000
+  - m_id: 64
+    m_prerequisiteIds: 3f000000
     m_goal: Elaborate on the fact that the buyer had a standard request of a virus
       capable of breaching a quantum-encrypted firewall, and explain that both you
       and Victor Valenti didn't think much of it.

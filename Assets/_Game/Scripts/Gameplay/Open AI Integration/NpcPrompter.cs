@@ -98,7 +98,7 @@ namespace ChatGPT_Detective
             }
         }
 
-        public void InitialiseFromSaveData(List<SerializableDialogueChunk> promptHistory)
+        public void InitialiseFromSaveData(SerializableDialogueChunk[] promptHistory)
         {
             foreach (SerializableDialogueChunk serializableChunk in promptHistory)
             {

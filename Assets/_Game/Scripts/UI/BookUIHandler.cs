@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace ChatGPT_Detective
 {
@@ -50,6 +51,9 @@ namespace ChatGPT_Detective
         [SerializeField] private GameObject[] m_flipLeftButton;
 
         [SerializeField] private GameObject[] m_flipRightButton;
+
+        [Header("Sound")] 
+        [SerializeField] private SoundEffectsHandler m_pageFlipSoundHandler;
 
         private NpcPrompter[] m_npcs;
 
@@ -168,9 +172,13 @@ namespace ChatGPT_Detective
 
             m_bookAnimator.Play(m_animHashOpen);
 
+            m_pageFlipSoundHandler.PlaySound();
+
             yield return new WaitForSeconds(m_openAnimationTime);
 
             yield return FlipBookAnimationRoutine(1);
+
+            m_pageFlipSoundHandler.StopSound();
 
             m_bookAnimator.gameObject.SetActive(false);
 
@@ -183,11 +191,15 @@ namespace ChatGPT_Detective
         {
             m_bookAnimator.gameObject.SetActive(true);
 
+            m_pageFlipSoundHandler.PlaySound();
+
             yield return FlipBookAnimationRoutine(1, true);
 
             m_bookAnimator.Play(m_animHashClose);
 
             yield return new WaitForSeconds(m_openAnimationTime);
+
+            m_pageFlipSoundHandler.StopSound();
 
             m_bookAnimator.gameObject.SetActive(false);
 
@@ -238,7 +250,11 @@ namespace ChatGPT_Detective
         {
             m_bookAnimator.gameObject.SetActive(true);
 
+            m_pageFlipSoundHandler.PlaySound();
+
             yield return FlipBookAnimationRoutine();
+
+            m_pageFlipSoundHandler.StopSound();
 
             m_bookAnimator.gameObject.SetActive(false);
 
@@ -289,7 +305,11 @@ namespace ChatGPT_Detective
         {
             m_bookAnimator.gameObject.SetActive(true);
 
+            m_pageFlipSoundHandler.PlaySound();
+
             yield return FlipBookAnimationRoutine(close: true);
+            
+            m_pageFlipSoundHandler.StopSound();
 
             m_bookAnimator.gameObject.SetActive(false);
 
@@ -324,7 +344,11 @@ namespace ChatGPT_Detective
         {
             m_bookAnimator.gameObject.SetActive(true);
 
+            m_pageFlipSoundHandler.PlaySound();
+
             yield return FlipBookAnimationRoutine();
+
+            m_pageFlipSoundHandler.StopSound();
 
             m_bookAnimator.gameObject.SetActive(false);
 

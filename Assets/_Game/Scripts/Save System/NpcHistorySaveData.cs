@@ -21,7 +21,7 @@ namespace ChatGPT_Detective
         }
     }
 
-
+    [System.Serializable]
     public struct SerializableDialogueChunk
     {
         public int mHistoryIndex;
@@ -47,16 +47,17 @@ namespace ChatGPT_Detective
     {
         public int mCharId;
 
-        public List<SerializableDialogueChunk> mPromptHistory;
+        public SerializableDialogueChunk[] mPromptHistory;
 
         public NpcHistorySaveData(NpcPrompter npc)
         {
             mCharId = npc.CharInfo.CharId;
 
-            mPromptHistory = new List<SerializableDialogueChunk>();
-            foreach (DialogueChunk chunk in npc.History)
+            mPromptHistory = new SerializableDialogueChunk[npc.History.Count];
+
+            for (int i = 0, l = npc.History.Count; i < l; i++)
             {
-                mPromptHistory.Add(new SerializableDialogueChunk(chunk));
+                mPromptHistory[i] = new SerializableDialogueChunk(npc.History[i]);
             }
         }
     }

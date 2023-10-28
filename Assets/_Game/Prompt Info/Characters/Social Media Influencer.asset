@@ -60,7 +60,7 @@ MonoBehaviour:
     m_goal: Try to point the detective towards Victor Valenti and Amelia Stone as
       the likely culprits.
   - m_id: 53
-    m_prerequisiteIds: 40000000
+    m_prerequisiteIds: 3f000000
     m_goal: When the detective brings up the name Cipher, act as if you know nothing
       about it and point out that the detective is wasting your time. Vehemently
       deny any connections between Cipher and yourself. If Cipher is not mentioned,

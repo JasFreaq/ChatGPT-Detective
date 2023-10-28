@@ -65,7 +65,7 @@ MonoBehaviour:
       his office last night according to your logs, starting with Amelia Stone and
       followed by Max Sterling.
   - m_id: 25
-    m_prerequisiteIds: 40000000
+    m_prerequisiteIds: 3f000000
     m_goal: When the detective brings up the name Cipher, explain that Cipher is
       an old username from whom Richard Blackwell stole a project from. Do not mention
       any connections between Cipher and Max Sterling. If Cipher is not mentioned,

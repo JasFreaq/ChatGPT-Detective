@@ -3,14 +3,17 @@ namespace ChatGPT_Detective
     [System.Serializable]
     public class GameSaveData
     {
-        public PlayerTransformSaveData m_playerTransformSave;
+        public TransformSaveData mPlayerTransformSave;
+        
+        public TransformSaveData mCameraRootTransformSave;
 
-        public NpcHistorySaveData[] m_npcSaveData;
+        public NpcHistorySaveData[] mNpcSaveData;
 
-        public GameSaveData(PlayerTransformSaveData playerTransform, NpcHistorySaveData[] npcSaves)
+        public GameSaveData(TransformSaveData playerTransform, TransformSaveData cameraRootTransform, NpcHistorySaveData[] npcSaves)
         {
-            m_playerTransformSave = playerTransform;
-            m_npcSaveData = npcSaves;
+            mPlayerTransformSave = playerTransform;
+            mCameraRootTransformSave = cameraRootTransform;
+            mNpcSaveData = npcSaves;
         }
     }
 }

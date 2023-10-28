@@ -8,6 +8,7 @@ namespace ChatGPT_Detective
 {
     public class ChatUIHandler : MonoBehaviour
     {
+        [Header("UI")]
         [SerializeField] private GameObject m_playerInputPanel;
 
         [SerializeField] private GameObject m_npcResponsePanel;
@@ -22,11 +23,15 @@ namespace ChatGPT_Detective
 
         [SerializeField] private float m_streamInterpolationSpeed = 0.1f;
 
+        [Header("Sound")]
+        [Header("Sound")]
+        [SerializeField] private SoundEffectsHandler m_typingSoundHandler;
+
         private NpcPrompter m_npcPrompter;
 
         private string m_streamResponseTargetString;
 
-        private Coroutine m_streamResponseCoroutine;
+        private Coroutine m_streamResponseInterpolationCoroutine;
 
         private void Start()
         {
@@ -97,13 +102,13 @@ namespace ChatGPT_Detective
                 m_responseText.text = string.Empty;
 
                 m_streamResponseTargetString = response;
-                m_streamResponseCoroutine = StartCoroutine(StringInterpolationRoutine());
+                m_streamResponseInterpolationCoroutine = StartCoroutine(StreamInterpolationRoutine());
             }
             else
             {
                 m_streamResponseTargetString += response;
 
-                m_streamResponseCoroutine ??= StartCoroutine(StringInterpolationRoutine());
+                m_streamResponseInterpolationCoroutine ??= StartCoroutine(StreamInterpolationRoutine());
             }
         }
 
@@ -116,10 +121,12 @@ namespace ChatGPT_Detective
         {
             if (m_responseText.text.Length < m_streamResponseTargetString.Length)
             {
-                if (m_streamResponseCoroutine != null)
+                if (m_streamResponseInterpolationCoroutine != null)
                 {
-                    StopCoroutine(m_streamResponseCoroutine);
-                    m_streamResponseCoroutine = null;
+                    StopCoroutine(m_streamResponseInterpolationCoroutine);
+                    m_streamResponseInterpolationCoroutine = null;
+
+                    m_typingSoundHandler.StopSound();
                 }
 
                 m_responseText.text = m_streamResponseTargetString;
@@ -133,10 +140,12 @@ namespace ChatGPT_Detective
             }
         }
 
-        private IEnumerator StringInterpolationRoutine()
+        private IEnumerator StreamInterpolationRoutine()
         {
             int maxLength = m_streamResponseTargetString.Length;
             int i = m_responseText.text.Length;
+
+            m_typingSoundHandler.PlaySound();
 
             while (i < maxLength)
             {
@@ -152,7 +161,9 @@ namespace ChatGPT_Detective
                 maxLength = m_streamResponseTargetString.Length;
             }
 
-            m_streamResponseCoroutine = null;
+            m_streamResponseInterpolationCoroutine = null;
+
+            m_typingSoundHandler.StopSound();
         }
     }
 }

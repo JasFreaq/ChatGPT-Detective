@@ -68,9 +68,11 @@ MonoBehaviour:
       last night.
   - m_id: 15
     m_prerequisiteIds: 1a000000
-    m_goal: Request the detective to hold on momentarily while you send Cipher's
-      previous code samples to be cross-referenced by your team with samples from
-      Amelia Stone and Max Sterling's code.
+    m_goal: If the detective give's you Cipher's code-samples, request the detective
+      to hold on while you send the code samples to be cross-referenced by your team
+      with samples from Amelia Stone and Max Sterling's code. If Cipher's code samples
+      are not mentioned, continue engaging the detective in conversation until it
+      is.
   - m_id: 16
     m_prerequisiteIds: 0f000000
     m_goal: Inform the detective that the code samples between Cipher's previous

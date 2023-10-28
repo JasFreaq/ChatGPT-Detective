@@ -17,6 +17,8 @@ namespace ChatGPT_Detective
 
         [SerializeField] private List<NpcGoalsHandler> m_npcGoalsHandlers = new List<NpcGoalsHandler>();
 
+        private GoalEventsHandler m_goalEventsHandler;
+
         private OpenAIClient m_goalClient;
 
         private List<Function> m_goalFunction = new List<Function>
@@ -42,6 +44,8 @@ namespace ChatGPT_Detective
         private void Awake()
         {
             m_goalClient = new OpenAIClient();
+
+            m_goalEventsHandler = GetComponent<GoalEventsHandler>();
         }
 
         public async void CheckGoalStatus(int goalId, List<Message> history, Message reply)
@@ -59,7 +63,7 @@ namespace ChatGPT_Detective
                 GoalStatusArgs functionArgs =
                     JsonConvert.DeserializeObject<GoalStatusArgs>(goalResponse.FirstChoice.Message.Function.Arguments
                         .ToString());
-
+                Debug.Log(functionArgs.m_status);
                 if (functionArgs.m_status)
                 {
                     UpdateGoalStatus(goalId);
@@ -75,6 +79,8 @@ namespace ChatGPT_Detective
             {
                 goalsHandler.UpdateGoals(id);
             }
+
+            m_goalEventsHandler.CheckGoalEvents(id);
         }
 
         public void RegisterOnGoalChecked(Action action)

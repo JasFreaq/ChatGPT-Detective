@@ -23,13 +23,13 @@ namespace ChatGPT_Detective
     }
 
     [System.Serializable]
-    public class PlayerTransformSaveData
+    public class TransformSaveData
     {
         public SerializableVector mPosition;
 
         public SerializableVector mRotation;
 
-        public PlayerTransformSaveData(Transform transform)
+        public TransformSaveData(Transform transform)
         {
             mPosition = new SerializableVector(transform.position);
             mRotation = new SerializableVector(transform.rotation.eulerAngles);

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace ChatGPT_Detective
@@ -23,6 +24,8 @@ namespace ChatGPT_Detective
 
         private NpcPrompter[] m_npcs;
 
+        private SystemGoalsManager m_goalsManager;
+
         private void Awake()
         {
             GameSaveManager[] handlers =
@@ -43,27 +46,34 @@ namespace ChatGPT_Detective
 
             m_npcs = FindObjectsByType<NpcPrompter>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
+            m_goalsManager = FindObjectOfType<SystemGoalsManager>(true);
+        }
+
+        private void Start()
+        {
             if (SaveSystem.DoesSaveGameExist() && SaveSystem.IsGameContinuing())
             {
-                LoadGameData();
+                StartCoroutine(DelayedLoadRoutine());
             }
         }
-        
+
         public void SaveGameData()
         {
             TransformSaveData playerTransformSave = new TransformSaveData(m_playerTransform);
             
             TransformSaveData cameraRootTransformSave = new TransformSaveData(m_cameraRootTransform);
 
-            NpcHistorySaveData[] npcHistorySaves = new NpcHistorySaveData[m_npcs.Length];
+            NpcSaveData[] npcHistorySaves = new NpcSaveData[m_npcs.Length];
 
             for (int i = 0, l = m_npcs.Length; i < l; i++)
             {
-                npcHistorySaves[i] = new NpcHistorySaveData(m_npcs[i]);
+                npcHistorySaves[i] = new NpcSaveData(m_npcs[i]);
             }
 
+            GoalsSaveData goalsSave = new GoalsSaveData(m_goalsManager.ClearedGoalsLog);
+
             GameSaveData gameSaveData =
-                new GameSaveData(playerTransformSave, cameraRootTransformSave, npcHistorySaves);
+                new GameSaveData(playerTransformSave, cameraRootTransformSave, npcHistorySaves, goalsSave);
 
             SaveSystem.SavePlayerData(gameSaveData);
         }
@@ -80,9 +90,9 @@ namespace ChatGPT_Detective
             m_cameraRootTransform.position = cameraRootTransformSave.mPosition.ToVector();
             m_cameraRootTransform.rotation = Quaternion.Euler(cameraRootTransformSave.mRotation.ToVector());
             
-            NpcHistorySaveData[] npcHistorySaves = gameSaveData.mNpcSaveData;
+            NpcSaveData[] npcHistorySaves = gameSaveData.mNpcSaveData;
 
-            foreach (NpcHistorySaveData npcSaveData in npcHistorySaves)
+            foreach (NpcSaveData npcSaveData in npcHistorySaves)
             {
                 NpcPrompter npc = null;
                 for (int i = 0, l = m_npcs.Length; i < l; i++)
@@ -94,8 +104,17 @@ namespace ChatGPT_Detective
                     }
                 }
 
-                npc.InitialiseFromSaveData(npcSaveData.mPromptHistory);
+                npc.InitialiseFromSaveData(npcSaveData.mPromptHistory, npcSaveData.mGoalSave);
             }
+
+            m_goalsManager.LoadGoalLog(gameSaveData.mGoalsSaveData);
+        }
+
+        private IEnumerator DelayedLoadRoutine()
+        {
+            yield return new WaitForEndOfFrame();
+
+            LoadGameData();
         }
     }
 }

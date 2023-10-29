@@ -34,7 +34,9 @@ namespace ChatGPT_Detective
         public CharacterInfo CharInfo => m_charInfo;
 
         public IReadOnlyList<DialogueChunk> History => m_historyData.PromptHistory;
-        
+
+        public NpcGoalsHandler GoalsHandler => m_goalsHandler;
+
         private void Awake()
         {
             m_embeddingsClient = new OpenAIClient();
@@ -44,7 +46,7 @@ namespace ChatGPT_Detective
 
         private void Start()
         {
-            m_goalsHandler.SetupGoalHandling(m_charInfo.CharGoals, m_charInfo.CharFallbackGoal);
+            m_goalsHandler.InitializeGoalHandling(m_charInfo.CharGoals, m_charInfo.CharFallbackGoal);
         }
 
         private void OnEnable()
@@ -99,7 +101,7 @@ namespace ChatGPT_Detective
             }
         }
 
-        public void InitialiseFromSaveData(SerializableDialogueChunk[] promptHistory)
+        public void InitialiseFromSaveData(SerializableDialogueChunk[] promptHistory, NpcGoalSaveData goalSave)
         {
             foreach (SerializableDialogueChunk serializableChunk in promptHistory)
             {
@@ -109,6 +111,8 @@ namespace ChatGPT_Detective
 
                 m_historyData.Add(newChunk);
             }
+
+            m_goalsHandler.LoadGoalSave(goalSave);
         }
     }
 }

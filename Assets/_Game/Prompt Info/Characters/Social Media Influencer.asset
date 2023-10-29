@@ -66,7 +66,7 @@ MonoBehaviour:
       deny any connections between Cipher and yourself. If Cipher is not mentioned,
       continue engaging the detective in conversation until it is.
   - m_id: 54
-    m_prerequisiteIds: 10000000
+    m_prerequisiteIds: 11000000
     m_goal: If the detective mentions that they discovered that you are Cipher, deny
       it vehemently.
   - m_id: 55

@@ -57,7 +57,7 @@ MonoBehaviour:
     m_goal: Describe the rumors circulating about Richard Blackwell allegedly stealing
       ideas from his colleagues and subordinates.
   - m_id: 33
-    m_prerequisiteIds: 0e000000
+    m_prerequisiteIds: 0f000000
     m_goal: If the detective discusses your meeting with Richard Blackwell last night,
       respond by being cooperative and clarify that it was solely a business meeting.
       Instruct the detective to inform Steel that you've instructed him to disclose

@@ -7,13 +7,18 @@ namespace ChatGPT_Detective
         
         public TransformSaveData mCameraRootTransformSave;
 
-        public NpcHistorySaveData[] mNpcSaveData;
+        public NpcSaveData[] mNpcSaveData;
 
-        public GameSaveData(TransformSaveData playerTransform, TransformSaveData cameraRootTransform, NpcHistorySaveData[] npcSaves)
+        public GoalsSaveData mGoalsSaveData;
+
+        public GameSaveData(TransformSaveData playerTransform, TransformSaveData cameraRootTransform, NpcSaveData[] npcSaves, GoalsSaveData goalsSaveData)
         {
             mPlayerTransformSave = playerTransform;
             mCameraRootTransformSave = cameraRootTransform;
+
             mNpcSaveData = npcSaves;
+
+            mGoalsSaveData = goalsSaveData;
         }
     }
 }

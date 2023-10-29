@@ -103,12 +103,7 @@ namespace ChatGPT_Detective
 
             m_embeddingsClient = new OpenAIClient();
         }
-
-        private void OnEnable()
-        {
-            m_goalsManager.RegisterOnGoalChecked(ProcessGoalCheck);
-        }
-
+        
         private void Start()
         {
             m_tokenPerSecondRate = 1 / (m_modelTPM / 60f);
@@ -126,11 +121,6 @@ namespace ChatGPT_Detective
             }
         }
 
-        private void OnDisable()
-        {
-            m_goalsManager.DeregisterOnGoalChecked(ProcessGoalCheck);
-        }
-        
         public async void SendPromptMessage(PromptMessageData promptMessage)
         {
             if (m_goalCheckedForLastMessage && !m_processingPrompt)
@@ -145,7 +135,7 @@ namespace ChatGPT_Detective
 
                 ChatRequest chatRequest = new ChatRequest(history, Model.GPT4, m_temperature);
 
-                await m_conversationClient.ChatEndpoint.StreamCompletionAsync(chatRequest, response =>
+                await m_conversationClient.ChatEndpoint.StreamCompletionAsync(chatRequest, async response =>
                 {
                     if (response.Choices?.Count > 0)
                     {
@@ -158,12 +148,13 @@ namespace ChatGPT_Detective
                         {
                             Message reply = response.Choices[0].Message;
 
-                            m_goalsManager.CheckGoalStatus(promptMessage.NpcCurrentGoal.Id, history, reply);
-
                             m_processingPrompt = false;
                             m_goalCheckedForLastMessage = false;
 
                             m_onResponseReceived?.Invoke(reply);
+                            
+                            m_goalCheckedForLastMessage =
+                                await m_goalsManager.CheckGoalStatus(promptMessage.NpcCurrentGoal.Id, history, reply);
                         }
                     }
                     else
@@ -219,6 +210,11 @@ namespace ChatGPT_Detective
 
             return validHistory;
         }
+
+        private async void HandleResponse(ChatResponse response)
+        {
+
+        } 
 
         private List<Message> GetValidHistory(List<DialogueChunk> npcPromptHistory, List<DialogueChunk> nearestChunks)
         {

@@ -57,23 +57,27 @@ MonoBehaviour:
       to a pacemaker malfunction caused by a virus downloaded into the pacemaker
       system.
   - m_id: 13
+    m_prerequisiteIds: 0c000000
+    m_goal: Ask the detective to start his investigation by visiting Richard Blackwell's
+      office.
+  - m_id: 14
     m_prerequisiteIds: 150000001f00000029000000330000003d000000
     m_goal: Describe the latest update to the ongoing pacemaker investigation where
       the forensics team discovered that the virus was downloaded into the system
       the previous night.
-  - m_id: 14
-    m_prerequisiteIds: 0d000000180000002b000000
+  - m_id: 15
+    m_prerequisiteIds: 0e000000180000002b000000
     m_goal: Create a narrative that unveils how the footage obtained from Richard
       Blackwell's eye augment discloses that he had a meeting with Victor Valenti
       last night.
-  - m_id: 15
+  - m_id: 16
     m_prerequisiteIds: 1a000000
     m_goal: If the detective give's you Cipher's code-samples, request the detective
       to hold on while you send the code samples to be cross-referenced by your team
       with samples from Amelia Stone and Max Sterling's code. If Cipher's code samples
       are not mentioned, continue engaging the detective in conversation until it
       is.
-  - m_id: 16
+  - m_id: 17
     m_prerequisiteIds: 0f000000
     m_goal: Inform the detective that the code samples between Cipher's previous
       code and Max Sterling's code are a match.

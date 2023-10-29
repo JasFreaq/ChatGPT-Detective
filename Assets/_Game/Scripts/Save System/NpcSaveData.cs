@@ -43,13 +43,29 @@ namespace ChatGPT_Detective
     }
 
     [System.Serializable]
-    public class NpcHistorySaveData
+    public struct NpcGoalSaveData
+    {
+        public int mNpcGoalIndex;
+
+        public bool mWasUsingFallbackGoal;
+
+        public NpcGoalSaveData(int goalIndex, bool usingFallbackGoal)
+        {
+            mNpcGoalIndex = goalIndex;
+            mWasUsingFallbackGoal = usingFallbackGoal;
+        }
+    }
+
+    [System.Serializable]
+    public class NpcSaveData
     {
         public int mCharId;
 
         public SerializableDialogueChunk[] mPromptHistory;
 
-        public NpcHistorySaveData(NpcPrompter npc)
+        public NpcGoalSaveData mGoalSave;
+
+        public NpcSaveData(NpcPrompter npc)
         {
             mCharId = npc.CharInfo.CharId;
 
@@ -59,6 +75,8 @@ namespace ChatGPT_Detective
             {
                 mPromptHistory[i] = new SerializableDialogueChunk(npc.History[i]);
             }
+
+            mGoalSave = new NpcGoalSaveData(npc.GoalsHandler.CurrentGoalIndex, npc.GoalsHandler.IsUsingFallbackGoal);
         }
     }
 }

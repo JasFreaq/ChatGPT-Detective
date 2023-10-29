@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ namespace ChatGPT_Detective
     {
         [SerializeField] private Image m_fadeImage;
         [SerializeField] private float m_fadeTime = 1f;
+        [SerializeField] private float m_fadeBackDelay = 0.2f;
 
         private Interpolator<float> m_fadeInterpolator;
 
@@ -42,6 +44,13 @@ namespace ChatGPT_Detective
 
         private void OnFullyFaded()
         {
+            StartCoroutine(OnFullyFadedRoutine());
+        }
+
+        private IEnumerator OnFullyFadedRoutine()
+        {
+            yield return new WaitForSeconds(m_fadeBackDelay);
+
             m_onFullyFaded?.Invoke();
         }
     }

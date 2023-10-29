@@ -53,7 +53,7 @@ namespace ChatGPT_Detective
 
         private bool m_rotate;
 
-        private bool m_disableInput;
+        private bool m_isInputDisabled;
 
         private Vector2 m_lookInput;
 
@@ -61,7 +61,7 @@ namespace ChatGPT_Detective
         {
             set => m_interactionViewInterpTime = value;
         }
-
+        
         private void Awake()
         {
             m_playerInput = GetComponent<PlayerInput>();
@@ -76,8 +76,8 @@ namespace ChatGPT_Detective
 
             m_interactionViewDistanceInterpolator = new Interpolator<float>(initialDistance,
                 m_interactionViewCameraDistance,
-                m_interactionViewInterpTime, Mathf.Lerp, () => m_disableInput = true,
-                onReachedDefault: () => m_disableInput = false);
+                m_interactionViewInterpTime, Mathf.Lerp, () => m_isInputDisabled = true,
+                onReachedDefault: () => m_isInputDisabled = false);
 
             m_interactionViewRotationInterpolator = new Interpolator<Quaternion>(Quaternion.identity,
                 Quaternion.Euler(m_interactionViewCameraRotation),
@@ -86,7 +86,7 @@ namespace ChatGPT_Detective
 
         private void Update()
         {
-            if (!m_disableInput)
+            if (!m_isInputDisabled)
             {
                 ProcessInputs();
             }
@@ -99,6 +99,14 @@ namespace ChatGPT_Detective
             if (m_interactionViewRotationInterpolator.Interpolating)
             {
                 m_cinemachineCameraTarget.transform.localRotation = m_interactionViewRotationInterpolator.Update();
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (!m_isInputDisabled)
+            {
+                CameraRotation();
             }
         }
 
@@ -117,13 +125,9 @@ namespace ChatGPT_Detective
             {
                 m_lookInput = m_lookInputAction.action.ReadValue<Vector2>();
             }
-        }
-
-        private void LateUpdate()
-        {
-            if (!m_disableInput)
+            else
             {
-                CameraRotation();
+                m_lookInput = Vector2.zero;
             }
         }
 

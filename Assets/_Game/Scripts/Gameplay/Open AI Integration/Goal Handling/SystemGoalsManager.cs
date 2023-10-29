@@ -50,8 +50,8 @@ namespace ChatGPT_Detective
         };
 
         private Dictionary<int, int> m_clearedGoalsLog = new Dictionary<int, int>();
-        
-        public IReadOnlyDictionary<int, int> ClearedGoalsLog = new Dictionary<int, int>();
+
+        public IReadOnlyDictionary<int, int> ClearedGoalsLog => m_clearedGoalsLog;
 
         private void Awake()
         {

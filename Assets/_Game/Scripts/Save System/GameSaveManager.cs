@@ -18,6 +18,10 @@ namespace ChatGPT_Detective
             }
         }
 
+        [SerializeField] private string m_playerTag = "Player";
+        
+        [SerializeField] private string m_cameraTag = "CinemachineTarget";
+
         private Transform m_playerTransform;
         
         private Transform m_cameraRootTransform;
@@ -40,9 +44,9 @@ namespace ChatGPT_Detective
                 s_instance = this;
             }
 
-            m_playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
+            m_playerTransform = GameObject.FindGameObjectWithTag(m_playerTag)?.transform;
             
-            m_cameraRootTransform = GameObject.FindGameObjectWithTag("CinemachineTarget")?.transform;
+            m_cameraRootTransform = GameObject.FindGameObjectWithTag(m_cameraTag)?.transform;
 
             m_npcs = FindObjectsByType<NpcPrompter>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
@@ -87,7 +91,6 @@ namespace ChatGPT_Detective
             m_playerTransform.rotation = Quaternion.Euler(playerTransformSave.mRotation.ToVector());
             
             TransformSaveData cameraRootTransformSave = gameSaveData.mCameraRootTransformSave;
-            m_cameraRootTransform.position = cameraRootTransformSave.mPosition.ToVector();
             m_cameraRootTransform.rotation = Quaternion.Euler(cameraRootTransformSave.mRotation.ToVector());
             
             NpcSaveData[] npcHistorySaves = gameSaveData.mNpcSaveData;
@@ -111,13 +114,6 @@ namespace ChatGPT_Detective
             }
 
             m_goalsManager.LoadGoalLog(gameSaveData.mGoalsSaveData);
-        }
-
-        private IEnumerator DelayedLoadRoutine()
-        {
-            yield return new WaitForEndOfFrame();
-
-            LoadGameData();
         }
     }
 }

@@ -243,10 +243,10 @@ namespace ChatGPT_Detective
 
             m_firstPageText.text = historyText;
 
-            StartCoroutine(EnableNpcHistoryLayoutRoutine(index));
+            StartCoroutine(EnableNpcHistoryLayoutRoutine());
         }
 
-        private IEnumerator EnableNpcHistoryLayoutRoutine(int index)
+        private IEnumerator EnableNpcHistoryLayoutRoutine()
         {
             m_bookAnimator.gameObject.SetActive(true);
 
@@ -316,6 +316,8 @@ namespace ChatGPT_Detective
             if (m_firstPageText.pageToDisplay == 1)
             {
                 foreach (GameObject obj in m_flipLeftButton)
+                    obj.SetActive(false);
+                foreach (GameObject obj in m_flipRightButton)
                     obj.SetActive(false);
 
                 EnableNpcButtonsLayout();

@@ -53,7 +53,7 @@ namespace ChatGPT_Detective
         {
             if (SaveSystem.DoesSaveGameExist() && SaveSystem.IsGameContinuing())
             {
-                StartCoroutine(DelayedLoadRoutine());
+                LoadGameData();
             }
         }
 
@@ -94,17 +94,20 @@ namespace ChatGPT_Detective
 
             foreach (NpcSaveData npcSaveData in npcHistorySaves)
             {
-                NpcPrompter npc = null;
-                for (int i = 0, l = m_npcs.Length; i < l; i++)
+                if (npcSaveData.mPromptHistory.Length > 0) 
                 {
-                    if (npcSaveData.mCharId == m_npcs[i].CharInfo.CharId)
+                    NpcPrompter npc = null;
+                    for (int i = 0, l = m_npcs.Length; i < l; i++)
                     {
-                        npc = m_npcs[i];
-                        break;
+                        if (npcSaveData.mCharId == m_npcs[i].CharInfo.CharId)
+                        {
+                            npc = m_npcs[i];
+                            break;
+                        }
                     }
-                }
 
-                npc.InitialiseFromSaveData(npcSaveData.mPromptHistory, npcSaveData.mGoalSave);
+                    npc.InitialiseFromSaveData(npcSaveData.mPromptHistory, npcSaveData.mGoalSave);
+                }
             }
 
             m_goalsManager.LoadGoalLog(gameSaveData.mGoalsSaveData);

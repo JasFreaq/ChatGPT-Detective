@@ -42,10 +42,6 @@ namespace ChatGPT_Detective
             m_embeddingsClient = new OpenAIClient();
 
             m_goalsHandler = GetComponent<NpcGoalsHandler>();
-        }
-
-        private void Start()
-        {
             m_goalsHandler.InitializeGoalHandling(m_charInfo.CharGoals, m_charInfo.CharFallbackGoal);
         }
 
@@ -100,15 +96,12 @@ namespace ChatGPT_Detective
                 Debug.LogWarning("No embeddings were generated from this prompt.");
             }
         }
-
+        
         public void InitialiseFromSaveData(SerializableDialogueChunk[] promptHistory, NpcGoalSaveData goalSave)
         {
             foreach (SerializableDialogueChunk serializableChunk in promptHistory)
             {
-                m_historyData = new HistoryData();
-
                 DialogueChunk newChunk = new DialogueChunk(serializableChunk);
-
                 m_historyData.Add(newChunk);
             }
 

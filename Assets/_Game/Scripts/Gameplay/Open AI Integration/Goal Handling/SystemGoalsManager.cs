@@ -21,16 +21,14 @@ namespace ChatGPT_Detective
 
         [SerializeField] private int m_attemptsThresholdBeforeGoalClears = 3;
 
-        [SerializeField] private float m_goalCheckWaitTime = 20f;
+        [SerializeField] private int m_goalCheckWaitTime = 20;
 
         [SerializeField] private List<NpcGoalsHandler> m_npcGoalsHandlers = new List<NpcGoalsHandler>();
 
         private OpenAIClient m_goalClient;
         
         private GoalEventsHandler m_goalEventsHandler;
-
-        private CancellationTokenSource m_goalRequestCancellationToken;
-
+        
         private List<Function> m_goalFunction = new List<Function>
         {
             new Function("CheckGoalStatus", "Tells the user whether the goal was completed or not.",
@@ -58,8 +56,6 @@ namespace ChatGPT_Detective
             m_goalClient = new OpenAIClient();
 
             m_goalEventsHandler = GetComponent<GoalEventsHandler>();
-
-            m_goalRequestCancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(m_goalCheckWaitTime));
         }
 
         public async Task<bool> CheckGoalStatus(int goalId, List<Message> history, Message reply)
@@ -80,23 +76,34 @@ namespace ChatGPT_Detective
                 ChatRequest goalRequest =
                     new ChatRequest(history, Model.GPT3_5_Turbo, 0f, functions: m_goalFunction, functionCall: "CheckGoalStatus");
 
-                try
-                {
-                    ChatResponse goalResponse = await m_goalClient.ChatEndpoint.GetCompletionAsync(goalRequest, m_goalRequestCancellationToken.Token);
-
-                    GoalStatusArgs functionArgs =
-                        JsonConvert.DeserializeObject<GoalStatusArgs>(goalResponse.FirstChoice.Message.Function.Arguments
-                            .ToString());
-
-                    UpdateGoalStatus(functionArgs.mStatus, goalId);
-                }
-                catch (OperationCanceledException)
-                {
-                    UpdateGoalStatus(false, goalId);
-                }
+                await CheckGoalWithTimeout(goalId, goalRequest);
             }
 
             return true;
+        }
+
+        private async Task CheckGoalWithTimeout(int goalId, ChatRequest goalRequest)
+        {
+            int timeoutMilliseconds = m_goalCheckWaitTime * 1000;
+            Task<ChatResponse> task = m_goalClient.ChatEndpoint.GetCompletionAsync(goalRequest);
+
+            Task delayTask = Task.Delay(timeoutMilliseconds);
+            Task completedTask = await Task.WhenAny(task, delayTask);
+
+            if (completedTask == delayTask)
+            {
+                UpdateGoalStatus(false, goalId);
+            }
+            else
+            {
+                ChatResponse goalResponse = await task;
+
+                GoalStatusArgs functionArgs =
+                    JsonConvert.DeserializeObject<GoalStatusArgs>(goalResponse.FirstChoice.Message.Function.Arguments
+                        .ToString());
+
+                UpdateGoalStatus(functionArgs.mStatus, goalId);
+            }
         }
 
         private void UpdateGoalStatus(bool status, int id)

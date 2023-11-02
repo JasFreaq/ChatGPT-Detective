@@ -67,11 +67,11 @@ MonoBehaviour:
   - m_id: 25
     m_prerequisiteIds: 3f000000
     m_goal: When the detective brings up the name Cipher, explain that Cipher is
-      an old username from whom Richard Blackwell stole a project from. Do not mention
-      any connections between Cipher and Max Sterling. If Cipher is not mentioned,
-      continue offering your assistance until it is.
+      an old moniker of someone from whom Richard Blackwell stole a project from.
+      If Cipher is not mentioned, continue offering your assistance until it is.
   - m_id: 26
-    m_prerequisiteIds: 41000000
-    m_goal: Provide the detective with access to Cipher's previous code samples.
+    m_prerequisiteIds: 19000000
+    m_goal: Cipher is an old moniker of someone from whom Richard Blackwell stole
+      a project from. Provide the detective with access to Cipher's old code samples.
   m_characterFallbackGoal: Engage the detective in conversation and provide insights
     to whatever query he may have.

@@ -7,6 +7,7 @@ using OpenAI.Chat;
 using OpenAI.Models;
 using OpenAI.Embeddings;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace ChatGPT_Detective
 {
@@ -62,6 +63,8 @@ namespace ChatGPT_Detective
         [SerializeField] private SystemGoalsManager m_goalsManager;
 
         [SerializeField] private int m_modelTPM = 10000;
+        
+        [SerializeField] private int m_responseWaitTime = 30;
 
         [SerializeField] private int m_embeddingsWindowSize = 5;
 
@@ -133,39 +136,55 @@ namespace ChatGPT_Detective
 
                 FormatHistory(promptMessage.CharInfo.CharInfo, promptMessage.NpcCurrentGoal.Goal, history);
 
-                ChatRequest chatRequest = new ChatRequest(history, Model.GPT4, m_temperature);
+                ChatRequest chatRequest = new ChatRequest(history, Model.GPT3_5_Turbo_16K, m_temperature);
 
-                await m_conversationClient.ChatEndpoint.StreamCompletionAsync(chatRequest, async response =>
-                {
-                    if (response.Choices?.Count > 0)
-                    {
-                        if (!string.IsNullOrEmpty(response.Choices[0].Delta?.Content))
-                        {
-                            m_onResponseStreaming.Invoke(response.Choices[0].Delta.Content);
-                        }
-
-                        if (!string.IsNullOrEmpty(response.Choices[0].Message?.Content))
-                        {
-                            Message reply = response.Choices[0].Message;
-
-                            m_processingPrompt = false;
-                            m_goalCheckedForLastMessage = false;
-
-                            m_onResponseReceived?.Invoke(reply);
-                            
-                            m_goalCheckedForLastMessage =
-                                await m_goalsManager.CheckGoalStatus(promptMessage.NpcCurrentGoal.Id, history, reply);
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning("No text was generated from this prompt.");
-                    }
-                });
+                await SendMessageWithTimeout(promptMessage, chatRequest, history);
             }
             else
             {
                 m_promptQueue.Enqueue(promptMessage);
+            }
+        }
+
+        private async Task SendMessageWithTimeout(PromptMessageData promptMessage, ChatRequest chatRequest, List<Message> history)
+        {
+            int timeoutMilliseconds = m_responseWaitTime * 1000;
+
+            Task<ChatResponse> task = m_conversationClient.ChatEndpoint.StreamCompletionAsync(chatRequest, async response =>
+            {
+                if (response.Choices?.Count > 0)
+                {
+                    if (!string.IsNullOrEmpty(response.Choices[0].Delta?.Content))
+                    {
+                        m_onResponseStreaming.Invoke(response.Choices[0].Delta.Content);
+                    }
+
+                    if (!string.IsNullOrEmpty(response.Choices[0].Message?.Content))
+                    {
+                        Message reply = response.Choices[0].Message;
+
+                        m_processingPrompt = false;
+                        m_goalCheckedForLastMessage = false;
+
+                        m_onResponseReceived?.Invoke(reply);
+
+                        m_goalCheckedForLastMessage =
+                            await m_goalsManager.CheckGoalStatus(promptMessage.NpcCurrentGoal.Id, history, reply);
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("No text was generated from this prompt.");
+                }
+            });
+
+            Task delayTask = Task.Delay(timeoutMilliseconds);
+            Task completedTask = await Task.WhenAny(task, delayTask);
+
+            if (completedTask == delayTask)
+            {
+                m_processingPrompt = false;
+                SendPromptMessage(promptMessage);
             }
         }
 
@@ -210,12 +229,7 @@ namespace ChatGPT_Detective
 
             return validHistory;
         }
-
-        private async void HandleResponse(ChatResponse response)
-        {
-
-        } 
-
+        
         private List<Message> GetValidHistory(List<DialogueChunk> npcPromptHistory, List<DialogueChunk> nearestChunks)
         {
             List<Message> validHistory = new List<Message>();

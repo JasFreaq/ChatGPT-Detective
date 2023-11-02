@@ -39,7 +39,7 @@ namespace ChatGPT_Detective
         
         public void UpdateGoals(int clearedId, Dictionary<int, int> clearedGoalsLog, int threshold)
         {
-            if (clearedId == m_currentGoal.Id)
+            if (clearedId == m_currentGoal.Id || m_isUsingFallbackGoal)
             {
                 if (m_currentGoalIndex < m_goalsList.Count - 1)
                 {

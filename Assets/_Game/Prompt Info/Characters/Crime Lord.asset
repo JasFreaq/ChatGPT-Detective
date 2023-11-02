@@ -58,11 +58,12 @@ MonoBehaviour:
       ideas from his colleagues and subordinates.
   - m_id: 33
     m_prerequisiteIds: 0f000000
-    m_goal: If the detective discusses your meeting with Richard Blackwell last night,
-      respond by being cooperative and clarify that it was solely a business meeting.
-      Instruct the detective to inform Steel that you've instructed him to disclose
-      information about last night. If the detective does not mention the meeting,
-      tersely advise them to refrain from further wasting your time.
+    m_goal: If the detective asks about your meeting with Richard Blackwell last
+      night, respond by being cooperative and clarify that it was solely a business
+      meeting and then instruct the detective to inform Steel that you've asked him
+      to disclose information about last night. If the detective does not mention
+      the meeting, advise them to refrain from further wasting your time until they
+      mention it.
   m_characterFallbackGoal: Inform the detective that you have shared all the information
     you possess. Advise them to cease what appears to be a futile search for clues
     and to avoid further wasting your time.

@@ -79,4 +79,4 @@ In cases where the processing limits defined by OpenAI were exceeded, a vector s
 
 ## Timeout Feature to Avoid Delays
 To address potential extended wait times arising from OpenAI's API calls, a timeout feature has been successfully incorporated into both the `GptIntegrator` and `SystemGoalsManager` components. This addition ensures a smoother and more responsive user experience. The structure of the timeout feature is outlined as follows:
-![Timeout Pseudocode]("./Markdown Images/Image1.png")
+![Timeout Pseudocode](.Image1.png)

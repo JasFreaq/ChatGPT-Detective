@@ -157,7 +157,7 @@ In a hyper-advanced society, where cybersecurity is a constant concern, the use 
 ## References
 [1] Game Maker's Toolkit, "What Makes a Good Detective Game?" 2017. [Online video]. Available: [Game Maker's Toolkit Video](https://www.youtube.com/watch?v=gwV_mA2cv_0&t=227s).
 
-[2] OpenAI, "GPT Best Practices." OpenAI Documentation. [Online article]. Available: [OpenAI Documentation - GPT Best Practices](https://platform.openai.com/docs/guides/gpt-best-practices/gpt-best-practices). Accessed: November 1, 2023.
+[2] OpenAI, "GPT Best Practices." OpenAI Documentation. [Online article]. Available: [OpenAI Documentation - GPT Best Practices](https://platform.openai.com/docs/guides/prompt-engineering). Accessed: November 1, 2023.
 
 [3] Alexander Bartz, “Vector Search with C#: A Practical Approach for Small Datasets,” 2023. [Online article]. Available: [Vector Search Article](https://crispycode.net/vector-search-with-c-a-practical-approach-for-small-datasets/). Accessed: November 1, 2023.
 
